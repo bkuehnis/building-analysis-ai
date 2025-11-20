@@ -1,0 +1,6 @@
+requests
+pandas
+reportlab
+googlemaps
+opencv-python
+Pillow
