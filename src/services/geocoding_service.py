@@ -13,6 +13,7 @@ class GeocodingService:
         }
 
         r = requests.get(self.search_url, params=params)
+        print(f"Geocoding URL: {r.url}")
         r.raise_for_status()
         data = r.json()
 
@@ -20,4 +21,5 @@ class GeocodingService:
             raise ValueError(f"No geocoding result for: {address}")
 
         attrs = data["results"][0]["attrs"]
-        return attrs["lon"], attrs["lat"]
+        feature_id = attrs["featureId"]
+        return attrs["lon"], attrs["lat"], feature_id
