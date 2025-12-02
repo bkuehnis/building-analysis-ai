@@ -5,11 +5,11 @@ import requests
 from services.geocoding_service import GeocodingService
 from services.streetview_service import StreetViewService
 from services.map_service import MapService
-from services.birdseye_service import BirdseyeService
+from services.zh_map_service import ZhMapService
 from generators.pdf_generator import PDFGenerator
 import urllib.parse
 
-def generate_google_links(lat, lon, address, feature_id):
+def generate_google_links(lat, lon, address, feature_id, egid):
     # Encode the address for URLs
     encoded_address = urllib.parse.quote(address)
 
@@ -20,19 +20,23 @@ def generate_google_links(lat, lon, address, feature_id):
     streetview_url = (
         f"https://www.google.com/maps/@?api=1"
         f"&map_action=pano"
-        f"&viewpoint={lat},{lon}"
+        f"&viewpoint={lat},{lon}&pitch=25"
     )
     
     # --- Swiss geo.admin.ch map ---
     geo_admin_register_url = (
         f"https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/{feature_id}"
     )
-    print(geo_admin_register_url)
+    
+    # --- Zürich map using EGID ---
+    zh_map_url = f"https://maps.zh.ch/?locate=egid&locations={egid}&collapsed=lrt&scale=600"
+    
     return {
         "address": address,
         "maps_url": maps_url,
         "streetview_url": streetview_url,
-        "geo_admin_register_url": geo_admin_register_url
+        "geo_admin_register_url": geo_admin_register_url,
+        "zh_map_url": zh_map_url
     }
 
 def download_tile(url, name, outdir="output/images"):
@@ -58,18 +62,20 @@ def main():
     geocoding_service = GeocodingService()
     street_view_service = StreetViewService(api_key)
     map_service = MapService()
+    zh_map_service = ZhMapService()
     pdf_generator = PDFGenerator()
     
     # Process each address
     for index, row in df.iterrows():
+        egid = row['EGID']
         street = row['STRASSENNAME']
         house_number = row['HAUSNR']
         address = f"{street} {house_number}, Winterthur"
-        print(f"\nProcessing: {address}")
+        print(f"\nProcessing: {address} (EGID: {egid})")
         
         # Geocode address to get coordinates
-        lon, lat, feature_id = geocoding_service.geocode_address(address)
-        print(f" → lon={lon}, lat={lat}", f"feature_id={feature_id}")
+        lon, lat, feature_id, x, y = geocoding_service.geocode_address(address)
+        print(f" → lon={lon}, lat={lat}, feature_id={feature_id}")
         
         # Fetch all map types
         map_urls = map_service.fetch_all_maps(lon, lat)
@@ -77,13 +83,23 @@ def main():
         for map_type, url in map_urls.items():
             map_image_paths[map_type] = download_tile(url, f'map_{map_type}_{index}')
         
-        # Fetch street view
+        # Fetch street view (API image)
         street_view_url = street_view_service.fetch_street_view(lon, lat)
         street_view_image_path = download_tile(street_view_url, f'streetview_{index}')
         
-        # Generate URLs
-        urls = generate_google_links(lat, lon, address, feature_id)
+        # Fetch street view screenshot (interactive)
+        street_view_screenshot_path = street_view_service.fetch_street_view_screenshot(lon, lat, address)
+        map_image_paths['streetview-interactive'] = street_view_screenshot_path
         
+        # Fetch ZH map screenshots using EGID
+        zh_map_main, zh_map_ortho = zh_map_service.fetch_zh_map_screenshot_by_egid(egid, address)
+        map_image_paths['zh-map'] = zh_map_main
+        if zh_map_ortho:
+            map_image_paths['zh-map-ortho'] = zh_map_ortho
+        
+        # Generate URLs
+        urls = generate_google_links(lat, lon, address, feature_id, egid)
+
         # Generate PDF for the address
         pdf_generator.generate_pdf(address, street_view_image_path, map_image_paths, urls)
         

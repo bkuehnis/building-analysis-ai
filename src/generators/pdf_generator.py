@@ -1,8 +1,6 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 import os
 
 
@@ -12,14 +10,7 @@ class PDFGenerator:
         os.makedirs(output_dir, exist_ok=True)
 
     def generate_pdf(self, address, street_view_image_path, map_image_paths, urls):
-        """Generate a single-page PDF for an address with images in 2x2 table and URLs
-        
-        Args:
-            address: Street address
-            street_view_image_path: Path to street view image
-            map_image_paths: Dictionary with map type as key and image path as value
-            urls: Dictionary with URL links
-        """
+        """Generate a single-page PDF for an address with images and URLs"""
         
         # Create safe filename
         safe_address = address.replace("/", "-").replace(" ", "_")
@@ -32,73 +23,98 @@ class PDFGenerator:
         c.setFont("Helvetica-Bold", 16)
         c.drawString(50, height - 50, f"Address: {address}")
         
-        # 2x2 Grid layout for images
+        # Layout: 2 rows of 2 images each (larger images)
         img_width = 250
-        img_height = 200
+        img_height = 180
         x_margin = 50
         y_start = height - 100
         x_spacing = 20
         y_spacing = 30
         
-        # Collect all images
-        images = []
+        y_position = y_start
         
-        # Add street view
+        # Row 1: Street View images
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(x_margin, y_position, "Street View (API)")
+        c.drawString(x_margin + img_width + x_spacing, y_position, "Street View (Interactive)")
+        y_position -= 15
+        
+        # Draw Street View API image
         if street_view_image_path and os.path.exists(street_view_image_path):
-            images.append(("Street View", street_view_image_path))
+            img = ImageReader(street_view_image_path)
+            c.drawImage(img, x_margin, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True)
         
-        # Add maps
-        for map_type, map_image_path in map_image_paths.items():
-            if map_image_path and os.path.exists(map_image_path):
-                images.append((f"Map ({map_type})", map_image_path))
+        # Draw Street View Interactive screenshot
+        if 'streetview-interactive' in map_image_paths and os.path.exists(map_image_paths['streetview-interactive']):
+            img = ImageReader(map_image_paths['streetview-interactive'])
+            c.drawImage(img, x_margin + img_width + x_spacing, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True)
         
-        # Draw images in 2x2 grid
-        positions = [
-            (x_margin, y_start - img_height),  # Top left
-            (x_margin + img_width + x_spacing, y_start - img_height),  # Top right
-            (x_margin, y_start - 2 * img_height - y_spacing),  # Bottom left
-            (x_margin + img_width + x_spacing, y_start - 2 * img_height - y_spacing)  # Bottom right
-        ]
+        y_position -= (img_height + y_spacing + 10)
         
-        for i, (label, img_path) in enumerate(images[:4]):  # Max 4 images
-            if i < len(positions):
-                x, y = positions[i]
-                
-                # Draw label
-                c.setFont("Helvetica-Bold", 10)
-                c.drawString(x, y + img_height + 15, label)
-                
-                # Draw image
-                img = ImageReader(img_path)
-                c.drawImage(img, x, y, width=img_width, height=img_height, preserveAspectRatio=True)
+        # Row 2: Zürich maps
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(x_margin, y_position, "Zürich Map")
+        c.drawString(x_margin + img_width + x_spacing, y_position, "Zürich Ortho Map")
+        y_position -= 15
         
-        # URLs Section below the grid
-        y_position = y_start - 2 * img_height - 2 * y_spacing - 40
+        # Draw ZH map
+        if 'zh-map' in map_image_paths and os.path.exists(map_image_paths['zh-map']):
+            img = ImageReader(map_image_paths['zh-map'])
+            c.drawImage(img, x_margin, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True)
+        
+        # Draw ZH ortho map
+        if 'zh-map-ortho' in map_image_paths and os.path.exists(map_image_paths['zh-map-ortho']):
+            img = ImageReader(map_image_paths['zh-map-ortho'])
+            c.drawImage(img, x_margin + img_width + x_spacing, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True)
+        
+        y_position -= (img_height + y_spacing + 10)
+        
+        # Swiss Topo Map (small, on left side with URLs)
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(x_margin, y_position, "Swiss Topo Map")
+        y_position -= 15
+        
+        if 'swisstlm3d-karte-farbe' in map_image_paths and os.path.exists(map_image_paths['swisstlm3d-karte-farbe']):
+            small_img_width = 150
+            small_img_height = 120
+            img = ImageReader(map_image_paths['swisstlm3d-karte-farbe'])
+            c.drawImage(img, x_margin, y_position - small_img_height, width=small_img_width, height=small_img_height, preserveAspectRatio=True)
+        
+        # URLs Section (next to Swiss Topo Map)
+        url_x = x_margin + 170
+        url_y = y_position - 10
         
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y_position, "Links:")
-        y_position -= 20
+        c.drawString(url_x, url_y, "Links:")
+        url_y -= 20
         
         c.setFont("Helvetica", 9)
         
         # Google Maps
-        c.setFillColorRGB(0, 0, 1)  # Blue color for links
-        c.drawString(70, y_position, "Google Maps")
-        c.linkURL(urls['maps_url'], (70, y_position - 2, 140, y_position + 10), relative=0)
-        c.setFillColorRGB(0, 0, 0)  # Reset to black
-        y_position -= 15
+        c.setFillColorRGB(0, 0, 1)
+        c.drawString(url_x + 20, url_y, "Google Maps")
+        c.linkURL(urls['maps_url'], (url_x + 20, url_y - 2, url_x + 90, url_y + 10), relative=0)
+        c.setFillColorRGB(0, 0, 0)
+        url_y -= 15
         
         # Street View
         c.setFillColorRGB(0, 0, 1)
-        c.drawString(70, y_position, "Google Street View")
-        c.linkURL(urls['streetview_url'], (70, y_position - 2, 160, y_position + 10), relative=0)
+        c.drawString(url_x + 20, url_y, "Google Street View")
+        c.linkURL(urls['streetview_url'], (url_x + 20, url_y - 2, url_x + 110, url_y + 10), relative=0)
         c.setFillColorRGB(0, 0, 0)
-        y_position -= 15
+        url_y -= 15
         
         # Gebäude Register
         c.setFillColorRGB(0, 0, 1)
-        c.drawString(70, y_position, "Gebäude Register (geo.admin.ch)")
-        c.linkURL(urls['geo_admin_register_url'], (70, y_position - 2, 240, y_position + 10), relative=0)
+        c.drawString(url_x + 20, url_y, "Gebäude Register")
+        c.linkURL(urls['geo_admin_register_url'], (url_x + 20, url_y - 2, url_x + 110, url_y + 10), relative=0)
+        c.setFillColorRGB(0, 0, 0)
+        url_y -= 15
+        
+        # Zürich Map
+        c.setFillColorRGB(0, 0, 1)
+        c.drawString(url_x + 20, url_y, "Kanton Zürich Map")
+        c.linkURL(urls['zh_map_url'], (url_x + 20, url_y - 2, url_x + 120, url_y + 10), relative=0)
         c.setFillColorRGB(0, 0, 0)
         
         # Save PDF
