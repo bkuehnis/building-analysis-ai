@@ -30,7 +30,7 @@ class StreetViewService:
         safe_address = address.replace("/", "-").replace(" ", "_")
         filename = f"{output_dir}/{safe_address}_streetview_interactive.png"
         
-        print(f"Taking screenshot of Street View: {url}")
+        #print(f"Taking screenshot of Street View: {url}")
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -45,18 +45,18 @@ class StreetViewService:
                 accept_button = page.locator('button:has-text("Accept all"), button:has-text("Alle akzeptieren"), button:has-text("Tout accepter")')
                 if accept_button.count() > 0:
                     accept_button.first.click()
-                    print("Accepted cookies")
+                    #print("Accepted cookies")
                     page.wait_for_timeout(2000)
             except Exception as e:
                 print(f"No cookie dialog or couldn't click: {e}")
             
             # Wait for Street View to load
-            page.wait_for_timeout(5000)  # Wait 5 seconds for Street View to render
+            page.wait_for_timeout(3000)  # Wait 5 seconds for Street View to render
             
             # Take screenshot
             page.screenshot(path=filename, full_page=False)
             
             browser.close()
         
-        print(f"Street View screenshot saved: {filename}")
+        #print(f"Street View screenshot saved: {filename}")
         return filename

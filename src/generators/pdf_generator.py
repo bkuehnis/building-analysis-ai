@@ -9,7 +9,7 @@ class PDFGenerator:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-    def generate_pdf(self, address, street_view_image_path, map_image_paths, urls):
+    def generate_pdf(self, address, egid, street_view_image_path, map_image_paths, urls):
         """Generate a single-page PDF for an address with images and URLs"""
         
         # Create safe filename
@@ -19,9 +19,9 @@ class PDFGenerator:
         c = canvas.Canvas(pdf_filename, pagesize=A4)
         width, height = A4
         
-        # Title
+        # Title with EGID
         c.setFont("Helvetica-Bold", 16)
-        c.drawString(50, height - 50, f"Address: {address}")
+        c.drawString(50, height - 50, f"Address: {address} (EGID: {egid})")
         
         # Layout: 2 rows of 2 images each (larger images)
         img_width = 250
@@ -116,8 +116,8 @@ class PDFGenerator:
         c.drawString(url_x + 20, url_y, "Kanton Zürich Map")
         c.linkURL(urls['zh_map_url'], (url_x + 20, url_y - 2, url_x + 120, url_y + 10), relative=0)
         c.setFillColorRGB(0, 0, 0)
-        
+
         # Save PDF
         c.save()
-        print(f"PDF generated: {pdf_filename}")
+        #print(f"PDF generated: {pdf_filename}")
         return pdf_filename

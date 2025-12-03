@@ -13,7 +13,7 @@ class GeocodingService:
         }
 
         r = requests.get(self.search_url, params=params)
-        print(f"Geocoding URL: {r.url}")
+        #print(f"Geocoding URL: {r.url}")
         r.raise_for_status()
         data = r.json()
 

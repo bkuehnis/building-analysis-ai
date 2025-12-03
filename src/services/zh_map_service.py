@@ -30,21 +30,21 @@ class ZhMapService:
             browser = p.chromium.launch(headless=True)
             
             # Screenshot 1: Main map
-            print(f"Taking screenshot of ZH map: {url_main}")
+            #print(f"Taking screenshot of ZH map: {url_main}")
             page = browser.new_page(viewport={"width": 960, "height": 540})  # Half size: 1920/2, 1080/2
             page.goto(url_main, wait_until="networkidle")
-            page.wait_for_timeout(5000)
+            page.wait_for_timeout(3000)
             page.screenshot(path=filename_main, full_page=False)
-            print(f"ZH map screenshot saved: {filename_main}")
+            #print(f"ZH map screenshot saved: {filename_main}")
             page.close()
             
             # Screenshot 2: Ortho/aerial view
-            print(f"Taking screenshot of ZH ortho map: {url_ortho}")
+            #print(f"Taking screenshot of ZH ortho map: {url_ortho}")
             page = browser.new_page(viewport={"width": 960, "height": 540})  # Half size: 1920/2, 1080/2
             page.goto(url_ortho, wait_until="networkidle")
-            page.wait_for_timeout(5000)
+            page.wait_for_timeout(3000)
             page.screenshot(path=filename_ortho, full_page=False)
-            print(f"ZH ortho screenshot saved: {filename_ortho}")
+            #print(f"ZH ortho screenshot saved: {filename_ortho}")
             page.close()
             
             browser.close()
@@ -61,7 +61,7 @@ class ZhMapService:
         safe_address = address.replace("/", "-").replace(" ", "_")
         filename = f"{output_dir}/{safe_address}_zh_map.png"
         
-        print(f"Taking screenshot of ZH map: {url}")
+        #f"Taking screenshot of ZH map: {url}")
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -78,5 +78,5 @@ class ZhMapService:
             
             browser.close()
         
-        print(f"ZH map screenshot saved: {filename}")
+        #print(f"ZH map screenshot saved: {filename}")
         return filename

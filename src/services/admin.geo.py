@@ -58,8 +58,8 @@ def download_tile(z, x, y, outdir="tiles"):
     os.makedirs(outdir, exist_ok=True)
     url = WMTS_URL.format(z=z, x=x, y=y)
     filename = f"{outdir}/tile_z{z}_x{x}_y{y}.jpeg"
-    print(url)
-    print(f"Downloading Z={z}, X={x}, Y={y} → {filename}")
+    #print(url)
+    #print(f"Downloading Z={z}, X={x}, Y={y} → {filename}")
     r = requests.get(url)
     r.raise_for_status()
 
@@ -74,8 +74,8 @@ def download_tile(z, x, y, outdir="tiles"):
 ###############################################
 def download_tiles_for_address(address):
     lon, lat = geocode_address(address)
-    print(f"Address geocoded: {address}")
-    print(f" → lon={lon}, lat={lat}")
+    #print(f"Address geocoded: {address}")
+    #print(f" → lon={lon}, lat={lat}")
 
     z = 19
     x, y = lonlat_to_xyz(lon, lat, z)
