@@ -1,6 +1,8 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
 import os
 
 
@@ -9,8 +11,8 @@ class PDFGenerator:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-    def generate_pdf(self, address, egid, street_view_image_path, map_image_paths, urls):
-        """Generate a single-page PDF for an address with images and URLs"""
+    def generate_pdf(self, address, egid, street_view_image_path, map_image_paths, urls, building_info=None, building_data_api=None):
+        """Generate a PDF for an address with images, URLs, and building data"""
         
         # Create safe filename
         safe_address = address.replace("/", "-").replace(" ", "_")
@@ -19,11 +21,26 @@ class PDFGenerator:
         c = canvas.Canvas(pdf_filename, pagesize=A4)
         width, height = A4
         
+        # PAGE 1: Images and basic info
+        self._draw_page1(c, width, height, address, egid, street_view_image_path, map_image_paths, urls, building_info)
+        
+        # PAGE 2: Detailed building data from API
+        if building_data_api:
+            c.showPage()
+            self._draw_page2(c, width, height, address, egid, building_data_api)
+        
+        # Save PDF
+        c.save()
+        print(f"PDF generated: {pdf_filename}")
+        return pdf_filename
+    
+    def _draw_page1(self, c, width, height, address, egid, street_view_image_path, map_image_paths, urls, building_info):
+        """Draw first page with images"""
         # Title with EGID
         c.setFont("Helvetica-Bold", 16)
         c.drawString(50, height - 50, f"Address: {address} (EGID: {egid})")
         
-        # Layout: 2 rows of 2 images each (larger images)
+        # Layout: 2 rows of 2 images each
         img_width = 250
         img_height = 180
         x_margin = 50
@@ -80,7 +97,7 @@ class PDFGenerator:
             img = ImageReader(map_image_paths['swisstlm3d-karte-farbe'])
             c.drawImage(img, x_margin, y_position - small_img_height, width=small_img_width, height=small_img_height, preserveAspectRatio=True)
         
-        # URLs Section (next to Swiss Topo Map)
+        # URLs Section
         url_x = x_margin + 170
         url_y = y_position - 10
         
@@ -116,8 +133,99 @@ class PDFGenerator:
         c.drawString(url_x + 20, url_y, "Kanton Zürich Map")
         c.linkURL(urls['zh_map_url'], (url_x + 20, url_y - 2, url_x + 120, url_y + 10), relative=0)
         c.setFillColorRGB(0, 0, 0)
+    
+    def _draw_page2(self, c, width, height, address, egid, building_data_api):
+        margin_top = 50
+        margin_bottom = 50
+        margin_left = 50
+        margin_right = 50
 
-        # Save PDF
-        c.save()
-        #print(f"PDF generated: {pdf_filename}")
-        return pdf_filename
+        gutter = 20
+        col_width = (width - margin_left - margin_right - gutter) / 2
+        left_x = margin_left
+        right_x = margin_left + col_width + gutter
+
+        sections_order = [
+            ('Gebäudeinformationen', 'left'),
+            ('Eingangsinformationen', 'right'),
+            ('Wohnungsinformationen', 'right'),
+        ]
+
+        left_y = height - margin_top
+        right_y = height - margin_top
+
+        header_h = 12          # space reserved for section title line
+        after_header_gap = 4   # gap between title and table
+        section_gap = 10       # gap after each section
+
+        for section_name, position in sections_order:
+            section_data = building_data_api.get(section_name)
+            if not isinstance(section_data, dict) or not section_data:
+                continue
+
+            table_data = []
+            for key, value in section_data.items():
+                if value in (None, ''):  # Keep entries with '-' for processing
+                    continue
+                table_data.append([key, value])
+
+            if not table_data:
+                continue
+
+            # Adjust the column width for the left column
+            table = Table(table_data, colWidths=[col_width * 0.5, col_width * 0.56])  # Increased left column width
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 1),
+                ('TOPPADDING', (0, 0), (-1, -1), 1),
+                ('LEFTPADDING', (0, 0), (-1, -1), 1),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 1),
+                ('GRID', (0, 0), (-1, -1), 0.3, colors.grey),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1),
+                [colors.white, colors.HexColor('#f0f0f0')]),
+            ]))
+
+            # Choose column
+            if position == 'left':
+                current_x, current_y = left_x, left_y
+            else:
+                current_x, current_y = right_x, right_y
+
+            # Compute REAL table height
+            available_h = current_y - margin_bottom - header_h - after_header_gap
+            _, table_h = table.wrap(col_width, max(0, available_h))
+
+            needed_h = header_h + after_header_gap + table_h
+
+            # New page if it doesn't fit in that column
+            if current_y - needed_h < margin_bottom:
+                c.showPage()
+                left_y = height - margin_top
+                right_y = height - margin_top
+                current_y = height - margin_top
+                current_x = left_x if position == 'left' else right_x
+
+                available_h = current_y - margin_bottom - header_h - after_header_gap
+                _, table_h = table.wrap(col_width, max(0, available_h))
+                needed_h = header_h + after_header_gap + table_h
+
+            # Draw header
+            c.setFont("Helvetica-Bold", 8)
+            c.drawString(current_x, current_y, section_name)
+
+            # Draw table under header, using real height
+            table_top_y = current_y - header_h - after_header_gap
+            table.drawOn(c, current_x, table_top_y - table_h)
+
+            # Update column cursor
+            new_y = current_y - needed_h - section_gap
+            if position == 'left':
+                left_y = new_y
+            else:
+                right_y = new_y

@@ -29,7 +29,9 @@ class StreetViewService:
         # Create safe filename from address
         safe_address = address.replace("/", "-").replace(" ", "_")
         filename = f"{output_dir}/{safe_address}_streetview_interactive.png"
-        
+
+        if os.path.exists(filename):
+            return filename
         #print(f"Taking screenshot of Street View: {url}")
         
         with sync_playwright() as p:

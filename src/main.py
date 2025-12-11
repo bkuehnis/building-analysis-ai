@@ -6,9 +6,11 @@ from services.geocoding_service import GeocodingService
 from services.streetview_service import StreetViewService
 from services.map_service import MapService
 from services.zh_map_service import ZhMapService
+from services.building_data_service import BuildingDataService
 from generators.pdf_generator import PDFGenerator
 import urllib.parse
 from tqdm import tqdm
+import time
 
 def generate_google_links(lat, lon, address, feature_id, egid):
     # Encode the address for URLs
@@ -45,6 +47,8 @@ def download_tile(url, name, outdir="output/images"):
     r = requests.get(url)
     r.raise_for_status()
     filename = f"{outdir}/{name}.jpeg"
+    if os.path.exists(filename):
+        return filename
     with open(filename, "wb") as f:
         f.write(r.content)
     return filename
@@ -56,13 +60,14 @@ def main():
         raise ValueError("API_KEY_GOOGLE_MAPS not found in .env file")
     
     # Load addresses from an Excel file
-    df = pd.read_excel('data/0 251111 gesendet kuhs + gava/1_EGID_Export_Winti-ReUse_nur Adresse_UNIQUE 251011.xlsx')
+    df = pd.read_excel('data/0 251111 gesendet kuhs + gava/EGID_Export_Winti-ReUse_Gebauede_OK_Mit_Baujahr_UNIQUE 251030 gui.xlsx')
 
     # Initialize services
     geocoding_service = GeocodingService()
     street_view_service = StreetViewService(api_key)
     map_service = MapService()
     zh_map_service = ZhMapService()
+    building_data_service = BuildingDataService()
     pdf_generator = PDFGenerator()
     
     # Process each address with progress bar
@@ -70,6 +75,12 @@ def main():
         egid = row['EGID']
         street = row['STRASSENNAME']
         house_number = row['HAUSNR']
+        hauptnutzung = row['HAUPTNUTZUNG']
+        nutzung = row['NUTZUNG']
+        gs_eigentumskat = row['GS_EIGENTUMSKATEGORIE']
+        gs_eigentumskat_zusatz = row['GS_EIGENTUMSKAT_ZUSATZ']
+        baujahr = row['BAUJAHR']
+
         address = f"{street} {house_number}, Winterthur"
         
         # Check if PDF already exists
@@ -83,6 +94,9 @@ def main():
         try:
             # Geocode address to get coordinates
             lon, lat, feature_id, x, y = geocoding_service.geocode_address(address)
+            
+            # Fetch detailed building data from geo.admin API
+            building_data_api = building_data_service.fetch_building_data(egid)
             
             # Fetch all map types
             map_urls = map_service.fetch_all_maps(lon, lat)
@@ -106,13 +120,25 @@ def main():
             
             # Generate URLs
             urls = generate_google_links(lat, lon, address, feature_id, egid)
+            
+            # Prepare building info from Excel
+            building_info = {
+                'hauptnutzung': hauptnutzung,
+                'nutzung': nutzung,
+                'gs_eigentumskat': gs_eigentumskat,
+                'gs_eigentumskat_zusatz': gs_eigentumskat_zusatz,
+                'baujahr': baujahr
+            }
 
             # Generate PDF for the address
-            pdf_generator.generate_pdf(address, egid, street_view_image_path, map_image_paths, urls)
+            pdf_generator.generate_pdf(address, egid, street_view_image_path, map_image_paths, urls, building_info, building_data_api)
             
         except Exception as e:
             tqdm.write(f"Error processing {address} (EGID: {egid}): {e}")
             continue
+        
+        time.sleep(1)
+        
 
 
 if __name__ == "__main__":
