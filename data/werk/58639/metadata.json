@@ -1,0 +1,130 @@
+[
+  {
+    "id": 69763,
+    "name": "Nordostfassade",
+    "mimeType": "image/jpeg",
+    "order": 0,
+    "height": 1170,
+    "width": 1600
+  },
+  {
+    "id": 69766,
+    "name": "Pausendeckund Hoffassade",
+    "mimeType": "image/jpeg",
+    "order": 1,
+    "height": 1031,
+    "width": 1600
+  },
+  {
+    "id": 69764,
+    "name": "Bibliothek",
+    "mimeType": "image/jpeg",
+    "order": 2,
+    "height": 1314,
+    "width": 1600
+  },
+  {
+    "id": 69775,
+    "name": "Eingangshalle",
+    "mimeType": "image/jpeg",
+    "order": 3,
+    "height": 976,
+    "width": 1600
+  },
+  {
+    "id": 69765,
+    "name": "Geografie-Zimmer",
+    "mimeType": "image/jpeg",
+    "order": 4,
+    "height": 1293,
+    "width": 1600
+  },
+  {
+    "id": 69774,
+    "name": "Korridor mit Vitrine",
+    "mimeType": "image/jpeg",
+    "order": 5,
+    "height": 980,
+    "width": 1600
+  },
+  {
+    "id": 69762,
+    "name": "Plan",
+    "mimeType": "image/jpeg",
+    "order": 6,
+    "height": 1152,
+    "width": 1600
+  },
+  {
+    "id": 69773,
+    "name": "EG",
+    "mimeType": "image/jpeg",
+    "order": 7,
+    "height": 663,
+    "width": 1600
+  },
+  {
+    "id": 69772,
+    "name": "1 OG",
+    "mimeType": "image/jpeg",
+    "order": 8,
+    "height": 712,
+    "width": 1600
+  },
+  {
+    "id": 69771,
+    "name": "2 OG",
+    "mimeType": "image/jpeg",
+    "order": 9,
+    "height": 760,
+    "width": 1600
+  },
+  {
+    "id": 69767,
+    "name": "Querschnitt W_O",
+    "mimeType": "image/jpeg",
+    "order": 10,
+    "height": 860,
+    "width": 1584
+  },
+  {
+    "id": 69768,
+    "name": "Querschnitt W_O",
+    "mimeType": "image/jpeg",
+    "order": 11,
+    "height": 796,
+    "width": 1014
+  },
+  {
+    "id": 69769,
+    "name": "Langsschnitt N_S",
+    "mimeType": "image/jpeg",
+    "order": 12,
+    "height": 527,
+    "width": 1600
+  },
+  {
+    "id": 69770,
+    "name": "Langsschnitt N_S",
+    "mimeType": "image/jpeg",
+    "order": 13,
+    "height": 456,
+    "width": 1600
+  },
+  {
+    "id": 69776,
+    "name": "Details Hoffassade",
+    "mimeType": "image/jpeg",
+    "order": 14,
+    "height": 1600,
+    "width": 1420
+  },
+  {
+    "id": 69777,
+    "name": "Details Einbaufront in Unterrichtsraumen",
+    "mimeType": "image/jpeg",
+    "order": 15,
+    "height": 1001,
+    "width": 1600
+  }
+]

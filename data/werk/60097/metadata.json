@@ -1,0 +1,74 @@
+[
+  {
+    "id": 66276,
+    "name": "Homogene Hulle, gelochte Aluminiumbleche",
+    "mimeType": "image/jpeg",
+    "order": 0,
+    "height": 1178,
+    "width": 1600
+  },
+  {
+    "id": 66278,
+    "name": "Nottreppenhaus",
+    "mimeType": "image/jpeg",
+    "order": 1,
+    "height": 1284,
+    "width": 864
+  },
+  {
+    "id": 66277,
+    "name": "Eingang innerer Garten, zw Buro- Hallenbau",
+    "mimeType": "image/jpeg",
+    "order": 2,
+    "height": 1330,
+    "width": 958
+  },
+  {
+    "id": 66279,
+    "name": "Treppenanlage im Zwischenbereich",
+    "mimeType": "image/jpeg",
+    "order": 3,
+    "height": 1290,
+    "width": 864
+  },
+  {
+    "id": 66275,
+    "name": "Situation",
+    "mimeType": "image/jpeg",
+    "order": 4,
+    "height": 706,
+    "width": 956
+  },
+  {
+    "id": 66280,
+    "name": "Schnitt",
+    "mimeType": "image/jpeg",
+    "order": 5,
+    "height": 334,
+    "width": 1098
+  },
+  {
+    "id": 66281,
+    "name": "Erdgeschoss",
+    "mimeType": "image/jpeg",
+    "order": 6,
+    "height": 940,
+    "width": 1120
+  },
+  {
+    "id": 66282,
+    "name": "Obergeschoss",
+    "mimeType": "image/jpeg",
+    "order": 7,
+    "height": 746,
+    "width": 1146
+  },
+  {
+    "id": 66283,
+    "name": "Detailschnitt",
+    "mimeType": "image/jpeg",
+    "order": 8,
+    "height": 1600,
+    "width": 1196
+  }
+]

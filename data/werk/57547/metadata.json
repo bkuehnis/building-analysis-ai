@@ -1,0 +1,98 @@
+[
+  {
+    "id": 71150,
+    "name": "Luftbild Suden",
+    "mimeType": "image/jpeg",
+    "order": 0,
+    "height": 1012,
+    "width": 1600
+  },
+  {
+    "id": 71151,
+    "name": "Sudwestseite mit Gleisanschluss",
+    "mimeType": "image/jpeg",
+    "order": 1,
+    "height": 1050,
+    "width": 1600
+  },
+  {
+    "id": 71152,
+    "name": "Innere Erschliessungszone, 1 -4 OG",
+    "mimeType": "image/jpeg",
+    "order": 2,
+    "height": 766,
+    "width": 1166
+  },
+  {
+    "id": 71153,
+    "name": "Sudfront Buros",
+    "mimeType": "image/jpeg",
+    "order": 3,
+    "height": 770,
+    "width": 552
+  },
+  {
+    "id": 71154,
+    "name": "Situation",
+    "mimeType": "image/jpeg",
+    "order": 4,
+    "height": 1148,
+    "width": 1102
+  },
+  {
+    "id": 71155,
+    "name": "Erdgeschoss",
+    "mimeType": "image/jpeg",
+    "order": 5,
+    "height": 1042,
+    "width": 1456
+  },
+  {
+    "id": 71156,
+    "name": "3 UG",
+    "mimeType": "image/jpeg",
+    "order": 6,
+    "height": 746,
+    "width": 1438
+  },
+  {
+    "id": 71157,
+    "name": "Schnitt",
+    "mimeType": "image/jpeg",
+    "order": 7,
+    "height": 532,
+    "width": 1176
+  },
+  {
+    "id": 71158,
+    "name": "5 OG",
+    "mimeType": "image/jpeg",
+    "order": 8,
+    "height": 834,
+    "width": 1138
+  },
+  {
+    "id": 71159,
+    "name": "2 OG",
+    "mimeType": "image/jpeg",
+    "order": 9,
+    "height": 878,
+    "width": 1150
+  },
+  {
+    "id": 71160,
+    "name": "1 OG",
+    "mimeType": "image/jpeg",
+    "order": 10,
+    "height": 939,
+    "width": 1600
+  },
+  {
+    "id": 71161,
+    "name": "Konstr Detail Aussenfassade",
+    "mimeType": "image/jpeg",
+    "order": 11,
+    "height": 1600,
+    "width": 530
+  }
+]

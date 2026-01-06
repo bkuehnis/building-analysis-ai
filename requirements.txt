@@ -1,6 +1,10 @@
 requests
 pandas
+openpyxl
 reportlab
 googlemaps
 opencv-python
 Pillow
+playwright
+beautifulsoup4
+fastmcp
