@@ -1,11 +1,13 @@
-# Address PDF Generator
+# DFF Architecture
 
 This project generates a PDF document for each address provided in an Excel file. Each PDF includes a Google Maps Street View image (if available), a map from the Swiss geo.admin.ch service, and a bird's eye view image.
+
+In addition it collects the data from https://werk-material.crb.ch/ and saves them locally (see ./werk). This part also has a mcp server to expose the data to a mcp client.
 
 ## Project Structure
 
 ```
-address-pdf-generator
+DFF_ARCHITECTURE
 ├── src
 │   ├── main.py                # Entry point of the application
 │   ├── services               # Contains services for fetching images
@@ -16,6 +18,15 @@ address-pdf-generator
 │   │   └── pdf_generator.py    # PDF generation class
 │   └── utils                  # Utility functions and configurations
 │       └── config.py          # Configuration settings and API keys
+├── werk                      # Scripts and data pipelines for Werk-material extraction
+│   ├── .auth_state.json       # Saved Playwright authentication state
+│   ├── compare_truth.py       # Compare extractions to ground truth
+│   ├── download_buildings.py  # Downloads Werk-material datasets
+│   ├── download.md           # Task notes for Werk-material pipeline
+│   ├── image_analysis.py      # Experimenting with OpenAI image inputs
+│   ├── mcp_server.py          # FastMCP server exposing Werk data
+│   ├── openai_compare_werk.py # Runs Task 4/5/6 extractions and comparisons
+│   └── transform_datasheet.py # Converts datasheet.html into datasheet.json
 ├── requirements.txt           # Project dependencies
 ├── .env.example               # Example environment variables
 └── README.md                  # Project documentation
@@ -54,11 +65,7 @@ address-pdf-generator
 
 ## Examples
 
-- To generate PDFs for addresses in `addresses.xlsx`, run:
+- To generate PDFs for addresses change the excel referenced in src/main.py
   ```
-  python src/main.py addresses.xlsx
+  python src/main.py
   ```
-
-## Contributing
-
-Feel free to submit issues or pull requests for improvements or bug fixes.
