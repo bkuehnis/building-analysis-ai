@@ -218,3 +218,5 @@ data/swissbuildings3d_3_0_2019_1052-34_2056_5728.dwg/swissBUILDINGS3D_3-0_solid_
 data/swissbuildings3d_3_0_2019_1052-34_2056_5728.dwg/swissBUILDINGS3D_3-0_solid_1052-34.dxf
 output/**
 werk/.auth_state.json
+data/processed/**
+catboost_info/**
