@@ -13,22 +13,29 @@ class ImageService:
     # 1️⃣ Download Image
     # ---------------------------------------------------------
     @staticmethod
-    def download_image(url, name, outdir: str = "output/images"):
-        os.makedirs(outdir, exist_ok=True)
-        filename = os.path.join(outdir, f"{name}.jpeg")
+    def download_image(url: str, name: str, outdir: str = "output/images") -> str:
 
-        if os.path.exists(filename):
-            return filename
+        os.makedirs(outdir, exist_ok=True)
 
         r = requests.get(url, timeout=30)
         r.raise_for_status()
 
-        ct = r.headers.get("Content-Type", "")
-        if "image" not in ct:
+        content_type = r.headers.get("Content-Type", "")
+
+        if "image" not in content_type:
             raise ValueError(
-                f"URL did not return an image. Content-Type={ct}. "
-                f"First 200 bytes: {r.content[:200]!r}"
+                f"URL did not return an image.\n"
+                f"Content-Type: {content_type}\n"
+                f"Response preview: {r.text[:200]}"
             )
+
+        # Dateiendung bestimmen
+        if "png" in content_type:
+            ext = ".png"
+        else:
+            ext = ".jpeg"
+
+        filename = os.path.join(outdir, f"{name}{ext}")
 
         with open(filename, "wb") as f:
             f.write(r.content)
@@ -67,22 +74,25 @@ class ImageService:
     # 3️⃣ Build Swissimage WMS URL
     # ---------------------------------------------------------
     @staticmethod
-    def build_swissimage_wms_url(
+    def build_wms_url(
         E: float,
         N: float,
-        meters: float = 80,
+        layer: str,
+        meters: float = 50,
         width: int = 1024,
         height: int = 1024,
+        image_format: str = "image/jpeg",
     ) -> str:
+
         bbox = f"{E-meters},{N-meters},{E+meters},{N+meters}"
 
         params = {
             "SERVICE": "WMS",
             "REQUEST": "GetMap",
             "VERSION": "1.3.0",
-            "LAYERS": "ch.swisstopo.swissimage",
+            "LAYERS": layer,
             "STYLES": "",
-            "FORMAT": "image/jpeg",
+            "FORMAT": image_format,
             "CRS": "EPSG:2056",
             "BBOX": bbox,
             "WIDTH": str(width),
@@ -102,11 +112,11 @@ class ImageService:
         w, h = img.size
         cx, cy = w // 2, h // 2
 
-        r = max(8, min(w, h) // 60)
+        r = max(5, min(w, h) // 90)
 
-        draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline="red", width=4)
-        draw.line((cx - 2*r, cy, cx + 2*r, cy), fill="red", width=3)
-        draw.line((cx, cy - 2*r, cx, cy + 2*r), fill="red", width=3)
+        draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline="red", width=2)
+        draw.line((cx - 2*r, cy, cx + 2*r, cy), fill="red", width=1)
+        draw.line((cx, cy - 2*r, cx, cy + 2*r), fill="red", width=1)
 
-        img.save(out_path, "JPEG", quality=95)
+        img.save(out_path, quality=95)
         return out_path

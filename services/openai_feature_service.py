@@ -1,4 +1,5 @@
 import base64
+import mimetypes
 from typing import List
 from openai import OpenAI
 
@@ -6,10 +7,15 @@ from models.building_image_schema import BuildingImageExtraction
 
 
 def image_to_data_url(path: str) -> str:
+    mime_type, _ = mimetypes.guess_type(path)
+
+    if mime_type is None:
+        mime_type = "image/jpeg"  # fallback
+
     with open(path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode("utf-8")
-    return f"data:image/jpeg;base64,{b64}"
 
+    return f"data:{mime_type};base64,{b64}"
 
 class OpenAIFeatureService:
     def __init__(self, api_key: str, model: str = "gpt-4o"):
@@ -21,7 +27,8 @@ class OpenAIFeatureService:
             "type": "text",
             "text": (
                 "Extrahiere Gebäude-Features aus den folgenden Bildern. "
-                "Nutze beide Perspektiven gemeinsam (Fassade + Dach)."
+                "Nutze alle Perspektiven gemeinsam"
+                "Du antwortest ausschliesslich auf Deutsch und im vorgegebenen JSON-Schema, z.B. 'Dachform: Satteldach', 'Dachmaterial: Ziegel', 'Fenster: 4', 'PV-Anlage: Ja, 20m²'.\n"
             )
         }]
 
@@ -35,14 +42,12 @@ class OpenAIFeatureService:
                     "role": "system",
                     "content": (
                         "Du extrahierst visuelle Gebäudemerkmale aus Bildern.\n"
-                        "Du antwortest nur mit deutschen Bergriffen, z.B. 'Dachform: Satteldach', 'Dachmaterial: Ziegel', 'Fenster: 4', 'PV-Anlage: Ja, 20m²'.\n"
-                        "- Wenn nicht eindeutig sichtbar: value_str='unknown' oder value_num=None und confidence <= 0.3.\n"
-                        "- Keine Konstruktionen raten (Decke/Bodenaufbau/Tragwerk), nur wenn sichtbar.\n"
-                        "- Flächen nur schätzen, wenn Massstab oder klare Geometrie erkennbar, sonst value_num=None.\n"
-                        "- Fenster: Anzahl nur schätzen wenn sichtbar; sonst unknown/None.\n"
-                        "- Photovoltaik: JA/NEIN/NA; wenn JA und erkennbar, PV-Fläche schätzen, sonst NA.\n"
+                        "- Wenn nicht eindeutig sichtbar: value_str='UNBEKANNT' oder value_num=None und confidence <= 0.3.\n"
+                        "- Fenster: nur erkennen ob vor oder ab 1990 gebaut.\n"
+                        "- Fensteranzahl nur schätzen wenn sichtbar; sonst UNBEKANNT.\n"
+                        "- Fenster: Anzahl nur schätzen wenn sichtbar; sonst UNBEKANNT.\n"
+                        "- Photovoltaik: JA/NEIN/UNBEKANNT; wenn JA und erkennbar, PV-Fläche schätzen, sonst UNBEKANNT.\n"
                         "- Photovoltaik zählt nicht als Dachbekleidung\n"
-                        "Antworte strikt im vorgegebenen JSON-Schema."
                     ),
                 },
                 {"role": "user", "content": content},

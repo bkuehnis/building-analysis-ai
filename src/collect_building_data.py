@@ -77,7 +77,6 @@ def main():
 
     #  geocode
     lon, lat, feature_id, x, y = result.get("LON"), result.get("LAT"), result.get("EGID"), result.get("X"), result.get("Y")
-    print("Coordinates:", lat, lon)
     print("Feature ID:", feature_id)
 
     print(result)
@@ -97,34 +96,79 @@ def main():
     feature_id = result["feature_id"]
 
     print("Coordinates:", lat, lon)
-    print("Feature ID:", feature_id)
+    
+    i = 0
+    lat += 0.00005  # leicht versetzen, damit Google unterschiedliche Bilder liefert
+    lon += 0.00005
+    for i in range(i, 3):
+        print(f"Downloading Street View image {i+1}/3...")
 
-    tile_path = image_service.download_image(
-        "https://maps.googleapis.com/maps/api/streetview"
-        f"?size=600x400&location={lat},{lon}"
-        f"&key={google_api_key}",
-        name=f"streetview_{result['EGID']}",
-        outdir="output/images",
-    )
+
+        street_path = image_service.download_image(
+            "https://maps.googleapis.com/maps/api/streetview"
+            f"?size=640x640"
+            f"&location={lat},{lon}"
+            f"&radius=20"
+            f"&source=outdoor"
+            f"&fov=90"
+            f"&key={google_api_key}",
+            name=f"streetview_{i+1}_{result['EGID']}",
+            outdir=f"output/images/{result['EGID']}",
+        )
+        lat -= 0.00005  # leicht versetzen, damit Google unterschiedliche Bilder liefert
+        lon -= 0.00005
 
     e95, n95 = image_service.ensure_lv95_xy(x, y)
 
-    # Orthofoto via WMS
-    ortho_url = image_service.build_swissimage_wms_url(e95, n95, meters=80, width=1024, height=1024)
+    print(f"LV95 coordinates for WMS: E={e95}, N={n95}")
+
+
+    # Orthofoto (50m) + Orthofoto (20m) + Katasterplan (50m)
+    ortho_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo.swissimage", meters=50, width=1024, height=1024,image_format="image/jpeg")
+    ortho_zoomed_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo.swissimage", meters=20, width=1024, height=1024,image_format="image/jpeg")
+    plain_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo-vd.amtliche-vermessung", meters=50, width=1024, height=1024, image_format="image/png")
 
     ortho_path = image_service.download_image(
         ortho_url,
         name=f"swissimage_{feature_id}",
-        outdir="output/images",          # ✅ gleiches outdir
+        outdir=f"output/images/{result['EGID']}",          # ✅ gleiches outdir
     )
-    print(f"LV95 coordinates for WMS: E={e95}, N={n95}")
     print("Orthofoto saved:", ortho_path)
 
-    # markieren
-    marked_path = image_service.draw_marker(
-        ortho_path,
-        out_path=f"output/images/marked_{feature_id}.jpeg",  # ✅ .jpeg konsistent
+    ortho_zoomed_path = image_service.download_image(
+        ortho_zoomed_url,
+        name=f"swissimage_zoomed_{feature_id}",
+        outdir=f"output/images/{result['EGID']}",          # ✅ gleiches outdir
     )
+    print("Orthofotos saved:", ortho_zoomed_path)
+
+    plain_path = image_service.download_image(
+        plain_url,
+        name=f"cadastral_{feature_id}",
+        outdir=f"output/images/{result['EGID']}",          # ✅ gleiches outdir
+    )
+    print("Cadastral map saved:", plain_path)
+
+    
+
+    # Gebäude markieren und in ordner "marked" speichern
+    os.makedirs(f"output/images/{result['EGID']}/marked", exist_ok=True)
+
+    marked_ortho_path = image_service.draw_marker(
+        ortho_path,  # ✅ URL mit layer-Parameter
+        out_path=f"output/images/{result['EGID']}/marked/{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
+    )
+
+    marked_zoomed_ortho_path = image_service.draw_marker(
+        ortho_zoomed_path,  # ✅ URL mit layer-Parameter
+        out_path=f"output/images/{result['EGID']}/marked/zoomed_{result['EGID']}.jpeg",  #✅ .jpeg konsistent
+    )
+
+    marked_plain_path = image_service.draw_marker(
+        plain_path,  # ✅ URL mit layer-Parameter
+        out_path=f"output/images/{result['EGID']}/marked/cadastral_{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
+    )
+    
 
     # ---------------------------------------------------------
     # DATAFRAME
@@ -133,22 +177,23 @@ def main():
     feature_service = OpenAIFeatureService(api_key=openai_api_key, model="gpt-4o")
 
     features = feature_service.extract_features(
-        image_paths=[tile_path, marked_path]  # streetview + marked orthophoto
+        image_paths=[street_path, marked_ortho_path, marked_plain_path, marked_zoomed_ortho_path]  # streetview + marked orthophoto + marked cadastral map
     )
 
     result.update(flatten_extraction(features))
-
-    # 2) DataFrame erst JETZT bauen (damit Features drin sind)
+  
+    
+    # 2) DataFrame erstellen
     df = pd.DataFrame([result])
 
     # 3) Adresse zerlegen (Parser)
     address_parts = GeoAdminService.parse_user_address(result.get("ADDRESS", ""))
 
-    df["STRASSE"] = address_parts["street"]
+    df["STRASSE"] = address_parts["street"].title() 
     df["HAUSNR"] = address_parts["nr"]
     df["HAUSNRZUSATZ"] = address_parts["suffix"]
     df["PLZ"] = address_parts["plz"]
-    df["ORT"] = address_parts["city"]
+    df["ORT"] = address_parts["city"].title()
 
     # 4) Spaltenreihenfolge (Basis + Bildfeatures)
     cols = [
@@ -173,12 +218,16 @@ def main():
     # Alle Spalten: Basis + Bildfeatures + confidence
     cols += confidence_cols
 
-    # 5) robust: fehlende Spalten automatisch anlegen
-    for c in cols:
-        if c not in df.columns:
-            df[c] = pd.NA
+    # 5) leerspealten mit pd.NA oder 0 auffüllen (je nach Datentyp)
+    for col in cols:
+        if col not in df.columns:
+            df[col] = pd.NA  # oder 0, je nach Datentyp
 
-    df = df[cols].fillna(pd.NA)
+    #wenn baujahr >1990 dann "fenster" = "AB 1990" und fenster_confidence = 1.0
+
+    df.loc[df["BAUJAHR"].apply(lambda x: isinstance(x, str) and x.isdigit() and int(x) > 1990), "fenster"] = "AB 1990"
+    df.loc[df["BAUJAHR"].apply(lambda x: isinstance(x, str) and x.isdigit() and int(x) > 1990), "fenster_confidence"] = 1.0
+  
 
     # ---------------------------------------------------------
     # SAVE
@@ -188,7 +237,6 @@ def main():
     df.to_excel(output_file, index=False)
 
     print(f"📁 Results saved to {output_file}")
-
 
 
 if __name__ == "__main__":

@@ -159,10 +159,21 @@ class GeoAdminService:
         ort = attrs.get("ggdename") or attrs.get("dplzname")  # "Turbenthal"
         address = ", ".join([p for p in [line1, f"{plz} {ort}".strip()] if p])
 
+        # Wande kreis zahl in text umwandeln
+        kreis_mapping = {
+            1: "Winterthur-Stadt",
+            2: "Oberwinterthur",
+            3: "Seen",
+            4: "Töss",
+            5: "Veltheim",
+            6: "Wülflingen",
+            7: "Mattenbach",
+        }
+
         return {
             "EGID": egid,
             "ADDRESS": address,
-            "STADTKREIS": kreis,
+            "STADTKREIS": kreis_mapping.get(kreis),
             "BAUJAHR": baujahr,
         }
 
