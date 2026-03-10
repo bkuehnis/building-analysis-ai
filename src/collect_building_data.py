@@ -169,7 +169,7 @@ def main():
         out_path=f"output/images/{result['EGID']}/marked/cadastral_{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
     )
     
-
+    """
     # ---------------------------------------------------------
     # DATAFRAME
     # ---------------------------------------------------------
@@ -181,53 +181,49 @@ def main():
     )
 
     result.update(flatten_extraction(features))
-  
+    """
     
     # 2) DataFrame erstellen
     df = pd.DataFrame([result])
 
     # 3) Adresse zerlegen (Parser)
     address_parts = GeoAdminService.parse_user_address(result.get("ADDRESS", ""))
-
-    df["STRASSE"] = address_parts["street"].title() 
-    df["HAUSNR"] = address_parts["nr"]
-    df["HAUSNRZUSATZ"] = address_parts["suffix"]
-    df["PLZ"] = address_parts["plz"]
-    df["ORT"] = address_parts["city"].title()
+    df["STRASSE"] = address_parts.get("street", "").title()  
+    df["HAUSNR"] = address_parts.get("nr", "")
+    df["HAUSNRZUSATZ"] = address_parts.get("suffix", "")
+    df["ORT"] = address_parts.get("city", "").title()
+    df["PLZ"] = address_parts.get("plz", "")
 
     # 4) Spaltenreihenfolge (Basis + Bildfeatures)
     cols = [
         "EGID", "GSW_STATUS", "STRASSE", "HAUSNR", "HAUSNRZUSATZ",
-        "PLZ", "ORT", "STADTKREIS", "BAUJAHR",
-        "HAUPTNUTZUNG", "NUTZUNG",
+        "PLZ", "ORT", "STADTKREIS", 
+        "HAUPTNUTZUNG", "NUTZUNG", "BAUJAHR",
 
         # Bildfeatures (deine Felder)
-        "tragwerk_fassade", "fassade_daemmung", "fassade_bekleidung",
-        "fenster", "fensteranzahl", "daemmungsflaeche",
-        "konstruktion_dach", "dach_bekleidung", "photovoltaik", "pv_flaeche",
-        "konstruktion_decke", "bodenaufbau",
-        "stahl", "stahl_lm", "stahlblech", "stahlblech_flaeche",
-        "eternit", "eternit_flaeche", "steinplatten", "steinplatten_flaeche",
-        "dachziegel", "dachziegel_flaeche", "beton", "beton_flaeche",
-        "holz", "holz_lm", "holz_flaeche", "speziell", "speziell_flaeche", "extra",
+        "TRAGWERK_FASSADE", "FASSADE_DAEMMUNG", "FASSADE_BEKLEIDUNG",
+        "KONSTRUKTION_DECKE", "BODENAUFBAU", "KONSTRUKTION_DACH", "DACH_BEKLEIDUNG", "PHOTOVOLTAIK", "PV_FLAECHE",
+        "FENSTER", "FENSTERANZAHL", "DÄMMUNGSFLÄCHE",
+        "STAHL", "STAHL_LM", "STAHLBLECH", "STAHLBLECH_FLAECHE",
+        "ETERNIT", "ETERNIT_FLAECHE",  "STEINPLATTEN", "STEINPLATTEN_FLAECHE",
+        "DACHZIEGEL", "DACHZIEGEL_FLAECHE", "BETON", "BETON_FLAECHE",
+        "HOLZ", "HOLZ_LM", "HOLZ_FLAECHE", "SPEZIELL", "SPEZIELL_FLAECHE"
     ]
 
+    #update df
+    df = df.reindex(columns=cols)
 
-    confidence_cols = [f + "_confidence" for f in cols]
+    # confidence-Spalten hinzufügen
+    confidence_cols = [col + "_confidence" for col in cols if col not in ["EGID", "STRASSE", "HAUSNR", "HAUSNRZUSATZ", "PLZ", "ORT", "STADTKREIS"]]
 
     # Alle Spalten: Basis + Bildfeatures + confidence
     cols += confidence_cols
 
-    # 5) leerspealten mit pd.NA oder 0 auffüllen (je nach Datentyp)
-    for col in cols:
-        if col not in df.columns:
-            df[col] = pd.NA  # oder 0, je nach Datentyp
-
     #wenn baujahr >1990 dann "fenster" = "AB 1990" und fenster_confidence = 1.0
+    df["FENSTER"] = df.apply(lambda row: "AB 1990" if row["BAUJAHR"] and row["BAUJAHR"] > 1990 else row["FENSTER"], axis=1)
+    df["FENSTER_confidence"] = df.apply(lambda row: 1.0 if row["BAUJAHR"] and row["BAUJAHR"] > 1990 else row.get("FENSTER_confidence", 0.0), axis=1) 
 
-    df.loc[df["BAUJAHR"].apply(lambda x: isinstance(x, str) and x.isdigit() and int(x) > 1990), "fenster"] = "AB 1990"
-    df.loc[df["BAUJAHR"].apply(lambda x: isinstance(x, str) and x.isdigit() and int(x) > 1990), "fenster_confidence"] = 1.0
-  
+    df = df.reindex(columns=cols)
 
     # ---------------------------------------------------------
     # SAVE
@@ -237,6 +233,18 @@ def main():
     df.to_excel(output_file, index=False)
 
     print(f"📁 Results saved to {output_file}")
+
+    # ---------------------------------------------------------
+    # prediction service call with services/prediction_service.py
+    # ---------------------------------------------------------
+    from services.prediction_service import CatBoostPredictionService   
+    model_path = "models/schadstoff/saved_models/catboost_model.cbm"  # Pfad zu deinem CatBoost-Modell
+
+    #call prediction service
+    prediction_service = CatBoostPredictionService(model_path=model_path, feature_columns=cols)
+
+    pred = prediction_service.predict(features=df.iloc[0].to_dict())  # Vorhersage für die gesammelten Daten der Adresse
+    print("\n""Prediction result:", pred)
 
 
 if __name__ == "__main__":
