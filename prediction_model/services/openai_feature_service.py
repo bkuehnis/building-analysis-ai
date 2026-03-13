@@ -3,7 +3,7 @@ import mimetypes
 from typing import List
 from openai import OpenAI
 
-from models.building_image_schema import BuildingImageExtraction
+from prediction_model.models.building_image_schema import BuildingImageExtraction
 
 
 def image_to_data_url(path: str) -> str:
@@ -26,8 +26,9 @@ class OpenAIFeatureService:
         content = [{
             "type": "text",
             "text": (
-                "Extrahiere Gebäude-Features aus den folgenden Bildern. "
-                "Nutze alle Perspektiven gemeinsam"
+                "Extrahiere Gebäude-Features aus den folgenden Bildern.\n"
+                "Nutze alle Perspektiven gemeinsam.\n"
+                "Luftansicht: Beziehe dich nur auf das markierte Gebäude, nutze das hilfe das zoomed Bild.\n"
                 "Du antwortest ausschliesslich auf Deutsch und im vorgegebenen JSON-Schema, z.B. 'Dachform: Satteldach', 'Dachmaterial: Ziegel', 'Fenster: 4', 'PV-Anlage: Ja, 20m²'.\n"
             )
         }]
@@ -48,6 +49,8 @@ class OpenAIFeatureService:
                         "- Fenster: Anzahl nur schätzen wenn sichtbar; sonst UNBEKANNT.\n"
                         "- Photovoltaik: JA/NEIN/UNBEKANNT; wenn JA und erkennbar, PV-Fläche schätzen, sonst UNBEKANNT.\n"
                         "- Photovoltaik zählt nicht als Dachbekleidung\n"
+                        "- wenn du holz erkennst bestimme für HOLZ: JA/NEIN/UNBEKANNT"
+                        "- Fassade Dämmung: nach Dämmungsdicke schätzen (z.B. tiefe der Fensterrahmen) und bestimme lables -> (schätze folgende labels: KEIN, XPS oder geklebte leichte Dämmung, Mineraldämmung oder leichte Dämmelemnte); sonst UNBEKANNT.\n"
                     ),
                 },
                 {"role": "user", "content": content},

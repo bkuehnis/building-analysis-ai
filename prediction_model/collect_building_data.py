@@ -1,39 +1,47 @@
 """
 Script to collect building data for a single address and save results in Excel.
 Usage:
-    python -m src.collect_building_data --address "Guggenbühlstrasse 140a 8404 Winterthur"
+    python -m prediction_model.collect_building_data --address "Guggenbühlstrasse 140a 8404 Winterthur"
 """
-from services.geo_admin_service import GeoAdminService
-from services.building_image_service import ImageService
-from services.openai_feature_service import OpenAIFeatureService
+from prediction_model.services.geo_admin_service import GeoAdminService
+from prediction_model.services.building_image_service import ImageService
+from prediction_model.services.openai_feature_service import OpenAIFeatureService
 import os
 import argparse
 import pandas as pd
 from dotenv import load_dotenv
+import pathlib
 
-def flatten_extraction(features):
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+def normalize_key(k: str) -> str:
+    if k.endswith("_confidence"):
+        return k[:-11].upper() + "_confidence"
+    if k.endswith("_unit"):
+        return k[:-5].upper() + "_unit"
+    return k.upper()
+
+
+def flatten_extraction(features: BuildingImageExtraction) -> dict:
+    raw = features.model_dump()
     flat = {}
 
-    for field_name, field_value in features.model_dump().items():
+    for key, val in raw.items():
+        out_key = normalize_key(key)
 
-        if not isinstance(field_value, dict):
-            continue
+        if isinstance(val, dict):
+            value_str = val.get("value_str")
+            value_num = val.get("value_num")
+            confidence = val.get("confidence")
+            unit = val.get("unit")
 
-        value_str = field_value.get("value_str")
-        value_num = field_value.get("value_num")
+            flat[out_key] = value_num if value_num is not None else value_str
+            flat[f"{out_key}_confidence"] = confidence
 
-        # value_str hat Priorität, sonst value_num
-        if value_str is not None:
-            flat[field_name] = value_str
+            if unit is not None:
+                flat[f"{out_key}_unit"] = unit
         else:
-            flat[field_name] = value_num
-
-        flat[field_name + "_confidence"] = field_value.get("confidence")
-
-        # optional: unit speichern
-        unit = field_value.get("unit")
-        if unit:
-            flat[field_name + "_unit"] = unit
+            flat[out_key] = val
 
     return flat
 
@@ -108,7 +116,7 @@ def main():
             "https://maps.googleapis.com/maps/api/streetview"
             f"?size=640x640"
             f"&location={lat},{lon}"
-            f"&radius=20"
+            f"&radius=23"
             f"&source=outdoor"
             f"&fov=90"
             f"&key={google_api_key}",
@@ -152,27 +160,29 @@ def main():
     
 
     # Gebäude markieren und in ordner "marked" speichern
-    os.makedirs(f"output/images/{result['EGID']}/marked", exist_ok=True)
+    os.makedirs(f"prediction_model/output/images/{result['EGID']}/marked", exist_ok=True)
 
     marked_ortho_path = image_service.draw_marker(
         ortho_path,  # ✅ URL mit layer-Parameter
-        out_path=f"output/images/{result['EGID']}/marked/{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
+        out_path=f"prediction_model/output/images/{result['EGID']}/marked/{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
     )
 
     marked_zoomed_ortho_path = image_service.draw_marker(
         ortho_zoomed_path,  # ✅ URL mit layer-Parameter
-        out_path=f"output/images/{result['EGID']}/marked/zoomed_{result['EGID']}.jpeg",  #✅ .jpeg konsistent
+        out_path=f"prediction_model/output/images/{result['EGID']}/marked/zoomed_{result['EGID']}.jpeg",  #✅ .jpeg konsistent
     )
 
     marked_plain_path = image_service.draw_marker(
         plain_path,  # ✅ URL mit layer-Parameter
-        out_path=f"output/images/{result['EGID']}/marked/cadastral_{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
+        out_path=f"prediction_model/output/images/{result['EGID']}/marked/cadastral_{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
     )
     
-    """
+    
     # ---------------------------------------------------------
     # DATAFRAME
     # ---------------------------------------------------------
+    
+    print("Extracting features with OpenAI...")
     # 1) OpenAI Features holen + in result mergen
     feature_service = OpenAIFeatureService(api_key=openai_api_key, model="gpt-4o")
 
@@ -180,8 +190,9 @@ def main():
         image_paths=[street_path, marked_ortho_path, marked_plain_path, marked_zoomed_ortho_path]  # streetview + marked orthophoto + marked cadastral map
     )
 
-    result.update(flatten_extraction(features))
-    """
+    flat = flatten_extraction(features)
+
+    result.update(flat)
     
     # 2) DataFrame erstellen
     df = pd.DataFrame([result])
@@ -200,10 +211,10 @@ def main():
         "PLZ", "ORT", "STADTKREIS", 
         "HAUPTNUTZUNG", "NUTZUNG", "BAUJAHR",
 
-        # Bildfeatures (deine Felder)
+        # Bildfeatures
         "TRAGWERK_FASSADE", "FASSADE_DAEMMUNG", "FASSADE_BEKLEIDUNG",
         "KONSTRUKTION_DECKE", "BODENAUFBAU", "KONSTRUKTION_DACH", "DACH_BEKLEIDUNG", "PHOTOVOLTAIK", "PV_FLAECHE",
-        "FENSTER", "FENSTERANZAHL", "DÄMMUNGSFLÄCHE",
+        "FENSTER", "FENSTERANZAHL", "DAEMMUNGSFLAECHE",
         "STAHL", "STAHL_LM", "STAHLBLECH", "STAHLBLECH_FLAECHE",
         "ETERNIT", "ETERNIT_FLAECHE",  "STEINPLATTEN", "STEINPLATTEN_FLAECHE",
         "DACHZIEGEL", "DACHZIEGEL_FLAECHE", "BETON", "BETON_FLAECHE",
@@ -214,22 +225,34 @@ def main():
     df = df.reindex(columns=cols)
 
     # confidence-Spalten hinzufügen
-    confidence_cols = [col + "_confidence" for col in cols if col not in ["EGID", "STRASSE", "HAUSNR", "HAUSNRZUSATZ", "PLZ", "ORT", "STADTKREIS"]]
+    confidence_cols = [
+        col + "_confidence"
+        for col in cols
+        if col not in ["EGID", "STRASSE", "HAUSNR", "HAUSNRZUSATZ", "PLZ", "ORT", "STADTKREIS"]
+    ]
 
     # Alle Spalten: Basis + Bildfeatures + confidence
-    cols += confidence_cols
+    all_cols = cols + confidence_cols
 
-    #wenn baujahr >1990 dann "fenster" = "AB 1990" und fenster_confidence = 1.0
-    df["FENSTER"] = df.apply(lambda row: "AB 1990" if row["BAUJAHR"] and row["BAUJAHR"] > 1990 else row["FENSTER"], axis=1)
-    df["FENSTER_confidence"] = df.apply(lambda row: 1.0 if row["BAUJAHR"] and row["BAUJAHR"] > 1990 else row.get("FENSTER_confidence", 0.0), axis=1) 
+    # nur einmal reindexen
+    df = df.reindex(columns=all_cols)
 
-    df = df.reindex(columns=cols)
+    # wenn baujahr > 1990 dann Fenster überschreiben
+    df["FENSTER"] = df.apply(
+        lambda row: "AB 1990" if pd.notna(row["BAUJAHR"]) and row["BAUJAHR"] > 1990 else row["FENSTER"],
+        axis=1
+    )
+
+    df["FENSTER_confidence"] = df.apply(
+        lambda row: 1.0 if pd.notna(row["BAUJAHR"]) and row["BAUJAHR"] > 1990 else row.get("FENSTER_confidence", 0.0),
+        axis=1
+    )
 
     # ---------------------------------------------------------
     # SAVE
     # ---------------------------------------------------------
-    output_file = "data/processed/collected_building_data.xlsx"
-    os.makedirs("data/processed", exist_ok=True)
+    output_file = "prediction_model/data/collected_building_data.xlsx"
+    os.makedirs("prediction_model/data", exist_ok=True)
     df.to_excel(output_file, index=False)
 
     print(f"📁 Results saved to {output_file}")
@@ -237,11 +260,12 @@ def main():
     # ---------------------------------------------------------
     # prediction service call with services/prediction_service.py
     # ---------------------------------------------------------
-    from services.prediction_service import CatBoostPredictionService   
-    model_path = "models/schadstoff/saved_models/catboost_model.cbm"  # Pfad zu deinem CatBoost-Modell
-
+    from prediction_model.services.prediction_service import CatBoostPredictionService 
+    
+    MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH")
+    CB_MODEL_PATH = MODEL_PATH / "catboost_final_model.cbm"  # Beispiel: Pfad zum gespeicherten CatBoost-Modell
     #call prediction service
-    prediction_service = CatBoostPredictionService(model_path=model_path, feature_columns=cols)
+    prediction_service = CatBoostPredictionService(model_path=CB_MODEL_PATH, feature_columns=cols)
 
     pred = prediction_service.predict(features=df.iloc[0].to_dict())  # Vorhersage für die gesammelten Daten der Adresse
     print("\n""Prediction result:", pred)

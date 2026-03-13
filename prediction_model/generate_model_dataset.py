@@ -22,7 +22,7 @@ Install dependencies:
   pip install pandas openpyxl python-dotenv
 
 Run from project root:
-  python scripts/generate_model_dataset.py
+  python prediction_model/generate_model_dataset.py
 """
 
 from __future__ import annotations

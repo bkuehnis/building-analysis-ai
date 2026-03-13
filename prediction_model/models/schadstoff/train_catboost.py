@@ -1,6 +1,6 @@
 """
 to run: 
-python models/schadstoff/train_catboost.py
+python prediction_model/models/schadstoff/train_catboost.py
 
 
 """ 
@@ -20,10 +20,11 @@ from catboost import CatBoostClassifier, Pool
 # =========================
 # Paths
 # =========================
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(PROJECT_ROOT / ".env")
 
 DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
+MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH")
 
 df = pd.read_excel(DATA_PATH)
 
@@ -65,7 +66,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
 # Cross-Validation with CatBoost
 #=========================
 
-skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=42)
 
 f1_scores = []
 
@@ -96,6 +97,11 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full
     fold_f1 = f1_score(y_val_fold, y_pred, average="weighted")
     f1_scores.append(fold_f1)
 
+    model_save_path = MODEL_PATH / "folds" / f"catboost_fold_{fold}.cbm"
+    model_save_path.parent.mkdir(parents=True, exist_ok=True)
+    model.save_model(str(model_save_path))
+
+
     print(f"Fold {fold}: F1 = {fold_f1:.4f}")
 
 print(f"\nMean CV F1: {np.mean(f1_scores):.4f}")
@@ -119,25 +125,64 @@ final_model = CatBoostClassifier(
 
 final_model.fit(train_pool_full, eval_set=test_pool, use_best_model=True)
 
+
+
 # =========================
-# Evaluation
+# Load fold models
 # =========================
+fold_models = []
+for fold in range(1, 9):
+    fold_model_path = MODEL_PATH / "folds" / f"catboost_fold_{fold}.cbm"
+    if fold_model_path.exists():
+        model = CatBoostClassifier()
+        model.load_model(str(fold_model_path))
+        fold_models.append(model)
+    else:
+        print(f"Warning: Fold model {fold_model_path} not found.")
+
+y_test_array = np.array(y_test).flatten()
+
+# use class labels from first fold model
+class_labels = np.array(fold_models[0].classes_)
+print("Class order:", class_labels)
+
+# =========================
+# Ensemble of fold models
+# =========================
+probs_list = [model.predict_proba(X_test) for model in fold_models]
+mean_probs = np.mean(probs_list, axis=0)
+
+final_pred_indices = np.argmax(mean_probs, axis=1)
+final_preds = class_labels[final_pred_indices]
+
+# Evaluation of ensemble
+
+print("\nEnsemble Classification Report:\n")
+print(classification_report(y_test_array, final_preds))
+print("Confusion Matrix Ensemble:\n")
+print(confusion_matrix(y_test_array, final_preds))
+print("Ensemble weighted F1:", f"{f1_score(y_test_array, final_preds, average="weighted"): .4f}")
+
+
+# Evaluation of final model trained on full data
+
+final_preds_full = final_model.predict(X_test)
+final_preds_full = np.array(final_preds_full).flatten()
+
 preds = final_model.predict(X_test)
 preds = preds.flatten()  # wichtig, damit sklearn sauber rechnet
 
-print("\nClassification Report:\n")
-print(classification_report(y_test, preds))
+print("\nFinal Model Classification Report:\n")
+print(classification_report(y_test_array, final_preds_full))
+print("Confusion Matrix Final Model:\n")
+print(confusion_matrix(y_test_array, final_preds_full))
+print("Final model weighted F1:", f"{f1_score(y_test_array, final_preds_full, average="weighted"): .4f}")
 
-print("\nConfusion Matrix:\n")
-print(confusion_matrix(y_test, preds))
-
-test_f1 = f1_score(y_test, preds, average="weighted")
-print(f"\nTest F1 Score: {test_f1:.4f}")
 
 # =========================
-# Feature Importance
+# Feature Importance 
 # =========================
-importances = final_model.get_feature_importance(train_pool_full)
+importances = final_model.get_feature_importance(type="FeatureImportance")
 feature_importance = pd.DataFrame({
     "feature": X.columns,
     "importance": importances
@@ -147,11 +192,17 @@ print("\nTop Features:\n")
 print(feature_importance.head(10))
 
 # =========================
-# Save model
+# Save models
 # =========================
-MODEL_PATH = PROJECT_ROOT / "models/schadstoff/saved_models/catboost_model.cbm"
-MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+MODEL_PATH_CATBOOST = MODEL_PATH / "catboost_final_model.cbm"
+MODEL_PATH_CATBOOST.parent.mkdir(parents=True, exist_ok=True)
 
-final_model.save_model(MODEL_PATH)
+final_model.save_model(MODEL_PATH_CATBOOST)
+
+
+MODEL_PATH_CB_ENSEMBLE = MODEL_PATH / "catboost_ensemble.cbm"
+MODEL_PATH_CB_ENSEMBLE.parent.mkdir(parents=True, exist_ok=True)
+final_model.save_model(MODEL_PATH_CB_ENSEMBLE)
+
 
 print(f"\nModel saved to: {MODEL_PATH}")
