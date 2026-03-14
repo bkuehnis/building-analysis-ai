@@ -44,16 +44,28 @@ REQUIRED_COLUMNS = [
     "PHOTOVOLTAIK",
     "FENSTER"
 ]
+
+
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
+
+# drop rows with missing target
+df = df.dropna(subset=[TARGET]).copy()
 
 X = df.drop(columns=[TARGET])
 y = df[TARGET]
+
+
 # Identify categorical columns
 categorical_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
 
 # Convert categorical columns to string and replace NA
 for col in categorical_cols:
-    X[col] = X[col].fillna("UNKNOWN").astype(str)
+    X[col] = X[col].astype(str)
+
+# data count
+print("Data shape:", X.shape)
+print("Target distribution:")
+print(y.value_counts())
 
 #=========================
 # Train/Test Split
@@ -66,7 +78,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
 # Cross-Validation with CatBoost
 #=========================
 
-skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=42)
+skf = StratifiedKFold(n_splits=4, shuffle=True, random_state=42)
 
 f1_scores = []
 
@@ -124,8 +136,6 @@ final_model = CatBoostClassifier(
 )
 
 final_model.fit(train_pool_full, eval_set=test_pool, use_best_model=True)
-
-
 
 # =========================
 # Load fold models

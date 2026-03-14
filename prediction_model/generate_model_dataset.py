@@ -1,6 +1,4 @@
 """
-scripts/generate_model_dataset.py
-
 Creates a clean Excel dataset for the Schadstoff (hazardous substances risk) model.
 
 Assumptions (based on your last message):
@@ -99,26 +97,25 @@ REQUIRED_COLUMNS: List[str] = [
     "Fläche 12"
 ]
 
-NUMMERIC_COLUMNS = [
-    "BAUJAHR",
-    "Reale Baujahr",
-    "PV Fläche",
-    "Fensteranzahl",
-    "Dämmungsfläche",
-    "Stahl Lm",
-    "Fläche 6",
-    "Fläche 7",
-    "Fläche 8",
-    "Fläche 9",
-    "Fläche 10",
-    "Holz Lm",
-    "Fläche 12"
+# Numerische Spalten sauber konvertieren
+numeric_cols = [
+        "EGID",
+        "BAUJAHR",
+        "PV Fläche",
+        "Fensteranzahl",
+        "Dämmungsfläche",
+        "Stahl lm",
+        "Fläche 6",
+        "Fläche 7",
+        "Fläche 8",
+        "Fläche 9",
+        "Fläche 10",
+        "Holz lm",
+        "Fläche 12",
 ]
 
 # Optional: normalize label values for the target column
 LABEL_NORMALIZE = {
-    "Ja": "JA",
-    "Nein": "NEIN",
     "Hohe Chance": "HOHE_CHANCE",
     "Niedrige Chance": "NIEDRIGE_CHANCE",
     "Niedrig Chance": "NIEDRIGE_CHANCE",
@@ -126,22 +123,33 @@ LABEL_NORMALIZE = {
     "h. W. Asbest, PCB, PAK": "HW_ASBEST_PCB_PAK",
     "h.W. Holzschutzmittel": "HW_HOLZSCHUTZMITTEL",
     "h. W. Holzschutzmittel": "HW_HOLZSCHUTZMITTEL",
+    "Ab 1990": "AB_1990",
+    "Bevor 1990": "VOR_1990",
+    "bestehend": "Bestehend",
+    "im Bau": "Im Bau",
+    "projektiert": "Projektiert"
 }
 
 YESNO_VALUES = {
     "ja": "JA",
     "j": "JA",
+    "js": "JA",
+    "ja (dach)": "JA",
+    "Ja": "JA",
+    "J": "JA",
     "yes": "JA",
     "true": "JA",
     "1": "JA",
     "nein": "NEIN",
     "n": "NEIN",
+    "Nein": "NEIN",
+    "N": "NEIN",
     "no": "NEIN",
     "false": "NEIN",
     "0": "NEIN",
 }
 
-YESNO_LIKE_COLS = {"Eternit", "Holz","Stahl", "Stahlblech", "Beton", "Steinplatten"}  # extend if needed
+YESNO_LIKE_COLS = {"Eternit", "Holz","Stahl", "Stahlblech", "Beton", "Steinplatten", "Dachziegel", "Photovoltaik"}
 
 #rename columns to match collected building data   
 COLUMN_RENAME = {
@@ -174,8 +182,6 @@ COLUMN_RENAME = {
     "Fläche 12": "HOLZ_FLAECHE"
 }
 
-
-
 # =========================
 # HELPERS
 # =========================
@@ -184,27 +190,18 @@ def _strip_obj(x: object) -> object:
 
 
 def normalize_yes_no(x: object) -> object:
-    if x is None or (isinstance(x, float) and pd.isna(x)):
+    if pd.isna(x):
         return pd.NA
 
     s = str(x).strip().lower()
-
-    # exakter match zuerst
-    if s in YESNO_VALUES:
-        return YESNO_VALUES[s]
-
-    # dann Wortsuche (z.B. "ja (glasdach)")
-    if re.search(r"\bja\b", s):
-        return "JA"
-    if re.search(r"\bnein\b", s):
-        return "NEIN"
-
-    return pd.NA
+    # if the value starts with "ja" or "nein but has no ? replace to JA NEIN
+    for prefix in ["ja", "nein"]:
+        if s.startswith(prefix) and not s.endswith("?" or "(?)"):
+            return YESNO_VALUES.get(prefix, s)
+    return YESNO_VALUES.get(s, s)
 
 
 def normalize_label(x: object) -> object:
-    if x is None or (isinstance(x, float) and pd.isna(x)):
-        return pd.NA
     if isinstance(x, str):
         s = x.strip()
         return LABEL_NORMALIZE.get(s, s)
@@ -254,83 +251,83 @@ def main() -> None:
     if missing:
         print(f"⚠️ Missing columns (will be ignored): {missing}")
 
-    out = df[keep_cols].copy()
+    df_model= df[keep_cols].copy()
 
     # Drop fully empty rows
-    out = out.dropna(how="all")
-
-    # Normalize columns
-    if "Schadstoffen" in out.columns:
-        out["Schadstoffen"] = out["Schadstoffen"].map(normalize_label)
-
-    for c in YESNO_LIKE_COLS:
-        if c in out.columns:
-            out[c] = out[c].map(normalize_yes_no)
-
-    # Coerce years
-    if "BAUJAHR" in out.columns:
-        out["BAUJAHR"] = coerce_year(out["BAUJAHR"])
-    if "Reale Baujahr" in out.columns:
-        out["Reale Baujahr"] = coerce_year(out["Reale Baujahr"])
-
-    # Create an "effective year" column (prefer Reale Baujahr if present)
-    if "BAUJAHR" in out.columns and "Reale Baujahr" in out.columns:
-        out["Baujahr_effektiv"] = out["Reale Baujahr"].fillna(out["BAUJAHR"])
-    elif "Reale Baujahr" in out.columns:
-        out["Baujahr_effektiv"] = out["Reale Baujahr"]
-    elif "BAUJAHR" in out.columns:
-        out["Baujahr_effektiv"] = out["BAUJAHR"]
-
-
-    # Überschreibe BAUJAHR mit dem effektiven Jahr
-    out["BAUJAHR"] = out["Baujahr_effektiv"]
-
-    # Entferne alte Spalten
-    drop_cols = []
-    if "Reale Baujahr" in out.columns:
-        drop_cols.append("Reale Baujahr")
-    if "Baujahr_effektiv" in out.columns:
-        drop_cols.append("Baujahr_effektiv")
-
-    out = out.drop(columns=drop_cols, errors="ignore")
-
-    # Numerische Spalten sauber konvertieren
-    numeric_cols = [
-        "EGID",
-        "BAUJAHR",
-        "PV Fläche",
-        "Fensteranzahl",
-        "Dämmungsfläche",
-        "Stahl lm",
-        "Fläche",
-        "Fläche 7",
-        "Fläche 8",
-        "Fläche 9",
-        "Holz lm",
-        "Fläche 11",
-    ]
+    df_model= df_model.dropna(how="all")
 
     for col in numeric_cols:
-        if col in out.columns:
-            out[col] = pd.to_numeric(out[col], errors="coerce").astype("Int64")
+        if col in df_model.columns:
+            df_model[col] = pd.to_numeric(df_model[col], errors="coerce").astype("Int64")
 
-    # Remove rows without target label
-    out = out[~out["Schadstoffen"].isna()].copy()
+    # Normalize yes/no columns
+    for col in YESNO_LIKE_COLS:
+        if col in df_model.columns:
+            df_model[col] = df_model[col].apply(normalize_yes_no)
+            df_model[col] = df_model[col].where(df_model[col].isin(["JA", "NEIN"]))
+
+    # Normalize all lables
+    for col in df_model.columns:
+        df_model[col] = df_model[col].apply(normalize_label)
+
+    
+    # convert KEIN to NA in all columns
+    df_model= df_model.replace("KEIN", pd.NA)
+    df_model= df_model.replace("KEINE", pd.NA)
+    df_model= df_model.replace("nein", pd.NA)
+    df_model= df_model.replace(0, pd.NA)
+    df_model= df_model.replace("unklar", pd.NA)
+
+    if df_model["HAUPTNUTZUNG"].str.contains("Industrie und Gerwerbe", case=False, na=False).any():
+        df_model["HAUPTNUTZUNG"]. replace("Industrie und Gerwerbe", "Industrie und Gewerbe", inplace=True)
+    
+    if df_model["Fassade Dämmung"].str.contains("Mineraldämmung oder leichte Dämmelemnte", case=False, na=False).any():
+        df_model["Fassade Dämmung"].replace("Mineraldämmung oder leichte Dämmelemnte", "Mineraldämmung oder leichte Dämmelemente", inplace=True)
+
+    if df_model["Tragwerk Fassade6"].str.contains("Punktuel Beton mit Backsteinwände", case=False, na=False).any():
+        df_model["Tragwerk Fassade6"].replace("Punktuel Beton mit Backsteinwände", "Punktuell Beton mit Backsteinwänden", inplace=True)
+    if df_model["Tragwerk Fassade6"].str.contains("Zweischalenmauwerk, Backstein", case=False, na=False).any():
+        df_model["Tragwerk Fassade6"].replace("Zweischalenmauwerk, Backstein", "Zweischalenmauerwerk, Backstein", inplace=True)
+
+
+    if df_model["Bodenaufbau"].str.contains("Flachdach, ungedämmt", case=False, na=False).any():
+        df_model["Bodenaufbau"].replace("Flachdach, ungedämmt", "Flachdach ungedämmt", inplace=True)
+    
+    if df_model["Konstruktion Dach"].str.contains("Tonnegewölbe, Holz?", case=False, na=False).any():
+        df_model["Konstruktion Dach"].replace("Tonnegewölbe, Holz?", pd.NA, inplace=True)
+    if df_model["Konstruktion Dach"].str.contains("FlachdachStahlkonstruktion", case=False, na=False).any():
+        df_model["Konstruktion Dach"].replace("FlachdachStahlkonstruktion", "Flachdach Stahlkonstruktion", inplace=True)
+
+    
+
+    # Coerce years
+    if "BAUJAHR" in df_model.columns:
+        df_model["BAUJAHR"] = coerce_year(df_model["BAUJAHR"])
+
+    if "Reale Baujahr" in df_model.columns:
+        df_model["Reale Baujahr"] = coerce_year(df_model["Reale Baujahr"])
+
+    # Prefer real year
+    if "Reale Baujahr" in df_model.columns:
+        df_model["BAUJAHR"] = df_model["Reale Baujahr"].fillna(df_model["BAUJAHR"])
+
+    # Remove helper column
+    df_model.drop(columns=["Reale Baujahr"], errors="ignore", inplace=True)
 
     # Deduplicate on EGID if present
-    if "EGID" in out.columns:
-        out = out.drop_duplicates(subset=["EGID"], keep="first")
+    if "EGID" in df_model.columns:
+        df_model= df_model.drop_duplicates(subset=["EGID"], keep="first")
 
     # Rename columns to match collected building data
-    out = out.rename(columns=COLUMN_RENAME)
-
+    df_model= df_model.rename(columns=COLUMN_RENAME)
+        
     # Write output
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    out.to_excel(OUTPUT_PATH, index=False)
+    df_model.to_excel(OUTPUT_PATH, index=False)
 
-    print(f"✅ Fertig: {len(out):,} Zeilen × {len(out.columns)} Spalten")
+    print(f"✅ Fertig: {len(df_model):,} Zeilen × {len(df_model.columns)} Spalten")
     print(f"📁 Gespeichert unter: {OUTPUT_PATH}")
-    print("Spalten:", out.columns.tolist())
-    
+    print("Spalten:", df_model.columns.tolist())
+     
 if __name__ == "__main__":
     main()
