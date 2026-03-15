@@ -1,14 +1,14 @@
 """
 to run: 
-python prediction_model/models/schadstoff/train_catboost.py
+python -m prediction_model.models.schadstoff.train_catboost
 
+because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
 
 """ 
-
 from __future__ import annotations
 import os
 from pathlib import Path
-
+import joblib
 import pandas as pd
 from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -16,6 +16,7 @@ from sklearn.metrics import classification_report, confusion_matrix, f1_score
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from catboost import CatBoostClassifier, Pool
+from prediction_model.models.doc_prediction_models import log_experiment
 
 # =========================
 # Paths
@@ -71,14 +72,14 @@ print(y.value_counts())
 # Train/Test Split
 #=========================
 X_train_full, X_test, y_train_full, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X, y, test_size=0.2, random_state=5, stratify=y
 )
 
 #=========================
 # Cross-Validation with CatBoost
 #=========================
 
-skf = StratifiedKFold(n_splits=4, shuffle=True, random_state=42)
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
 f1_scores = []
 
@@ -97,7 +98,7 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full
         learning_rate=0.02,
         loss_function="MultiClass",
         eval_metric="TotalF1",
-        random_seed=42,
+        random_seed=5,
         verbose=0
     )
 
@@ -131,7 +132,7 @@ final_model = CatBoostClassifier(
     learning_rate=0.02,
     loss_function="MultiClass",
     eval_metric="TotalF1",
-    random_seed=42,
+    random_seed=5,
     verbose=60
 )
 
@@ -167,12 +168,32 @@ final_preds = class_labels[final_pred_indices]
 
 # Evaluation of ensemble
 
+
 print("\nEnsemble Classification Report:\n")
 print(classification_report(y_test_array, final_preds))
 print("Confusion Matrix Ensemble:\n")
 print(confusion_matrix(y_test_array, final_preds))
 print("Ensemble weighted F1:", f"{f1_score(y_test_array, final_preds, average="weighted"): .4f}")
 
+# save to log
+log_experiment(
+    results={
+        "model": "CatBoost Ensemble",
+        "target": TARGET,
+        "Data points": len(X_train_fold),
+        "features": ", ".join(X.columns),
+        "description": "Start: Zusammenfassung der F1-Scores der einzelnen Folds, dann Ensemble durch Mittelung der Vorhersagewahrscheinlichkeiten und Auswahl der Klasse mit der höchsten durchschnittlichen Wahrscheinlichkeit als endgültige Vorhersage.",
+        "accuracy": np.mean(final_preds == y_test_array),
+        "klassifikations_report": classification_report(y_test_array, final_preds, output_dict=True),
+        "cv_f1_scores": [f"{score:.4f}" for score in f1_scores],
+        "avg_f1_cv": np.mean(f1_scores),
+        "std_f1_cv": np.std(f1_scores),
+        "confusion_matrix": confusion_matrix(y_test_array, final_preds).tolist()  # als Liste speichern, da DataFrame nicht direkt in Excel passt
+
+
+    },
+    filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
+)
 
 # Evaluation of final model trained on full data
 
@@ -188,6 +209,22 @@ print("Confusion Matrix Final Model:\n")
 print(confusion_matrix(y_test_array, final_preds_full))
 print("Final model weighted F1:", f"{f1_score(y_test_array, final_preds_full, average="weighted"): .4f}")
 
+# save to log
+log_experiment(
+    results={
+        "model": "CatBoost Final Model",
+        "target": TARGET,
+        "Data points": len(X_train_full),
+        "features": ", ".join(X.columns),
+        "description": "Finales Modell, trainiert auf dem gesamten Trainingsdatensatz, evaluiert auf dem Testset.",
+        "accuracy": np.mean(final_preds_full == y_test_array),
+        "klassifikations_report": classification_report(y_test_array, final_preds_full, output_dict=True),
+        "avg_f1_cv": np.mean(f1_scores),
+        "std_f1_cv": np.std(f1_scores),
+        "confusion_matrix": confusion_matrix(y_test_array, final_preds_full).tolist()  # als Liste speichern, da DataFrame nicht direkt in Excel passt
+    },
+    filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
+)
 
 # =========================
 # Feature Importance 
@@ -213,6 +250,8 @@ final_model.save_model(MODEL_PATH_CATBOOST)
 MODEL_PATH_CB_ENSEMBLE = MODEL_PATH / "catboost_ensemble.cbm"
 MODEL_PATH_CB_ENSEMBLE.parent.mkdir(parents=True, exist_ok=True)
 final_model.save_model(MODEL_PATH_CB_ENSEMBLE)
+
+
 
 
 print(f"\nModel saved to: {MODEL_PATH}")
