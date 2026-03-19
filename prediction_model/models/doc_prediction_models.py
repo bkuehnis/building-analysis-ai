@@ -12,17 +12,28 @@ def log_experiment(results: dict, filepath):
     row["description"] = results.get("description")
     row["target"] = results.get("target")
     row["features"] = results.get("features")
-    row["Data points"] = results.get("Data points")
-    row["accuracy"] = f"{results.get('accuracy'):.4f}"
+    for i in range(1, 11):
+        row[f"important_feature_{i}"] = results.get("importance", [{}])[i-1].get("feature") if len(results.get("importance", [])) >= i else None
+        row[f"importance_{i}"] = results.get("importance", [{}])[i-1].get("importance") if len(results.get("importance", [])) >= i else None
+    if results.get("data_points_train") is not None:
+        row["data_points_train"] = results.get("data_points_train")
+    if results.get("data_points_val") is not None:
+        row["data_points_val"] = results.get("data_points_val")
+    if results.get("data_points_test") is not None:
+        row["data_points_test"] = results.get("data_points_test")
+    if results.get("accuracy") is not None:
+        row["accuracy"] = f"{results.get('accuracy'):.4f}"
     klass_report = results.get("klassifikations_report")
     if klass_report is not None:
         row["precision"] = f"{klass_report.get('weighted avg', {}).get('precision'):.4f}"
         row["recall"] = f"{klass_report.get('weighted avg', {}).get('recall'):.4f}"
         row["f1"] = f"{klass_report.get('weighted avg', {}).get('f1-score'):.4f}"
-    row["cv_f1_scores"] = f"{results.get('cv_f1_scores')}"
-    row["avg_f1_cv"] = f"{results.get('avg_f1_cv'):.4f}"
-    row["std_f1_cv"] = f"{results.get('std_f1_cv'):.4f}"
-    row["confusion_matrix"] = results.get("confusion_matrix")  
+    if results.get("avg_f1_cv") is not None:
+        row["avg_f1_cv"] = f"{results.get('avg_f1_cv'):.4f}"
+    if results.get("std_f1_cv") is not None:
+        row["std_f1_cv"] = f"{results.get('std_f1_cv'):.4f}"
+    if results.get("confusion_matrix") is not None:
+        row["confusion_matrix"] = results.get("confusion_matrix")
 
     df_new = pd.DataFrame([row])
 

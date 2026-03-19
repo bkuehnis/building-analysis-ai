@@ -19,6 +19,7 @@ from sklearn.ensemble import RandomForestClassifier
 from prediction_model.models.doc_prediction_models import log_experiment
 
 
+
 # =========================
 # Paths
 # =========================
@@ -70,22 +71,133 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
 )
 
 # =========================
-# Cross-validation withoout saving folds
+# K-Fold training for RF ensemble
 # =========================
+N_SPLITS = 5
+SEED = 5
+DESCRIPTION = "NEW: "
 
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-rf_model = RandomForestClassifier(
-    n_estimators=500,
-    max_depth=None,
-    class_weight="balanced",
-    random_state=5,
-    n_jobs=-1
+skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=SEED)
+
+f1_scores = []
+fold_models = []
+fold_infos = []
+
+for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full), start=1):
+    X_train_fold = X_train_full.iloc[train_idx]
+    y_train_fold = y_train_full.iloc[train_idx]
+    X_val_fold = X_train_full.iloc[val_idx]
+    y_val_fold = y_train_full.iloc[val_idx]
+
+    model = RandomForestClassifier(
+        n_estimators=500,
+        max_depth=None,
+        class_weight="balanced",
+        random_state=SEED,
+        n_jobs=-1
+    )
+
+    model.fit(X_train_fold, y_train_fold)
+
+    y_pred_val = model.predict(X_val_fold)
+    fold_f1 = f1_score(y_val_fold, y_pred_val, average="weighted")
+
+    f1_scores.append(fold_f1)
+    fold_models.append(model)
+    fold_infos.append({
+        "fold": fold,
+        "train_size": len(X_train_fold),
+        "val_size": len(X_val_fold),
+        "y_val_true": y_val_fold.copy(),
+        "y_val_pred": y_pred_val.copy()
+    })
+
+    model_save_path = MODEL_PATH / "folds" / f"randomforest_fold_{fold}.pkl"
+    model_save_path.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(model, model_save_path)
+
+    print(f"Fold {fold}: F1 = {fold_f1:.4f}")
+
+avg_f1_cv = np.mean(f1_scores)
+std_f1_cv = np.std(f1_scores)
+
+print(f"\nMean CV F1: {avg_f1_cv:.4f}")
+print(f"Std CV F1: {std_f1_cv:.4f}")
+
+# =========================
+# Log each fold
+# =========================
+for model, info, fold_f1 in zip(fold_models, fold_infos, f1_scores):
+    feature_importance_df = pd.DataFrame({
+        "feature": X_train_full.columns,
+        "importance": model.feature_importances_
+    }).sort_values(by="importance", ascending=False)
+
+    log_experiment(
+        results={
+            "model": f"RandomForest Fold {info['fold']}",
+            "target": TARGET,
+            "data_points_train": info["train_size"],
+            "data_points_val": info["val_size"],
+            "data_points_test": len(X_test),
+            "description": f"Fold {info['fold']} aus {N_SPLITS}-Fold CV.",
+            "features": ", ".join(X_train_full.columns),
+            "importance": [
+                {"feature": row["feature"], "importance": row["importance"]}
+                for _, row in feature_importance_df.iterrows()
+            ],
+            "f1_cv": fold_f1,
+            "confusion_matrix": confusion_matrix(info["y_val_true"], info["y_val_pred"]).tolist()
+        },
+        filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
+    )
+
+# =========================
+# Ensemble prediction on test set
+# =========================
+y_test_array = np.array(y_test).flatten()
+
+probas = [model.predict_proba(X_test) for model in fold_models]
+mean_proba = np.mean(probas, axis=0)
+
+class_labels = fold_models[0].classes_
+ensemble_preds = class_labels[np.argmax(mean_proba, axis=1)]
+
+ensemble_f1_test = f1_score(y_test_array, ensemble_preds, average="weighted")
+ensemble_accuracy = np.mean(ensemble_preds == y_test_array)
+
+print("\nRF Ensemble Classification Report:\n")
+print(classification_report(y_test_array, ensemble_preds))
+print("Confusion Matrix RF Ensemble:\n")
+print(confusion_matrix(y_test_array, ensemble_preds))
+print(f"RF Ensemble F1 on test set: {ensemble_f1_test:.4f}")
+
+feature_importance_df_ensemble = pd.DataFrame({
+    "feature": X_train_full.columns,
+    "importance": np.mean([model.feature_importances_ for model in fold_models], axis=0)
+}).sort_values(by="importance", ascending=False)
+
+log_experiment(
+    results={
+        "model": "RandomForest Ensemble",
+        "target": TARGET,
+        "data_points_train": len(X_train_full),
+        "data_points_test": len(X_test),
+        "description": f"Ensemble aus {N_SPLITS} RandomForest-Folds, evaluiert auf Testset. {DESCRIPTION}",
+        "features": ", ".join(X_train_full.columns),
+        "importance": [
+            {"feature": row["feature"], "importance": row["importance"]}
+            for _, row in feature_importance_df_ensemble.iterrows()
+        ],
+        "accuracy": ensemble_accuracy,
+        "klassifikations_report": classification_report(y_test_array, ensemble_preds, output_dict=True),
+        "avg_f1_cv": avg_f1_cv,
+        "std_f1_cv": std_f1_cv,
+        "f1_test": ensemble_f1_test,
+        "confusion_matrix": confusion_matrix(y_test_array, ensemble_preds).tolist()
+    },
+    filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
 )
-cv_scores = cross_val_score(rf_model, X_train_full, y_train_full, cv=cv, scoring="f1_macro")
-print(f"Cross-validation F1 scores: {cv_scores}")
-print(f"Mean CV F1 score: {np.mean(cv_scores)}")
-
-# Essembly of folds - RandomForest doesn't need this because it already does exactly that --IGNORE--
 
 # =========================
 # Train final model on full training data
@@ -94,38 +206,35 @@ final_model = RandomForestClassifier(
     n_estimators=500,
     max_depth=None,
     class_weight="balanced",
-    random_state=5,
+    random_state=SEED,
     n_jobs=-1
-)   
+)
 
 final_model.fit(X_train_full, y_train_full)
 
+y_pred_test = final_model.predict(X_test)
+final_f1_test = f1_score(y_test, y_pred_test, average="weighted")
+
 log_experiment(
     results={
-        "model": "RandomForest",
+        "model": "RandomForest Full",
         "target": TARGET,
-        "description": "Finales Modell, trainiert auf dem gesamten Trainingsdatensatz, evaluiert auf dem Testset.",
-        "features": list(X_train_full.columns),
-        "Data points": len(X_train_full),
+        "description": f"Finales RandomForest-Modell, trainiert auf dem gesamten Trainingsdatensatz, evaluiert auf dem Testset. {DESCRIPTION}",
+        "features": ", ".join(X_train_full.columns),
+        "data_points_train": len(X_train_full),
+        "data_points_test": len(X_test),
         "accuracy": final_model.score(X_test, y_test),
-        "klassifikations_report": classification_report(y_test, final_model.predict(X_test), output_dict=True),
-        "cv_f1_scores": [f"{score:.4f}" for score in cv_scores],
-        "avg_f1_cv": np.mean(cv_scores),
-        "std_f1_cv": np.std(cv_scores),
-        "confusion_matrix": confusion_matrix(y_test, final_model.predict(X_test)).tolist()
-
+        "importance": [
+            {"feature": row["feature"], "importance": row["importance"]}
+            for _, row in feature_importance_df_ensemble.iterrows()
+        ],
+        "klassifikations_report": classification_report(y_test, y_pred_test, output_dict=True),
+        "confusion_matrix": confusion_matrix(y_test, y_pred_test).tolist()
     },
     filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
 )
 
-# =========================
-# Evaluate on test set
-# =========================
-
-y_pred_test = final_model.predict(X_test)
-
 print(classification_report(y_test, y_pred_test))
-
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred_test))
 
@@ -134,5 +243,4 @@ print(confusion_matrix(y_test, y_pred_test))
 # =========================
 model_save_path = MODEL_PATH / "random_forest_model.pkl"
 model_save_path.parent.mkdir(parents=True, exist_ok=True)
-
-joblib.dump(final_model, model_save_path)   
+joblib.dump(final_model, model_save_path)

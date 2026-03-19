@@ -68,25 +68,29 @@ print("Data shape:", X.shape)
 print("Target distribution:")
 print(y.value_counts())
 
-#=========================
+# =========================
 # Train/Test Split
-#=========================
+# =========================
 X_train_full, X_test, y_train_full, y_test = train_test_split(
     X, y, test_size=0.2, random_state=5, stratify=y
 )
 
-#=========================
-# Cross-Validation with CatBoost
-#=========================
+N_SPLITS = 5
+SEED = 5
+DESCRIPTION = "NEW: "
 
-skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+# =========================
+# K-Fold training
+# =========================
+skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=SEED)
 
 f1_scores = []
+fold_models = []
 
 for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full), start=1):
     X_train_fold = X_train_full.iloc[train_idx]
-    X_val_fold = X_train_full.iloc[val_idx]
     y_train_fold = y_train_full.iloc[train_idx]
+    X_val_fold = X_train_full.iloc[val_idx]
     y_val_fold = y_train_full.iloc[val_idx]
 
     train_pool = Pool(X_train_fold, y_train_fold, cat_features=categorical_cols)
@@ -98,28 +102,115 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full
         learning_rate=0.02,
         loss_function="MultiClass",
         eval_metric="TotalF1",
-        random_seed=5,
+        random_seed=SEED,
         verbose=0
     )
 
     model.fit(train_pool, eval_set=val_pool, use_best_model=True)
 
-    y_pred = model.predict(X_val_fold)
-    y_pred = y_pred.flatten()  # wichtig, damit sklearn sauber rechnet
-
+    y_pred = np.array(model.predict(val_pool)).flatten()
     fold_f1 = f1_score(y_val_fold, y_pred, average="weighted")
+
     f1_scores.append(fold_f1)
+    fold_models.append(model)
 
     model_save_path = MODEL_PATH / "folds" / f"catboost_fold_{fold}.cbm"
     model_save_path.parent.mkdir(parents=True, exist_ok=True)
     model.save_model(str(model_save_path))
 
-
     print(f"Fold {fold}: F1 = {fold_f1:.4f}")
 
-print(f"\nMean CV F1: {np.mean(f1_scores):.4f}")
-print(f"Std CV F1: {np.std(f1_scores):.4f}")
+avg_f1_cv = np.mean(f1_scores)
+std_f1_cv = np.std(f1_scores)
 
+# =========================
+# Ensemble prediction on test set
+# =========================
+y_test_array = np.array(y_test).flatten()
+
+probas = [model.predict_proba(X_test) for model in fold_models]
+mean_proba = np.mean(probas, axis=0)
+
+class_labels = np.array(fold_models[0].classes_)
+ensemble_preds = class_labels[np.argmax(mean_proba, axis=1)]
+
+ensemble_f1_test = f1_score(y_test_array, ensemble_preds, average="weighted")
+
+# =========================
+# Evaluation of ensemble on test set
+# =========================
+
+print(f"\nMean CV F1: {avg_f1_cv:.4f}")
+print(f"Std CV F1: {std_f1_cv:.4f}")
+print("\nEnsemble Classification Report:\n")
+print(classification_report(y_test_array, ensemble_preds))
+print("Confusion Matrix Ensemble:\n")
+print(confusion_matrix(y_test_array, ensemble_preds))
+print("Ensemble F1 on test set:", f"{ensemble_f1_test:.4f}")
+
+# =========================
+# Log each fold's results
+# =========================
+for i, (model, fold_f1) in enumerate(zip(fold_models, f1_scores), start=1):
+    feature_importances = model.get_feature_importance()
+    feature_importance_df_fold = pd.DataFrame({
+        "feature": X.columns,
+        "importance": feature_importances
+    }).sort_values(by="importance", ascending=False)
+
+    y_pred_fold = np.array(model.predict(X_test)).flatten()
+
+    log_experiment(
+        results={
+            "model": f"CatBoost Fold {i}",
+            "target": TARGET,
+            "data_points_train": len(X_train_full) - len(X_val_fold),
+            "data_points_val": len(X_val_fold),
+            "data_points_test": len(X_test),
+            "features": ", ".join(X.columns),
+            "description": f"Fold {i} aus {N_SPLITS}-Fold CV, evaluiert auf Testset.",
+            "importance": [
+                {"feature": row["feature"], "importance": row["importance"]}
+                for _, row in feature_importance_df_fold.iterrows()
+            ],
+            "accuracy": np.mean(y_pred_fold == y_test_array),
+            "klassifikations_report": classification_report(y_test_array, y_pred_fold, output_dict=True),
+            "f1_cv": fold_f1,
+            "f1_test": f1_score(y_test_array, y_pred_fold, average="weighted"),
+            "confusion_matrix": confusion_matrix(y_test_array, y_pred_fold).tolist()
+        },
+        filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
+    )
+
+# =========================
+# Log ensemble results
+# =========================
+feature_importance_df = pd.DataFrame({
+    "feature": X.columns,
+    "importance": np.mean([model.get_feature_importance() for model in fold_models], axis=0)
+}).sort_values(by="importance", ascending=False)
+
+log_experiment(
+    results={
+        "model": "CatBoost Ensemble",
+        "target": TARGET,
+        "data_points_train": len(X_train_full),
+        "data_points_test": len(X_test),
+        "features": ", ".join(X.columns),
+        "description": f"Ensemble aus {N_SPLITS}-Fold CV {DESCRIPTION}", 
+        "importance": [
+            {"feature": row["feature"], "importance": row["importance"]}
+            for _, row in feature_importance_df.iterrows()
+        ],
+        "accuracy": np.mean(ensemble_preds == y_test_array),
+        "klassifikations_report": classification_report(y_test_array, ensemble_preds, output_dict=True),
+        "avg_f1_cv": avg_f1_cv,
+        "std_f1_cv": std_f1_cv,
+        "f1_test": ensemble_f1_test,
+        "confusion_matrix": confusion_matrix(y_test_array, ensemble_preds).tolist()
+    },
+    filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
+)
 #=========================
 # Train final model on full training data
 #=========================
@@ -138,63 +229,6 @@ final_model = CatBoostClassifier(
 
 final_model.fit(train_pool_full, eval_set=test_pool, use_best_model=True)
 
-# =========================
-# Load fold models
-# =========================
-fold_models = []
-for fold in range(1, 9):
-    fold_model_path = MODEL_PATH / "folds" / f"catboost_fold_{fold}.cbm"
-    if fold_model_path.exists():
-        model = CatBoostClassifier()
-        model.load_model(str(fold_model_path))
-        fold_models.append(model)
-    else:
-        print(f"Warning: Fold model {fold_model_path} not found.")
-
-y_test_array = np.array(y_test).flatten()
-
-# use class labels from first fold model
-class_labels = np.array(fold_models[0].classes_)
-print("Class order:", class_labels)
-
-# =========================
-# Ensemble of fold models
-# =========================
-probs_list = [model.predict_proba(X_test) for model in fold_models]
-mean_probs = np.mean(probs_list, axis=0)
-
-final_pred_indices = np.argmax(mean_probs, axis=1)
-final_preds = class_labels[final_pred_indices]
-
-# Evaluation of ensemble
-
-
-print("\nEnsemble Classification Report:\n")
-print(classification_report(y_test_array, final_preds))
-print("Confusion Matrix Ensemble:\n")
-print(confusion_matrix(y_test_array, final_preds))
-print("Ensemble weighted F1:", f"{f1_score(y_test_array, final_preds, average="weighted"): .4f}")
-
-# save to log
-log_experiment(
-    results={
-        "model": "CatBoost Ensemble",
-        "target": TARGET,
-        "Data points": len(X_train_fold),
-        "features": ", ".join(X.columns),
-        "description": "Start: Zusammenfassung der F1-Scores der einzelnen Folds, dann Ensemble durch Mittelung der Vorhersagewahrscheinlichkeiten und Auswahl der Klasse mit der höchsten durchschnittlichen Wahrscheinlichkeit als endgültige Vorhersage.",
-        "accuracy": np.mean(final_preds == y_test_array),
-        "klassifikations_report": classification_report(y_test_array, final_preds, output_dict=True),
-        "cv_f1_scores": [f"{score:.4f}" for score in f1_scores],
-        "avg_f1_cv": np.mean(f1_scores),
-        "std_f1_cv": np.std(f1_scores),
-        "confusion_matrix": confusion_matrix(y_test_array, final_preds).tolist()  # als Liste speichern, da DataFrame nicht direkt in Excel passt
-
-
-    },
-    filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
-)
-
 # Evaluation of final model trained on full data
 
 final_preds_full = final_model.predict(X_test)
@@ -203,42 +237,34 @@ final_preds_full = np.array(final_preds_full).flatten()
 preds = final_model.predict(X_test)
 preds = preds.flatten()  # wichtig, damit sklearn sauber rechnet
 
+
+f1_test_full = f1_score(y_test_array, final_preds_full, average="weighted")
+
 print("\nFinal Model Classification Report:\n")
 print(classification_report(y_test_array, final_preds_full))
 print("Confusion Matrix Final Model:\n")
 print(confusion_matrix(y_test_array, final_preds_full))
-print("Final model weighted F1:", f"{f1_score(y_test_array, final_preds_full, average="weighted"): .4f}")
+print("Final model F1:", f"{f1_test_full: .4f}")
 
 # save to log
 log_experiment(
     results={
         "model": "CatBoost Final Model",
         "target": TARGET,
-        "Data points": len(X_train_full),
+        "data_points_train": len(X_train_full),
+        "data_points_test": len(X_test),
         "features": ", ".join(X.columns),
-        "description": "Finales Modell, trainiert auf dem gesamten Trainingsdatensatz, evaluiert auf dem Testset.",
+        "description": f"Trainiert auf dem gesamten Trainingsdatensatz, evaluiert auf dem Testset. {DESCRIPTION}",
+        "importance": [dict(feature=row['feature'], importance=row['importance']) for _, row in feature_importance_df.iterrows()],
         "accuracy": np.mean(final_preds_full == y_test_array),
         "klassifikations_report": classification_report(y_test_array, final_preds_full, output_dict=True),
-        "avg_f1_cv": np.mean(f1_scores),
-        "std_f1_cv": np.std(f1_scores),
         "confusion_matrix": confusion_matrix(y_test_array, final_preds_full).tolist()  # als Liste speichern, da DataFrame nicht direkt in Excel passt
     },
     filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
 )
 
-# =========================
-# Feature Importance 
-# =========================
-importances = final_model.get_feature_importance(type="FeatureImportance")
-feature_importance = pd.DataFrame({
-    "feature": X.columns,
-    "importance": importances
-}).sort_values(by="importance", ascending=False)
 
-print("\nTop Features:\n")
-print(feature_importance.head(10))
-
-# =========================
+# =====================
 # Save models
 # =========================
 MODEL_PATH_CATBOOST = MODEL_PATH / "catboost_final_model.cbm"
