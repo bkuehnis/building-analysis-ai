@@ -179,7 +179,8 @@ COLUMN_RENAME = {
     "Fläche 10": "BETON_FLAECHE",
     "Holz": "HOLZ",
     "Holz lm": "HOLZ_LM",
-    "Fläche 12": "HOLZ_FLAECHE"
+    "Fläche 12": "HOLZ_FLAECHE",
+    "Schadstoffen": "SCHADSTOFFEN",
 }
 
 # =========================
