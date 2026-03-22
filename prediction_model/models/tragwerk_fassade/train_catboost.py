@@ -1,10 +1,8 @@
 """
-to run: 
-python -m prediction_model.models.schadstoff.train_catboost
+run:
+python -m prediction_model.models.tragwerk_fassade.train_catboost
+"""
 
-because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
-
-""" 
 from __future__ import annotations
 import os
 from pathlib import Path
@@ -25,25 +23,26 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(PROJECT_ROOT / ".env")
 
 DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
-MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "schadstoff" / "saved_models"
+MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "tragwerk_fassade" /"saved_models"
 
 df = pd.read_excel(DATA_PATH)
 
 # =========================
 # Prepare Data
 # =========================
-TARGET = "SCHADSTOFFEN"
+TARGET = "TRAGWERK_FASSADE"
 
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "TRAGWERK_FASSADE",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
     "FASSADE_DAEMMUNG",
     "FASSADE_BEKLEIDUNG",
     "KONSTRUKTION_DACH",
-    "DACH_BEKLEIDUNG",
-    "PHOTOVOLTAIK",
-    "FENSTER"
 ]
 
 
@@ -75,7 +74,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
     X, y, test_size=0.2, random_state=5, stratify=y
 )
 
-N_SPLITS = 4
+N_SPLITS = 5
 SEED = 5
 DESCRIPTION = "NEW: "
 

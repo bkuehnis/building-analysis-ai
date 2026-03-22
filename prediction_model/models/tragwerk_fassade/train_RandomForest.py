@@ -1,6 +1,6 @@
 """
 to run:
-python -m prediction_model.models.schadstoff.train_RandomForest
+python -m prediction_model.models.tragwerk_fassade.train_RandomForest
 because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
 
 """
@@ -27,25 +27,26 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(PROJECT_ROOT / ".env")
 
 DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
-MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "schadstoff" / "saved_models"
+MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "tragwerk_fassade" / "saved_models"
 
 df = pd.read_excel(DATA_PATH)
 
 # =========================
 # Prepare Data
 # =========================
-TARGET = "SCHADSTOFFEN"
+TARGET = "TRAGWERK_FASSADE"
 
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "TRAGWERK_FASSADE",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
     "FASSADE_DAEMMUNG",
     "FASSADE_BEKLEIDUNG",
     "KONSTRUKTION_DACH",
-    "DACH_BEKLEIDUNG",
-    "PHOTOVOLTAIK",
-    "FENSTER"
 ]
 
 
@@ -58,7 +59,6 @@ X = df.drop(columns=[TARGET])
 y = df[TARGET]
 
 X_encoded = pd.get_dummies(X, drop_first=False)
-
 feature_columns = X_encoded.columns.tolist()
 
 #save dummy encoded feature columns for later use in prediction service
@@ -66,6 +66,7 @@ feature_columns_path = MODEL_PATH / "feature_columns.pkl"
 feature_columns_path.parent.mkdir(parents=True, exist_ok=True)
 joblib.dump(feature_columns, feature_columns_path)
 
+# =========================
 # Train/Test Split
 # =========================
 X_train_full, X_test, y_train_full, y_test = train_test_split(
@@ -79,7 +80,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
 # =========================
 # K-Fold training for RF ensemble
 # =========================
-N_SPLITS = 5
+N_SPLITS = 4
 SEED = 5
 DESCRIPTION = "NEW: "
 
