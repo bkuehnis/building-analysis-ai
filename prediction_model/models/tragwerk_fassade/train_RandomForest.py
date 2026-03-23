@@ -44,7 +44,6 @@ REQUIRED_COLUMNS = [
     "STAHLBLECH",
     "BETON",
     "HAUPTNUTZUNG",
-    "FASSADE_DAEMMUNG",
     "FASSADE_BEKLEIDUNG",
     "KONSTRUKTION_DACH",
 ]
@@ -82,7 +81,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
 # =========================
 N_SPLITS = 4
 SEED = 5
-DESCRIPTION = "NEW: "
+DESCRIPTION = "NEW: ohne fassade_daemmung, da importance tief"
 
 skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=SEED)
 
