@@ -4,7 +4,6 @@ python -m prediction_model.models.schadstoff.train_RandomForest
 because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
 
 """
-
 from __future__ import annotations
 import os
 from pathlib import Path
@@ -17,8 +16,6 @@ from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from prediction_model.models.doc_prediction_models import log_experiment
-
-
 
 # =========================
 # Paths
@@ -36,7 +33,6 @@ df = pd.read_excel(DATA_PATH)
 # =========================
 TARGET = "SCHADSTOFFEN"
 
-# drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
     "TRAGWERK_FASSADE",
@@ -48,24 +44,24 @@ REQUIRED_COLUMNS = [
     "FENSTER"
 ]
 
-
+# df with only required columns and target
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
 
-# drop rows with missing target
+# drop rows with missing target and missing values in required columns
 df = df.dropna(subset=[TARGET]).copy()
-
 X = df.drop(columns=[TARGET])
 y = df[TARGET]
 
+# Identify categorical columns
 X_encoded = pd.get_dummies(X, drop_first=False)
 
+# Save the list of feature columns for later use in prediction service
 feature_columns = X_encoded.columns.tolist()
-
-#save dummy encoded feature columns for later use in prediction service
 feature_columns_path = MODEL_PATH / "feature_columns.pkl"
 feature_columns_path.parent.mkdir(parents=True, exist_ok=True)
 joblib.dump(feature_columns, feature_columns_path)
 
+# ========================
 # Train/Test Split
 # =========================
 X_train_full, X_test, y_train_full, y_test = train_test_split(
@@ -76,12 +72,14 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
     stratify=y
 )
 
-# =========================
-# K-Fold training for RF ensemble
-# =========================
+# Variables for logging/training
 N_SPLITS = 5
 SEED = 5
 DESCRIPTION = "NEW: "
+
+# =========================
+# K-Fold training for RF ensemble
+# =========================
 
 skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=SEED)
 
@@ -131,8 +129,10 @@ print(f"\nMean CV F1: {avg_f1_cv:.4f}")
 print(f"Std CV F1: {std_f1_cv:.4f}")
 
 # =========================
-# Log each fold
+# Log results
 # =========================
+
+# Log results for each fold
 for model, info, fold_f1 in zip(fold_models, fold_infos, f1_scores):
     feature_importance_df = pd.DataFrame({
         "feature": X_train_full.columns,
@@ -158,11 +158,10 @@ for model, info, fold_f1 in zip(fold_models, fold_infos, f1_scores):
         filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
     )
 
-# =========================
-# Ensemble prediction on test set
-# =========================
+# Ensemble predictions on test set
 y_test_array = np.array(y_test).flatten()
 
+# Get predicted probabilities from each fold model and average them
 probas = [model.predict_proba(X_test) for model in fold_models]
 mean_proba = np.mean(probas, axis=0)
 
@@ -172,17 +171,20 @@ ensemble_preds = class_labels[np.argmax(mean_proba, axis=1)]
 ensemble_f1_test = f1_score(y_test_array, ensemble_preds, average="weighted")
 ensemble_accuracy = np.mean(ensemble_preds == y_test_array)
 
+# Evaluation of ensemble on test set
 print("\nRF Ensemble Classification Report:\n")
 print(classification_report(y_test_array, ensemble_preds))
 print("Confusion Matrix RF Ensemble:\n")
 print(confusion_matrix(y_test_array, ensemble_preds))
 print(f"RF Ensemble F1 on test set: {ensemble_f1_test:.4f}")
 
+# get feature importance for ensemble model by averaging feature importances of fold models
 feature_importance_df_ensemble = pd.DataFrame({
     "feature": X_train_full.columns,
     "importance": np.mean([model.feature_importances_ for model in fold_models], axis=0)
 }).sort_values(by="importance", ascending=False)
 
+# Log ensemble results
 log_experiment(
     results={
         "model": "RandomForest Ensemble",
@@ -206,8 +208,10 @@ log_experiment(
 )
 
 # =========================
-# Train final model on full training data
+# Final model
 # =========================
+
+# Train final model on full training data
 final_model = RandomForestClassifier(
     n_estimators=500,
     max_depth=None,
@@ -221,6 +225,13 @@ final_model.fit(X_train_full, y_train_full)
 y_pred_test = final_model.predict(X_test)
 final_f1_test = f1_score(y_test, y_pred_test, average="weighted")
 
+# get feature importance for final model
+feature_importance_df_ensemble = pd.DataFrame({
+    "feature": X_train_full.columns,
+    "importance": np.mean([model.feature_importances_ for model in fold_models], axis=0)
+}).sort_values(by="importance", ascending=False)
+
+# Log final model results
 log_experiment(
     results={
         "model": "RandomForest Full",
@@ -240,6 +251,8 @@ log_experiment(
     filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
 )
 
+# Final evaluation of final model on test set
+print("\nFinal RandomForest Model Classification Report:\n")
 print(classification_report(y_test, y_pred_test))
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred_test))
@@ -247,6 +260,8 @@ print(confusion_matrix(y_test, y_pred_test))
 # =========================
 # Save the model
 # =========================
+
+# Save final model
 model_save_path = MODEL_PATH / "random_forest_model.pkl"
 model_save_path.parent.mkdir(parents=True, exist_ok=True)
 joblib.dump(final_model, model_save_path)

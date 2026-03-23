@@ -34,7 +34,6 @@ df = pd.read_excel(DATA_PATH)
 # =========================
 TARGET = "SCHADSTOFFEN"
 
-# drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
     "TRAGWERK_FASSADE",
@@ -46,12 +45,13 @@ REQUIRED_COLUMNS = [
     "FENSTER"
 ]
 
-
+# df with only required columns and target
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
 
 # drop rows with missing target
 df = df.dropna(subset=[TARGET]).copy()
 
+# drop rows with missing values in required columns
 X = df.drop(columns=[TARGET])
 y = df[TARGET]
 
@@ -75,6 +75,7 @@ X_train_full, X_test, y_train_full, y_test = train_test_split(
     X, y, test_size=0.2, random_state=5, stratify=y
 )
 
+# variables for logging/training
 N_SPLITS = 4
 SEED = 5
 DESCRIPTION = "NEW: "
@@ -105,12 +106,12 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X_train_full, y_train_full
         random_seed=SEED,
         verbose=0
     )
-
+    # Train the model with early stopping on the validation set
     model.fit(train_pool, eval_set=val_pool, use_best_model=True)
 
+    # Predict on validation set and calculate F1 score
     y_pred = np.array(model.predict(val_pool)).flatten()
     fold_f1 = f1_score(y_val_fold, y_pred, average="weighted")
-
     f1_scores.append(fold_f1)
     fold_models.append(model)
 
@@ -126,14 +127,17 @@ std_f1_cv = np.std(f1_scores)
 # =========================
 # Ensemble prediction on test set
 # =========================
+
+# Flatten y_test for sklearn metrics
 y_test_array = np.array(y_test).flatten()
 
+# Get predicted probabilities from each fold model and average them
 probas = [model.predict_proba(X_test) for model in fold_models]
 mean_proba = np.mean(probas, axis=0)
 
+# f1 score for ensemble
 class_labels = np.array(fold_models[0].classes_)
 ensemble_preds = class_labels[np.argmax(mean_proba, axis=1)]
-
 ensemble_f1_test = f1_score(y_test_array, ensemble_preds, average="weighted")
 
 # =========================
@@ -149,8 +153,10 @@ print(confusion_matrix(y_test_array, ensemble_preds))
 print("Ensemble F1 on test set:", f"{ensemble_f1_test:.4f}")
 
 # =========================
-# Log each fold's results
+# Log results
 # =========================
+
+# Log each fold's results
 for i, (model, fold_f1) in enumerate(zip(fold_models, f1_scores), start=1):
     feature_importances = model.get_feature_importance()
     feature_importance_df_fold = pd.DataFrame({
@@ -182,9 +188,7 @@ for i, (model, fold_f1) in enumerate(zip(fold_models, f1_scores), start=1):
         filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
     )
 
-# =========================
 # Log ensemble results
-# =========================
 feature_importance_df = pd.DataFrame({
     "feature": X.columns,
     "importance": np.mean([model.get_feature_importance() for model in fold_models], axis=0)
@@ -212,8 +216,10 @@ log_experiment(
     filepath=PROJECT_ROOT / "prediction_model" / "models" / "doc_prediction_models.xlsx"
 )
 #=========================
-# Train final model on full training data
+# Final model
 #=========================
+
+# Train final model on full training data
 train_pool_full = Pool(X_train_full, y_train_full, cat_features=categorical_cols)
 test_pool = Pool(X_test, y_test, cat_features=categorical_cols) 
 
@@ -230,16 +236,15 @@ final_model = CatBoostClassifier(
 final_model.fit(train_pool_full, eval_set=test_pool, use_best_model=True)
 
 # Evaluation of final model trained on full data
-
 final_preds_full = final_model.predict(X_test)
 final_preds_full = np.array(final_preds_full).flatten()
 
+# Get predicted probabilities from final model
 preds = final_model.predict(X_test)
-preds = preds.flatten()  # wichtig, damit sklearn sauber rechnet
-
-
+preds = preds.flatten() 
 f1_test_full = f1_score(y_test_array, final_preds_full, average="weighted")
 
+# evaluation of final model on test set
 print("\nFinal Model Classification Report:\n")
 print(classification_report(y_test_array, final_preds_full))
 print("Confusion Matrix Final Model:\n")
@@ -264,20 +269,18 @@ log_experiment(
 )
 
 
-# =====================
+# =========================
 # Save models
 # =========================
+
+# Save final model
 MODEL_PATH_CATBOOST = MODEL_PATH / "catboost_final_model.cbm"
 MODEL_PATH_CATBOOST.parent.mkdir(parents=True, exist_ok=True)
-
 final_model.save_model(MODEL_PATH_CATBOOST)
 
-
+# Save ensemble model
 MODEL_PATH_CB_ENSEMBLE = MODEL_PATH / "catboost_ensemble.cbm"
 MODEL_PATH_CB_ENSEMBLE.parent.mkdir(parents=True, exist_ok=True)
 final_model.save_model(MODEL_PATH_CB_ENSEMBLE)
-
-
-
 
 print(f"\nModel saved to: {MODEL_PATH}")
