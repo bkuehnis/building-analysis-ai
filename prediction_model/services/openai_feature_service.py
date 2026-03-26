@@ -3,7 +3,7 @@ import mimetypes
 from typing import List
 from openai import OpenAI
 
-from prediction_model.models.building_image_schema import BuildingImageExtraction
+from models.building_image_schema import BuildingImageExtraction
 
 
 def image_to_data_url(path: str) -> str:
@@ -42,16 +42,23 @@ class OpenAIFeatureService:
                 {
                     "role": "system",
                     "content": (
-                        "Du extrahierst visuelle Gebäudemerkmale aus Bildern.\n"
-                        "- Wenn nicht eindeutig sichtbar: value_str='UNBEKANNT' oder value_num=None und confidence <= 0.3.\n"
-                        "- Fenster: nur erkennen ob vor oder ab 1990 gebaut.\n"
-                        "- Fensteranzahl nur schätzen wenn sichtbar; sonst UNBEKANNT.\n"
-                        "- Fenster: Anzahl nur schätzen wenn sichtbar; sonst UNBEKANNT.\n"
-                        "- Photovoltaik: JA/NEIN/UNBEKANNT; wenn JA und erkennbar, PV-Fläche schätzen, sonst UNBEKANNT.\n"
-                        "- Photovoltaik zählt nicht als Dachbekleidung\n"
-                        "- wenn du holz erkennst bestimme für HOLZ: JA/NEIN/UNBEKANNT"
-                        "- Fassade Dämmung: nach Dämmungsdicke schätzen (z.B. tiefe der Fensterrahmen) und bestimme lables -> (schätze folgende labels: KEIN, XPS oder geklebte leichte Dämmung, Mineraldämmung oder leichte Dämmelemnte); sonst UNBEKANNT.\n"
-                    ),
+                    "Du extrahierst visuelle Gebäudemerkmale aus Bildern.\n"
+                    "- Wenn etwas nicht eindeutig sichtbar ist: value_str='UNBEKANNT' oder value_num=None und confidence <= 0.3.\n"
+                    "- Nutze nur Merkmale, die visuell plausibel erkennbar sind.\n"
+                    "- Fenster: nur erkennen, ob vor 1990 oder ab 1990; sonst UNBEKANNT.\n"
+                    "- Fensteranzahl nur schätzen, wenn klar sichtbar; sonst UNBEKANNT.\n"
+                    "- Photovoltaik: JA/NEIN/UNBEKANNT. Wenn JA und erkennbar, PV-Fläche schätzen, sonst UNBEKANNT.\n"
+                    "- Photovoltaik zählt nicht als Dachbekleidung.\n"
+                    "- Fassade_Bekleidung und Dach_Bekleidung sollen die sichtbaren Hauptmaterialien beschreiben.\n"
+                    "- WICHTIG: Materialfelder müssen konsistent mit FASSADE_BEKLEIDUNG und DACH_BEKLEIDUNG sein.\n"
+                    "- Wenn in FASSADE_BEKLEIDUNG Holz vorkommt, setze HOLZ auf JA.\n"
+                    "- Wenn in FASSADE_BEKLEIDUNG Beton vorkommt, setze BETON auf JA.\n"
+                    "- Wenn in DACH_BEKLEIDUNG Dachziegel vorkommen, setze DACHZIEGEL auf JA.\n"
+                    "- Wenn in DACH_BEKLEIDUNG Stahlblech vorkommt, setze STAHLBLECH auf JA.\n"
+                    "- Wenn ein Material klar nicht sichtbar ist, setze es auf NEIN.\n"
+                    "- Wenn unklar, setze es auf UNBEKANNT.\n"
+                    "- Fassade Dämmung: nur vorsichtig anhand sichtbarer Hinweise schätzen (z. B. Fenstertiefe), sonst UNBEKANNT.\n"
+                ),
                 },
                 {"role": "user", "content": content},
             ],

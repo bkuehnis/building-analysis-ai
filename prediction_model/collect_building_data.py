@@ -1,12 +1,19 @@
 """
 Script to collect building data for a single address and save results in Excel.
+
 Usage:
+---> add prediction_model. in front of service before running like this:
+
 python -m prediction_model.collect_building_data --address "Guggenbühlstrasse 140a 8404 Winterthur"
+
+
 """
-from prediction_model.services.geo_admin_service import GeoAdminService
-from prediction_model.services.building_image_service import ImageService
-from prediction_model.services.openai_feature_service import OpenAIFeatureService
-from prediction_model.services.prediction_service import PredictionService 
+from services.geo_admin_service import GeoAdminService
+from services.building_image_service import ImageService
+from services.openai_feature_service import OpenAIFeatureService
+from services.cb_prediction_service import CatBoostFoldEnsemble
+from services.rf_prediction_service import RandomForestFoldEnsemble
+from services.openai_feature_service import BuildingImageExtraction
 
 import os
 import argparse
@@ -14,7 +21,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import pathlib
 
-PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[0]
 
 def normalize_key(k: str) -> str:
     if k.endswith("_confidence"):
@@ -97,7 +104,7 @@ def derive_material_flags(flat: dict) -> dict:
 
     return flat
 
-def main():
+def collect_building_data(address: str) -> pd.DataFrame:
     load_dotenv()
 
     # ---------------------------------------------------------
@@ -111,16 +118,6 @@ def main():
     if not openai_api_key:
         raise ValueError("OPENAI_API_KEY not found in .env file")
 
-    # ---------------------------------------------------------
-    # CLI
-    # ---------------------------------------------------------
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--address", type=str, required=True, help="Single address test")
-    args = parser.parse_args()
-
-    address = args.address
-    print("Testing single address:", address)
-    
 
     # ---------------------------------------------------------
     # GEO ADMIN SERVICE
@@ -133,7 +130,7 @@ def main():
         print(f"❌ {e}")
         return
 
-        print("✅ Address found:", (hit.get("attrs") or {}).get("label", ""))
+    print("✅ Address found:", result.get("label", ""))
 
     #  geocode
     lon, lat, feature_id, x, y = result.get("LON"), result.get("LAT"), result.get("EGID"), result.get("X"), result.get("Y")
@@ -325,75 +322,16 @@ def main():
 
     print(f"📁 Results saved to {output_file}")
 
-    # ---------------------------------------------------------
-    # prediction service call with services/prediction_service.py
-    # ---------------------------------------------------------
-  
-    MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH")
+    return df
 
-    #tragwerk_fassade prediction
-    CB_MODEL_PATH_TRAGWERK = MODEL_PATH / "tragwerk_fassade" / "saved_models" / "catboost_final_model.cbm"
-    prediction_service_tragwerk = PredictionService(model_path=CB_MODEL_PATH_TRAGWERK, required_columns=["BAUJAHR",
-    "HOLZ",
-    "STAHL",
-    "STAHLBLECH",
-    "BETON",
-    "HAUPTNUTZUNG",
-    "FASSADE_DAEMMUNG",
-    "FASSADE_BEKLEIDUNG",
-    "KONSTRUKTION_DACH",])  
-    pred_tragwerk = prediction_service_tragwerk.predict(features=df.iloc[0].to_dict())
-    print("\n""Tragwerk Fassade Prediction result:", pred_tragwerk)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--address", type=str, required=True)
+    args = parser.parse_args()
 
-    prediction_service_rf_tragwerk = PredictionService(model_path=MODEL_PATH / "tragwerk_fassade" / "saved_models" / "random_forest_model.pkl", 
-    required_columns=["BAUJAHR",
-    "HOLZ",
-    "STAHL",
-    "STAHLBLECH",
-    "BETON",
-    "HAUPTNUTZUNG",
-    "FASSADE_DAEMMUNG",
-    "FASSADE_BEKLEIDUNG",
-    "KONSTRUKTION_DACH"],
-    feature_columns_path= MODEL_PATH / "tragwerk_fassade" / "saved_models" / "feature_columns.pkl")
-    pred_rf_tragwerk = prediction_service_rf_tragwerk.predict(features=df.iloc[0].to_dict())
-    print("\n""Tragwerk Fassade Random Forest Prediction result:", pred_rf_tragwerk)
+    df = collect_building_data(args.address)
+    print(df)
 
-    #save prediciton of tragewerk_fassade in df
-    df["TRAGWERK_FASSADE"] = pred_tragwerk.get("prediction", "UNBEKANNT")
-    df["TRAGWERK_FASSADE_confidence"] = pred_tragwerk.get("confidence", 0.0)
-
-    df.to_excel(output_file, index=False)
-    print(f"📁 Predictions saved to {output_file}")
-
-    # schadstoffen
-    CB_MODEL_PATH = MODEL_PATH / "schadstoff" / "saved_models" / "catboost_final_model.cbm"  # Beispiel: Pfad zum gespeicherten CatBoost-Modell
-    #call prediction service
-    prediction_service = PredictionService(model_path=CB_MODEL_PATH, required_columns=["BAUJAHR",
-    "TRAGWERK_FASSADE",
-    "FASSADE_DAEMMUNG",
-    "FASSADE_BEKLEIDUNG",
-    "KONSTRUKTION_DACH",
-    "DACH_BEKLEIDUNG",
-    "PHOTOVOLTAIK",
-    "FENSTER"])  
-    pred = prediction_service.predict(features=df.iloc[0].to_dict())  # Vorhersage für die gesammelten Daten der Adresse
-    print("\n""Prediction result:", pred)
-
-    prediction_service_rf = PredictionService(
-        model_path=MODEL_PATH / "schadstoff" / "saved_models" / "random_forest_model.pkl",
-        required_columns=["BAUJAHR",
-    "TRAGWERK_FASSADE",
-    "FASSADE_DAEMMUNG",
-    "FASSADE_BEKLEIDUNG",
-    "KONSTRUKTION_DACH",
-    "DACH_BEKLEIDUNG",
-    "PHOTOVOLTAIK",
-    "FENSTER"],
-        feature_columns_path= MODEL_PATH / "schadstoff" / "saved_models" / "feature_columns.pkl",
-    )
-    pred_rf = prediction_service_rf.predict(features=df.iloc[0].to_dict())  # Vorhersage für die gesammelten Daten der Adresse
-    print("\n""Random Forest Prediction result:", pred_rf)
 
 if __name__ == "__main__":
     main()
