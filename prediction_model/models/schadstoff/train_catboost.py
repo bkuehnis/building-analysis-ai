@@ -45,7 +45,6 @@ REQUIRED_COLUMNS = [
     "FENSTER"
 ]
 
- #
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
 
 # drop rows with missing target
@@ -73,7 +72,7 @@ print(y.value_counts())
 # =========================
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: NEW: only drop rows with missing target, not rows with missing features."
+DESCRIPTION = "NEW: restructured model"
 
 # =========================
 # K-Fold Cross-Validation for CatBoost
@@ -203,7 +202,7 @@ log_experiment(
     results={
         "model": "CatBoost CV Summary",
         "target": TARGET,
-        "data_points_train": len(X),
+        "data_points_train": len(y),
         "features": ", ".join(X.columns),
         "description": (
             f"Aggregierte Auswertung der Out-of-Fold-Vorhersagen aus "

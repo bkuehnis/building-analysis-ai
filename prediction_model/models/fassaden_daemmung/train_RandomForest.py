@@ -1,6 +1,6 @@
 """
 to run:
-python -m prediction_model.models.tragwerk_fassade.train_RandomForest
+python -m prediction_model.models.fassaden_daemmung.train_RandomForest
 because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
 
 """
@@ -18,6 +18,8 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from prediction_model.models.doc_prediction_models import log_experiment
 
+
+
 # =========================
 # Paths
 # =========================
@@ -25,26 +27,25 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(PROJECT_ROOT / ".env")
 
 DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
-MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "tragwerk_fassade" / "saved_models"
+MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "fassaden_daemmung" / "saved_models"
 
 df = pd.read_excel(DATA_PATH)
 
 # =========================
 # Prepare Data
 # =========================
-TARGET = "TRAGWERK_FASSADE"
+TARGET = "FASSADE_DAEMMUNG"
 
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "HOLZ",
-    "STAHL",
-    "STAHLBLECH",
-    "BETON",
-    "HAUPTNUTZUNG",
+    "TRAGWERK_FASSADE",
     "FASSADE_BEKLEIDUNG",
+    "DACH_BEKLEIDUNG",
     "KONSTRUKTION_DACH",
+    "HAUPTNUTZUNG",
 ]
+
 
 # Select only required columns and target, drop missing values
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
@@ -64,7 +65,7 @@ joblib.dump(feature_columns, feature_columns_path)
 # Training configuration
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: folds reduced to 5, because std with 6 folds was very high"
+DESCRIPTION = "NEW:"
 
 # =========================
 # K-Fold Cross-Validation for RandomForest
@@ -129,9 +130,8 @@ print(f"\nAverage F1 across {N_SPLITS} folds: {avg_f1_cv:.4f} ± {std_f1_cv:.4f}
 # =========================
 
 y_true = y.values
-oof_preds = oof_preds.astype(str)
 
-cv_accuracy = np.mean(oof_preds == y_true.astype(str))
+cv_accuracy = np.mean(oof_preds == y_true)
 cv_f1 = f1_score(y_true, oof_preds, average="macro")
 
 print("\nRF Cross-Validation Classification Report:\n")
