@@ -3,16 +3,139 @@ Combined Prediction Service for integrating CatBoost and RandomForest models.
 
 to run in terminal with input data:
 python -c "import pandas as pd; from prediction_model.services.combined_prediction_service import CombinedFoldEnsemble; model = CombinedFoldEnsemble(model_dir='prediction_model/models/schadstoff/saved_models'); X_new = pd.DataFrame([{'BAUJAHR': 1990, 'TRAGWERK_FASSADE': 'Mauerwerk', 'FASSADE_DAEMMUNG': 'Keine', 'FASSADE_BEKLEIDUNG': 'Keine', 'KONSTRUKTION_DACH': 'Satteldach', 'DACH_BEKLEIDUNG': 'Ziegel', 'PHOTOVOLTAIK': 'Nein', 'FENSTER': 'ab_1990'}]); result = model.predict(X_new); print(result)" 
--> also add perdiction_model. in front of service
+-> also add prediction_model. in front of service
 """
 from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
 
-from services.cb_prediction_service import CatBoostFoldEnsemble
-from services.rf_prediction_service import RandomForestFoldEnsemble
+from prediction_model.services.cb_prediction_service import CatBoostFoldEnsemble
+from prediction_model.services.rf_prediction_service import RandomForestFoldEnsemble
 
+FEATURE_COLUMNS_FASSADEN_BEKLEIDUNG = [
+    "BAUJAHR",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+]
+CATEGORICAL_COLUMNS_FASSADEN_BEKLEIDUNG = [
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+]
+
+FEATURE_COLUMNS_DACH_BEKLEIDUNG = [
+    "BAUJAHR",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+]
+CATEGORICAL_COLUMNS_DACH_BEKLEIDUNG = [
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+]
+
+FEATURE_COLUMNS_KONSTRUKTION_DACH = [
+    "BAUJAHR",
+    "DACH_BEKLEIDUNG",
+    "HOLZ",
+    "STAHL",
+]
+CATEGORICAL_COLUMNS_KONSTRUKTION_DACH = [
+    "DACH_BEKLEIDUNG",
+    "HOLZ",
+    "STAHL",
+]
+
+FEATURE_COLUMNS_TRAGWERK_FASSADE = [
+    "BAUJAHR",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
+    "FASSADE_BEKLEIDUNG",
+    "KONSTRUKTION_DACH",
+]
+CATEGORICAL_COLUMNS_TRAGWERK_FASSADE = [
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
+    "FASSADE_BEKLEIDUNG",
+    "KONSTRUKTION_DACH",
+]
+
+FEATURE_COLUMNS_FASSADEN_DAEMMUNG = [
+    "BAUJAHR",
+    "TRAGWERK_FASSADE",
+    "FASSADE_BEKLEIDUNG",
+    "DACH_BEKLEIDUNG",
+    "KONSTRUKTION_DACH",
+    "HAUPTNUTZUNG",
+]
+CATEGORICAL_COLUMNS_FASSADEN_DAEMMUNG = [
+    "TRAGWERK_FASSADE",
+    "FASSADE_BEKLEIDUNG",
+    "DACH_BEKLEIDUNG",
+    "KONSTRUKTION_DACH",
+    "HAUPTNUTZUNG",
+]
+
+FEATURE_COLUMNS_FENSTER = [
+    "BAUJAHR",
+    "TRAGWERK_FASSADE",
+    "FASSADE_DAEMMUNG",
+]
+CATEGORICAL_COLUMNS_FENSTER = [
+    "TRAGWERK_FASSADE",
+    "FASSADE_DAEMMUNG",
+]
+
+FEATURE_COLUMNS_BODENAUFBAU = [
+    "BAUJAHR",
+    "TRAGWERK_FASSADE",
+    "FASSADE_BEKLEIDUNG",
+    "FASSADE_DAEMMUNG",
+    "HAUPTNUTZUNG",
+    "FENSTER",
+]
+CATEGORICAL_COLUMNS_BODENAUFBAU = [
+    "TRAGWERK_FASSADE",
+    "FASSADE_BEKLEIDUNG",
+    "FASSADE_DAEMMUNG",
+    "HAUPTNUTZUNG",
+    "FENSTER",
+]
+
+FEATURE_COLUMNS_KONSTRUKTION_DECKE = [
+    "BAUJAHR",
+    "TRAGWERK_FASSADE",
+    "DACH_BEKLEIDUNG",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
+    "FENSTER",
+]
+CATEGORICAL_COLUMNS_KONSTRUKTION_DECKE = [
+    "TRAGWERK_FASSADE",
+    "DACH_BEKLEIDUNG",
+    "HOLZ",
+    "STAHL",
+    "STAHLBLECH",
+    "BETON",
+    "HAUPTNUTZUNG",
+    "FENSTER",
+]
 
 FEATURE_COLUMNS_SCHADSTOFFE = [
     "BAUJAHR",
@@ -24,7 +147,6 @@ FEATURE_COLUMNS_SCHADSTOFFE = [
     "PHOTOVOLTAIK",
     "FENSTER"
 ]
-
 CATEGORICAL_COLUMNS_SCHADSTOFFE = [
     "TRAGWERK_FASSADE",
     "FASSADE_DAEMMUNG",
@@ -75,16 +197,64 @@ class CombinedFoldEnsemble:
         print(f"Model Dir: {self.model_dir}")
 
     def _load_categorical_columns_cb(self, model_dir: Path) -> list[str]:
+        if "fassade_bekleidung" in str(model_dir):
+            return CATEGORICAL_COLUMNS_FASSADEN_BEKLEIDUNG
+        if "dach_bekleidung" in str(model_dir):
+            return CATEGORICAL_COLUMNS_DACH_BEKLEIDUNG
+        if "konstruktion_dach" in str(model_dir):
+            return CATEGORICAL_COLUMNS_KONSTRUKTION_DACH
+        if "tragwerk_fassade" in str(model_dir):
+            return CATEGORICAL_COLUMNS_TRAGWERK_FASSADE
+        if "fassade_daemmung" in str(model_dir):
+            return CATEGORICAL_COLUMNS_FASSADEN_DAEMMUNG
+        if "fenster" in str(model_dir):
+            return CATEGORICAL_COLUMNS_FENSTER
+        if "bodenaufbau" in str(model_dir):
+            return CATEGORICAL_COLUMNS_BODENAUFBAU
+        if "konstruktion_decke" in str(model_dir):
+            return CATEGORICAL_COLUMNS_KONSTRUKTION_DECKE
         if "schadstoff" in str(model_dir):
             return CATEGORICAL_COLUMNS_SCHADSTOFFE
         raise ValueError(f"No default categorical columns configured for model_dir={model_dir}")
 
     def _load_feature_columns_cb(self, model_dir: Path) -> list[str]:
+        if "fassade_bekleidung" in str(model_dir):
+            return FEATURE_COLUMNS_FASSADEN_BEKLEIDUNG
+        if "dach_bekleidung" in str(model_dir):
+            return FEATURE_COLUMNS_DACH_BEKLEIDUNG
+        if "konstruktion_dach" in str(model_dir):
+            return FEATURE_COLUMNS_KONSTRUKTION_DACH
+        if "tragwerk_fassade" in str(model_dir):
+            return FEATURE_COLUMNS_TRAGWERK_FASSADE
+        if "fassade_daemmung" in str(model_dir):
+            return FEATURE_COLUMNS_FASSADEN_DAEMMUNG
+        if "fenster" in str(model_dir):
+            return FEATURE_COLUMNS_FENSTER
+        if "bodenaufbau" in str(model_dir):
+            return FEATURE_COLUMNS_BODENAUFBAU
+        if "konstruktion_decke" in str(model_dir):
+            return FEATURE_COLUMNS_KONSTRUKTION_DECKE
         if "schadstoff" in str(model_dir):
             return FEATURE_COLUMNS_SCHADSTOFFE
         raise ValueError(f"No default feature columns configured for model_dir={model_dir}")
 
     def _load_required_columns_rf(self, model_dir: Path) -> list[str]:
+        if "fassade_bekleidung" in str(model_dir):
+            return FEATURE_COLUMNS_FASSADEN_BEKLEIDUNG
+        if "dach_bekleidung" in str(model_dir):
+            return FEATURE_COLUMNS_DACH_BEKLEIDUNG
+        if "konstruktion_dach" in str(model_dir):
+            return FEATURE_COLUMNS_KONSTRUKTION_DACH
+        if "tragwerk_fassade" in str(model_dir):
+            return FEATURE_COLUMNS_TRAGWERK_FASSADE
+        if "fassade_daemmung" in str(model_dir):
+            return FEATURE_COLUMNS_FASSADEN_DAEMMUNG
+        if "fenster" in str(model_dir):
+            return FEATURE_COLUMNS_FENSTER
+        if "bodenaufbau" in str(model_dir):
+            return FEATURE_COLUMNS_BODENAUFBAU
+        if "konstruktion_decke" in str(model_dir):
+            return FEATURE_COLUMNS_KONSTRUKTION_DECKE
         if "schadstoff" in str(model_dir):
             return FEATURE_COLUMNS_SCHADSTOFFE
         raise ValueError(f"No default required columns configured for model_dir={model_dir}")

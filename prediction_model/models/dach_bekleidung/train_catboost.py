@@ -52,7 +52,9 @@ y = df[TARGET]
 
 # rows to be removed based on appearance <=5 in target column
 values_to_remove = [
-    "Holzschindel"
+    "Holzschindel",
+    "Flachdach gedämmt",
+    "Flachdach ungedämmt",
 ]
 
 for value in values_to_remove:
@@ -77,7 +79,7 @@ print(y.value_counts())
 # =========================
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: restructured model"
+DESCRIPTION = "NEW: removed values with flachdach ungedämmt, flachdach gedämmt"
 
 # =========================
 # K-Fold Cross-Validation for CatBoost

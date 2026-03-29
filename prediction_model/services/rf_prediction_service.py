@@ -21,14 +21,14 @@ class RandomForestFoldEnsemble:
         fold_dir = self.model_dir / "folds"
         model_paths = sorted(fold_dir.glob("random_forest_fold_*.joblib"))
         if not model_paths:
-            raise FileNotFoundError(f"Keine RF-Fold-Modelle gefunden in {fold_dir}")
+            raise FileNotFoundError(f"No RF-Fold-Model found in {fold_dir}")
 
         return [joblib.load(path) for path in model_paths]
 
     def _load_feature_columns(self):
         feature_path = self.model_dir / "feature_columns.joblib"
         if not feature_path.exists():
-            raise FileNotFoundError(f"feature_columns.joblib nicht gefunden: {feature_path}")
+            raise FileNotFoundError(f"feature_columns.joblib not found: {feature_path}")
         return joblib.load(feature_path)
 
     def _prepare_input(self, X_new: pd.DataFrame) -> pd.DataFrame:

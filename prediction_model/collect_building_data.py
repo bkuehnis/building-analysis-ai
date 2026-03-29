@@ -104,7 +104,7 @@ def derive_material_flags(flat: dict) -> dict:
 
     return flat
 
-def collect_building_data(address: str) -> pd.DataFrame:
+def collect_building_data(address: str):
     load_dotenv()
 
     # ---------------------------------------------------------
@@ -124,13 +124,10 @@ def collect_building_data(address: str) -> pd.DataFrame:
     # ---------------------------------------------------------
     geo_service = GeoAdminService()
 
-    try:
-        result = geo_service.collect_building_data(address)
-    except ValueError as e:
-        print(f"❌ {e}")
-        return
+    result = geo_service.collect_building_data(address)
 
     print("✅ Address found:", result.get("label", ""))
+    print(address)
 
     #  geocode
     lon, lat, feature_id, x, y = result.get("LON"), result.get("LAT"), result.get("EGID"), result.get("X"), result.get("Y")

@@ -17,7 +17,7 @@ class CatBoostFoldEnsemble:
         fold_dir = self.model_dir / "folds"
         model_paths = sorted(fold_dir.glob("catboost_fold_*.cbm"))
         if not model_paths:
-            raise FileNotFoundError(f"Keine CatBoost-Fold-Modelle gefunden in {fold_dir}")
+            raise FileNotFoundError(f"No CatBoost-Fold_Model found in {fold_dir}")
 
         models = []
         for path in model_paths:

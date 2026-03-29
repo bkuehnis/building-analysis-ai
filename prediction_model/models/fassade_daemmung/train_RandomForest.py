@@ -1,6 +1,6 @@
 """
 to run:
-python -m prediction_model.models.dach_bekleidung.train_RandomForest
+python -m prediction_model.models.fassade_daemmung.train_RandomForest
 because we import log_experiment from doc_prediction_models, we need to run this as a module from the project root
 
 """
@@ -27,42 +27,29 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(PROJECT_ROOT / ".env")
 
 DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
-MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "dach_bekleidung" / "saved_models"
+MODEL_PATH = PROJECT_ROOT / os.getenv("OUTPUT_MODEL_PATH") / "fassade_daemmung" / "saved_models"
 
 df = pd.read_excel(DATA_PATH)
 
 # =========================
 # Prepare Data
 # =========================
-TARGET = "DACH_BEKLEIDUNG"
+TARGET = "FASSADE_DAEMMUNG"
 
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "HOLZ",
-    "STAHL",
-    "STAHLBLECH",
-    "BETON",
+    "TRAGWERK_FASSADE",
+    "FASSADE_BEKLEIDUNG",
+    "DACH_BEKLEIDUNG",
+    "KONSTRUKTION_DACH",
+    "HAUPTNUTZUNG",
 ]
 
 
+# Select only required columns and target, drop missing values
 df = df[REQUIRED_COLUMNS + [TARGET]].copy()
-
-# drop rows with missing target
 df = df.dropna(subset=[TARGET]).copy()
-
-X = df.drop(columns=[TARGET])
-y = df[TARGET]
-
-# rows to be removed based on appearance <=5 in target column
-values_to_remove = [
-    "Holzschindel",
-    "Flachdach gedämmt",
-    "Flachdach ungedämmt",
-]
-
-for value in values_to_remove:
-    df = df[df[TARGET] != value].copy()
 X = df.drop(columns=[TARGET])
 y = df[TARGET]
 
@@ -78,7 +65,7 @@ joblib.dump(feature_columns, feature_columns_path)
 # Training configuration
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: removed values with flachdach ungedämmt, flachdach gedämmt"
+DESCRIPTION = "NEW:"
 
 # =========================
 # K-Fold Cross-Validation for RandomForest
