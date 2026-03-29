@@ -20,19 +20,19 @@ import joblib
 from pathlib import Path
 
 @st.cache_resource
-def load_combined_model():
-    model_dir = 'prediction_model/models/schadstoff/saved_models'
+def load_combined_model(model_dir):
+    model_dir = model_dir
     combined_model = CombinedFoldEnsemble(model_dir=model_dir)
     return combined_model
 
-st.set_page_config(page_title="Bausubstanz Erkennung", page_icon="🏠", layout="wide")
+st.set_page_config(page_title="Gebäudemerkmale Erkennen", page_icon="🏠", layout="wide")
 col1, col2 = st.columns([1, 3])
 col3, col4 = st.columns([1, 3])
 def main():
     with st.container():
         with col1:
-            st.title("Bausubstanz Erkennung")
-            st.write("Hier können Sie die Bausubstanz eines Gebäudes vorhersagen.")
+            st.title("Gebäudemerkmale Erkennen")
+            st.write("Hier können Sie die Merkmale eines Gebäudes vorhersagen.")
             st.write("Bitte geben Sie die Adresse ein:")
 
             address = st.text_input(
@@ -40,30 +40,54 @@ def main():
                 "",
                 help="Geben Sie die vollständige Adresse des Gebäudes ein, z.B. 'Musterstrasse 1, 1234 Musterstadt'."
             )
-
-            if st.button("Vorhersage starten"):
+            
+            if st.button("Einschätzung starten"):
                 if not address:
-                    st.error("Bitte geben Sie eine Adresse ein, um die Vorhersage zu starten.")
+                    st.error("Bitte geben Sie eine Adresse ein, um die Einschätzung zu starten.")
                     return
+                
 
                 try:
-                    with st.spinner("Daten werden extrahiert und Vorhersage wird durchgeführt..."):
+                    with st.spinner("Daten werden extrahiert und Einschätzung wird durchgeführt..."):
                         with col2:
                             df = collect_building_data(address)
+                            
 
                             with st.container(horizontal=True):
-                                model = load_combined_model()
-                                result = model.predict(df)
+                                model_configs = [
+                                    ("prediction_model/models/fassade_bekleidung/saved_models", "Fassade Bekleidung"),
+                                    ("prediction_model/models/dach_bekleidung/saved_models", "Dach Bekleidung"),
+                                    ("prediction_model/models/konstruktion_dach/saved_models", "Konstruktion Dach"),
+                                    ("prediction_model/models/tragwerk_fassade/saved_models", "Tragwerk Fassade"),
+                                    ("prediction_model/models/fassade_daemmung/saved_models", "Fassaden Dämmung"),
+                                    ("prediction_model/models/fenster/saved_models", "Fenster"),
+                                    ("prediction_model/models/bodenaufbau/saved_models", "Bodenaufbau"),
+                                    ("prediction_model/models/konstruktion_decke/saved_models", "Konstruktion Dach"),
+                                    ("prediction_model/models/schadstoff/saved_models", "Schadstoffe")
+                                ]
+                                
+                                results_list = []
+                                st.subheader("Einschätzungsergebnis")
+                                
+                                for model_dir, label in model_configs:
+                                    model = load_combined_model(model_dir=model_dir)
+                                    result = model.predict(df)
+                                    results_list.append({
+                                        "Attribut": result["model_name"],
+                                        "Einschätzung": result["prediction"],
+                                        "Sicherheit": result["confidence"]
+                                    })
+                                    model_col = str(result["model_name"]).upper()
+                                    df[model_col] = result["prediction"]
+                                    
+                                    # Save updated dataframe to Excel file
+                                    output_file = "prediction_model/data/collected_building_data.xlsx"
+                                    df.to_excel(output_file, index=False)
 
-                                new_df = pd.DataFrame({
-                                    "Attribut": [result["model_name"]],
-                                    "Vorhersage": [result["prediction"]],
-                                    "Sicherheit": [result["confidence"]]
-                                })
-                                st.session_state["prediction_result"] = result
+                                results_df = pd.DataFrame(results_list)
+                                st.session_state["prediction_result"] = results_list
                                 st.session_state["input_data"] = df
-                                st.subheader("Vorhersageergebnis")
-                                st.dataframe(new_df)
+                                st.dataframe(results_df)
 
                 except Exception as e:
                     st.error(f"Fehler: {e}")
@@ -88,7 +112,8 @@ def main():
         with col4:
             with st.spinner("Analyse der Einschätzung..."):
                 analysis_service = OpenAIAnalysisService(api_key=None)
-                analysis = analysis_service.analyze(st.session_state["input_data"], [st.session_state["prediction_result"]["prediction"]])
+                predictions = [item["Einschätzung"] for item in st.session_state["prediction_result"]]
+                analysis = analysis_service.analyze(st.session_state["input_data"], predictions)
 
                 st.subheader("Einschätzung")
                 st.write(analysis["summary"])
