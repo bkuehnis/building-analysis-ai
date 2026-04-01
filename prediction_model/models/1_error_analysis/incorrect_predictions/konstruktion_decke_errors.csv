@@ -1,0 +1,19 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,TRAGWERK_FASSADE,DACH_BEKLEIDUNG,HOLZ,STAHL,STAHLBLECH,BETON,HAUPTNUTZUNG,FENSTER
+210203584,Konstruktion Decke,KONSTRUKTION_DECKE,Holzdecke gedämmt,Leichtbau Holz mit Holzdecke,False,False,,2015.0,Massiv Holz,Flachdach gedämmt,JA,NEIN,NEIN,NEIN,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,AB_1990
+210197100,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,2014.0,,Flachdach gedämmt,JA,NEIN,NEIN,NEIN,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,AB_1990
+210195574,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Stahl mit Holzdecke,Beton konventionell,False,False,,2012.0,Leichtbau,Flachdach gedämmt,,NEIN,NEIN,NEIN,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,AB_1990
+9006770,Konstruktion Decke,KONSTRUKTION_DECKE,"Leichtbau metall, gedämmt",Beton konventionell,False,False,,1995.0,Leichtbau,Flachdach gedämmt,,JA,JA,NEIN,Industrie und Gewerbe,AB_1990
+2326385,Konstruktion Decke,KONSTRUKTION_DECKE,"Leichtbau metall, gedämmt",Beton konventionell,False,False,,1991.0,Leichtbau,Flachdach gedämmt,NEIN,JA,JA,NEIN,Industrie und Gewerbe,AB_1990
+2326386,Konstruktion Decke,KONSTRUKTION_DECKE,"Leichtbau metall, gedämmt",Beton konventionell,False,False,,1991.0,Leichtbau,Flachdach gedämmt,NEIN,JA,JA,NEIN,Industrie und Gewerbe,AB_1990
+2321901,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Stahl mit Holzdecke,Beton konventionell,False,False,,1990.0,Punktuell Stahl,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+201031183,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1989.0,Massiv Backstein,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+201031881,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Stahl mit Holoripdecken,Leichtbau Holz mit Holzdecke,False,False,,1985.0,Punktuell Holz,Stahlblech,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+2325778,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1984.0,Massiv Backstein,Flachdach gedämmt,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+201033067,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1980.0,Leichtbau,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+192096307,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1979.0,Leichtbau,Flachdach gedämmt,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+1159509,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1976.0,Massivbau,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+2321934,Konstruktion Decke,KONSTRUKTION_DECKE,Leichtbau Holz mit Holzdecke,Beton konventionell,False,False,,1953.0,Massiv Backstein,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,VOR_1990
+2323661,Konstruktion Decke,KONSTRUKTION_DECKE,Backsteinplattendecke,Beton konventionell,False,False,,2006.0,Massiv Backstein,Ziegel,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,AB_1990
+1151120,Konstruktion Decke,KONSTRUKTION_DECKE,Backsteinplattendecke,Beton konventionell,False,False,,1949.0,Massiv Backstein,Ziegel,,,,,Wohngebäude,VOR_1990
+1152294,Konstruktion Decke,KONSTRUKTION_DECKE,Backsteinplattendecke,Beton konventionell,False,False,,2010.0,Massiv Backstein,Ziegel,,,,,Wohngebäude,AB_1990
+1152276,Konstruktion Decke,KONSTRUKTION_DECKE,Backsteinplattendecke,Beton konventionell,False,False,,2010.0,Massiv Backstein,Ziegel,,,,,Wohngebäude,AB_1990

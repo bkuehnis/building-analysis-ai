@@ -1,0 +1,3 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,TRAGWERK_FASSADE,FASSADE_DAEMMUNG,FASSADE_BEKLEIDUNG,KONSTRUKTION_DACH,DACH_BEKLEIDUNG,PHOTOVOLTAIK,FENSTER
+3000313,Schadstoffe,SCHADSTOFFEN,NEIN,HOHE_CHANCE,False,False,,1960.0,Massivbau,XPS oder geklebte leichte Dämmung,Putz,Schrägdach ungedämmt,Ziegel,NEIN,AB_1990
+3000344,Schadstoffe,SCHADSTOFFEN,NIEDRIGE_CHANCE,NEIN,False,False,,1991.0,Leichtbau,Mineraldämmung oder leichte Dämmelemente,Leichtbau Stahlblech,Flachdach gedämmt,Flachdach gedämmt,NEIN,AB_1990

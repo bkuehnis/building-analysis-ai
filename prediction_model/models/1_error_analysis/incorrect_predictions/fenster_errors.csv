@@ -1,0 +1,9 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,TRAGWERK_FASSADE,FASSADE_DAEMMUNG
+3000313,Fenster,FENSTER,AB_1990,VOR_1990,False,False,,1960.0,Massivbau,XPS oder geklebte leichte Dämmung
+1153370,Fenster,FENSTER,AB_1990,VOR_1990,False,False,,1983.0,Massivbau,XPS oder geklebte leichte Dämmung
+9083770,Fenster,FENSTER,AB_1990,VOR_1990,False,False,,1971.0,Massivbau,XPS oder geklebte leichte Dämmung
+201032257,Fenster,FENSTER,AB_1990,VOR_1990,False,False,,1965.0,Massivbau,
+2323834,Fenster,FENSTER,AB_1990,VOR_1990,False,False,,1961.0,Punktuell Stahl,
+201034773,Fenster,FENSTER,VOR_1990,AB_1990,False,False,,2008.0,Massiv Backstein,
+210226857,Fenster,FENSTER,VOR_1990,AB_1990,False,False,,2024.0,Massiv Backstein,Mineraldämmung oder leichte Dämmelemente
+1153181,Fenster,FENSTER,VOR_1990,AB_1990,False,False,,2016.0,Massiv Backstein,

@@ -1,0 +1,516 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,HOLZ,STAHL,STAHLBLECH,BETON
+210215068,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,2020.0,,,,
+210261474,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2020.0,,,,
+210196941,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,2020.0,,,,
+210218024,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,2020.0,,,,
+210218023,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,2020.0,,,,
+210261476,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,2020.0,,,,
+210263288,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2019.0,,,,
+210245365,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Stahlblech,False,False,,2019.0,,,,
+210220662,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2019.0,,,,
+210212335,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2019.0,,,,
+210219967,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210214866,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210214864,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210214865,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210210836,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210216462,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210216461,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210235209,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210235210,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2018.0,,,,
+210222524,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,2018.0,,,,
+210215443,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2017.0,,,,
+210215393,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2016.0,,,,
+210215391,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2016.0,,,,
+210203584,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2015.0,JA,NEIN,NEIN,NEIN
+210216541,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2015.0,NEIN,NEIN,NEIN,JA
+210208213,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2015.0,NEIN,NEIN,NEIN,JA
+210207901,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2015.0,JA,NEIN,NEIN,JA
+210205127,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2015.0,JA,NEIN,NEIN,NEIN
+210193470,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2014.0,NEIN,NEIN,NEIN,NEIN
+210200425,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Stahlblech,False,False,,2014.0,NEIN,NEIN,NEIN,NEIN
+210191674,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,NEIN,NEIN,JA,JA
+210196226,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,JA,NEIN,NEIN,NEIN
+210189240,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,JA,NEIN,JA,JA
+210197100,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,JA,NEIN,NEIN,NEIN
+201035871,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,JA,NEIN,NEIN,NEIN
+210196411,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2014.0,NEIN,NEIN,NEIN,JA
+210202656,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2014.0,NEIN,NEIN,NEIN,JA
+201041580,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,NEIN,JA,JA,JA
+210200097,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2014.0,JA,NEIN,NEIN,JA
+210196650,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2013.0,NEIN,NEIN,NEIN,JA
+210199647,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2013.0,NEIN,JA,NEIN,NEIN
+201041570,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2013.0,NEIN,NEIN,NEIN,NEIN
+210195776,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,2013.0,NEIN,NEIN,NEIN,NEIN
+210198428,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2013.0,JA,NEIN,NEIN,JA
+210183670,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2013.0,,NEIN,NEIN,JA
+210195574,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,NEIN
+210200051,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,JA
+210187047,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,JA
+210184337,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,NEIN
+210195884,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,NEIN
+210188768,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,JA,NEIN,NEIN,NEIN
+210196496,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2012.0,,NEIN,NEIN,NEIN
+201028650,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2011.0,JA,NEIN,NEIN,JA
+210183499,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2011.0,,NEIN,NEIN,NEIN
+210181864,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2011.0,,NEIN,NEIN,JA
+210183228,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2010.0,,NEIN,NEIN,JA
+201041576,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2010.0,,NEIN,NEIN,JA
+201034299,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2010.0,,NEIN,NEIN,JA
+201041606,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2010.0,,NEIN,NEIN,JA
+201035226,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2009.0,JA,NEIN,NEIN,JA
+201031973,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,JA
+201036423,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,NEIN
+201032259,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,NEIN
+210182823,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,JA
+201033611,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,JA,NEIN,NEIN,JA
+201022387,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,JA
+201022417,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2008.0,,NEIN,NEIN,JA
+201031968,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2006.0,JA,NEIN,NEIN,NEIN
+201022465,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2005.0,,NEIN,NEIN,NEIN
+201034738,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2004.0,,NEIN,NEIN,NEIN
+201036406,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2004.0,,NEIN,NEIN,NEIN
+201034959,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2004.0,JA,NEIN,NEIN,NEIN
+210144918,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2002.0,,NEIN,NEIN,NEIN
+201022370,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2002.0,,NEIN,NEIN,NEIN
+210148337,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2002.0,,NEIN,NEIN,NEIN
+201028639,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2001.0,JA,NEIN,NEIN,NEIN
+2324413,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2001.0,,NEIN,NEIN,NEIN
+9083693,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2000.0,,NEIN,NEIN,JA
+9083742,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2000.0,,NEIN,NEIN,JA
+201032884,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,NEIN,NEIN,NEIN
+201035702,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,JA,JA,NEIN
+3001556,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,NEIN,NEIN,NEIN
+3168922,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,NEIN,NEIN,NEIN
+3168923,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,NEIN,NEIN,NEIN
+3168981,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1999.0,,NEIN,NEIN,NEIN
+201032981,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1998.0,,NEIN,NEIN,NEIN
+3000371,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1997.0,,JA,NEIN,NEIN
+3001505,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1997.0,,NEIN,NEIN,NEIN
+3001504,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1997.0,,NEIN,NEIN,NEIN
+3000314,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1996.0,,NEIN,NEIN,NEIN
+210147411,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1996.0,,NEIN,NEIN,NEIN
+201033156,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1996.0,,NEIN,NEIN,NEIN
+3168825,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1996.0,,NEIN,NEIN,NEIN
+201033062,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1995.0,,NEIN,NEIN,NEIN
+9006770,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1995.0,,JA,JA,NEIN
+1151849,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1995.0,,NEIN,NEIN,NEIN
+2321898,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+210146005,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+210145963,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,JA,JA,NEIN
+3000578,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+2325048,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+9003264,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3000580,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+9003263,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3000579,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,JA
+3000577,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+1160933,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3001350,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3168980,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3001348,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+3001349,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+201034566,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,JA
+3001564,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,
+3168979,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,
+3001563,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,
+3168977,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,
+3168978,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,
+9083998,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1994.0,,NEIN,NEIN,NEIN
+201033613,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1993.0,,JA,JA,NEIN
+2326994,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1993.0,,NEIN,NEIN,NEIN
+2326995,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1993.0,,NEIN,NEIN,NEIN
+2326354,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1993.0,,NEIN,NEIN,JA
+2326385,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1991.0,NEIN,JA,JA,NEIN
+2326386,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1991.0,NEIN,JA,JA,NEIN
+3000344,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1991.0,NEIN,NEIN,JA,JA
+2325777,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1991.0,,,,
+2326361,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1990.0,,,,
+2326360,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1990.0,,,,
+201031564,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1990.0,,,,
+201033419,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1990.0,,,,
+201032843,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1990.0,,,,
+3000250,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1989.0,,,,
+1162594,Dach Bekleidung,DACH_BEKLEIDUNG,Holzschindel,Ziegel,False,False,,1989.0,,,,
+201035176,Dach Bekleidung,DACH_BEKLEIDUNG,Holzschindel,Ziegel,False,False,,1989.0,,,,
+1155946,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1989.0,,,,
+201032874,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1989.0,,,,
+2321902,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1989.0,,,,
+9083764,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,1988.0,,,,
+2325887,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1987.0,,JA,JA,NEIN
+2326642,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1987.0,,JA,JA,NEIN
+201036104,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Stahlblech,False,False,,1987.0,,,,
+1152484,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1986.0,,,,
+201035841,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1985.0,,,,
+201031881,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1985.0,,,,
+2326373,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1985.0,,JA,JA,NEIN
+201031885,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1985.0,,JA,JA,NEIN
+2325778,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1984.0,,,,
+2326416,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1984.0,,,,
+1161145,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2021.0,,,,
+1161152,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2021.0,,,,
+1161144,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2021.0,,,,
+2326662,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1983.0,,NEIN,NEIN,NEIN
+2323545,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1983.0,,,,
+2326377,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1983.0,,JA,JA,NEIN
+1153370,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1983.0,,NEIN,NEIN,JA
+201034458,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1983.0,,,,
+1152478,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+201036004,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1982.0,,,,
+2327044,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+9006751,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+1155199,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+1155201,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+1154815,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+1152483,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+1152475,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1982.0,,,,
+201032464,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1981.0,,,,
+2326634,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1981.0,,JA,NEIN,NEIN
+2327046,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1981.0,,,,
+1150373,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1981.0,,,,
+201033011,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+201034145,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+2325796,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+210207165,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+1157150,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+2321650,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1980.0,,,,
+1160960,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,,,
+1160959,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1980.0,,NEIN,NEIN,NEIN
+192096307,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1979.0,,,,
+2325523,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1979.0,,,,
+1150412,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1979.0,,,,
+1155876,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1155873,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1155872,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1155875,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1155874,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1155877,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+2327012,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1978.0,,,,
+201022356,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1150439,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1978.0,,,,
+2325791,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1161080,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+1161081,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1978.0,,,,
+201036441,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+1155932,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+1161927,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1977.0,,,,
+1161082,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+1161083,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+1161085,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+1161084,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1977.0,,,,
+201031816,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,1976.0,,,,
+2325508,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,1976.0,,,,
+201034177,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Stahlblech,False,False,,1976.0,,,,
+1159509,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Stahlblech,False,False,,1976.0,,,,
+201036118,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+1155910,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+201035624,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+201033926,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+1157072,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+201040925,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1975.0,,,,
+201035650,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+1155202,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+1161887,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+201031103,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+1162367,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+201031848,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+2323643,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1974.0,,,,
+201033638,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1973.0,,,,
+201032088,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1972.0,,,,
+201032051,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1972.0,,,,
+1161455,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1972.0,,,,
+1150131,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1972.0,,,,
+2323563,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1972.0,,,,
+3001649,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1972.0,,,,
+1158137,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+201010105,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+1154720,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+2324820,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+1162452,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+9006777,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+9083770,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+1155565,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1971.0,,,,
+210193062,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1971.0,,,,
+210193064,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+210193063,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1971.0,,,,
+1152614,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1970.0,,,,
+2323634,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1969.0,,,,
+1159212,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1969.0,,,,
+1152613,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1969.0,,,,
+201031869,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1969.0,,,,
+1160051,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1969.0,,,,
+201035727,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Stahlblech,False,False,,1968.0,,,,
+1161886,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1992.0,,,,
+3000348,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1967.0,,,,
+1154803,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Flachdach Grün gedämmt,False,False,,1967.0,,,,
+2321929,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1967.0,,,,
+201035984,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1966.0,,,,
+201034288,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Flachdach Grün gedämmt,False,False,,1966.0,,,,
+1150306,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Flachdach Grün gedämmt,False,False,,1966.0,,,,
+1150317,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Flachdach Grün gedämmt,False,False,,1966.0,,,,
+201033237,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Flachdach Grün gedämmt,False,False,,1966.0,,,,
+1154876,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,2015.0,,,,
+201032257,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+201032227,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+201032864,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+201032813,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+201031873,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+1162660,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1965.0,,,,
+9040592,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Flachdach Grün gedämmt,False,False,,1964.0,,,,
+2327004,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Flachdach Grün gedämmt,False,False,,1964.0,,,,
+2327001,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,1983.0,,,,
+1154814,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1963.0,,,,
+2323641,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach Grün gedämmt,Ziegel,False,False,,2008.0,,,,
+1157890,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1962.0,,,,
+2323834,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1961.0,,,,
+201031331,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1959.0,,JA,JA,NEIN
+1152538,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1958.0,,,,
+1154767,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1957.0,,,,
+1150008,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1957.0,,,,
+9083995,Dach Bekleidung,DACH_BEKLEIDUNG,Stahlblech,Ziegel,False,False,,1956.0,,,,
+201031370,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1954.0,,,,
+201022444,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1952.0,,,,
+201035294,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1950.0,,,,
+201033333,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1950.0,,,,
+1153181,Dach Bekleidung,DACH_BEKLEIDUNG,Ziegel,Stahlblech,False,False,,2016.0,,,,
+190042339,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1950.0,,,,
+201028632,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach ungedämmt,Ziegel,False,False,,1948.0,,,,
+2327006,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1945.0,,,,
+201031495,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1944.0,,,,
+200087317,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1944.0,,,,
+201032721,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1941.0,,,,
+1162270,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1939.0,,,,
+1158800,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1937.0,,,,
+1153057,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1934.0,,,,
+201031488,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1934.0,,,,
+2325787,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1932.0,,,,
+1150346,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1931.0,,,,
+2325057,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1929.0,,,,
+1150749,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1929.0,,,,
+1161515,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1929.0,,,,
+1161017,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1928.0,,,,
+201032048,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1928.0,,,,
+1151042,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1928.0,,,,
+201022304,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1928.0,,,,
+1160788,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1927.0,,,,
+1162102,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1926.0,,,,
+2323663,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1926.0,,,,
+201033642,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1925.0,,,,
+1155273,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1925.0,,,,
+2324325,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1924.0,,,,
+1153449,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1923.0,,,,
+201035965,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1922.0,,,,
+1160272,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1922.0,,,,
+1160273,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1922.0,,,,
+1153408,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1921.0,,,,
+1153397,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1921.0,,,,
+1157967,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1920.0,,,,
+1157968,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1920.0,,,,
+1157966,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1920.0,,,,
+1157969,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1920.0,,,,
+1162345,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162346,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162344,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162175,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162173,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162174,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1919.0,,,,
+1162195,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1918.0,,,,
+201005650,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1918.0,,,,
+1161929,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1917.0,,,,
+2323606,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1917.0,,,,
+201033325,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1917.0,,,,
+1155741,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1916.0,,,,
+2323865,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1916.0,,,,
+201036534,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1914.0,,,,
+2323573,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1914.0,,,,
+201032066,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1914.0,,,,
+1159322,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1913.0,,,,
+210192925,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1913.0,,,,
+2327007,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1913.0,,,,
+201033693,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1912.0,,,,
+1153668,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1912.0,,,,
+201035637,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1912.0,,,,
+1152554,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1912.0,,,,
+1152555,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1912.0,,,,
+1151632,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1911.0,,,,
+1151634,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1911.0,,,,
+1151625,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1911.0,,,,
+201033055,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1910.0,,,,
+201031931,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1910.0,,,,
+1151623,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1910.0,,,,
+1156100,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1910.0,,,,
+1155918,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1910.0,,,,
+2326660,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1909.0,,,,
+1151158,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151159,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151156,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151161,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151162,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151155,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151157,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151160,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151523,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151525,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1151521,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+2323204,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1153592,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+2326661,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+2323667,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+201034156,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1908.0,,,,
+1154821,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1907.0,,,,
+1151622,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1907.0,,,,
+201036356,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1907.0,,,,
+3001084,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1907.0,,,,
+1151041,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1907.0,,,,
+2324415,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1906.0,,,,
+2326512,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1904.0,,,,
+3001593,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1904.0,,,,
+1150556,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1903.0,,,,
+1150557,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1903.0,,,,
+1151601,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1903.0,,,,
+1155738,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1903.0,,,,
+201032034,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1902.0,,,,
+2323670,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1901.0,,,,
+201035111,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1901.0,,,,
+1158029,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1901.0,,,,
+2324425,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1900.0,,,,
+1150508,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1900.0,,,,
+1150656,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1900.0,,,,
+1150391,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1900.0,,,,
+201031746,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1899.0,,,,
+201032668,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1899.0,,,,
+1152027,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+3000335,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1157810,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1159792,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+2325788,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1153559,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1151378,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1151853,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1152471,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1157156,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1898.0,,,,
+1152552,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1161122,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+201036318,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1160826,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1161018,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1155992,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1160910,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1160909,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+9084000,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1897.0,,,,
+1154958,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+1155032,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+1155039,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+1155104,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+1150400,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+1161984,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1896.0,,,,
+2325790,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1895.0,,,,
+1160829,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1895.0,,,,
+1150401,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1894.0,,,,
+1152558,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1894.0,,,,
+1150411,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1893.0,,,,
+201034391,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1892.0,,,,
+1152616,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1892.0,,,,
+3001773,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1892.0,,,,
+1152012,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1891.0,,,,
+1156945,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1891.0,,,,
+201035064,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+1158246,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+1150403,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+201033118,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+1159564,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+201033938,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1890.0,,,,
+2323832,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1889.0,,,,
+2323833,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1889.0,,,,
+1158061,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1888.0,,,,
+1158060,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1888.0,,,,
+2323835,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1887.0,,,,
+1152165,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1886.0,,,,
+2327010,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1886.0,,,,
+201033848,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1885.0,,,,
+1156112,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1885.0,,,,
+2323683,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1884.0,,,,
+1160735,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1158245,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+2323757,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1155281,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1154781,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1160813,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1160950,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+1161382,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1880.0,,,,
+201032983,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1878.0,,,,
+1155317,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1878.0,,,,
+1150366,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1878.0,,,,
+201035369,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1878.0,,,,
+1151845,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1877.0,,,,
+2323686,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1876.0,,,,
+2323688,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1876.0,,,,
+1152673,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1876.0,,,,
+201034941,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1876.0,,,,
+1156867,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1875.0,,,,
+201010071,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1874.0,,,,
+1152473,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1874.0,,,,
+1152472,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1871.0,,,,
+2321938,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+1156991,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+1162772,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+1155991,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+201031112,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+2325055,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1870.0,,,,
+1156782,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1869.0,,,,
+201033071,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1869.0,,,,
+1151609,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1868.0,,,,
+1150009,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1868.0,,,,
+1155347,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+1160830,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+1161116,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+1161115,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+1151040,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+1155384,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1865.0,,,,
+3000114,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+201031446,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+2323797,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1151189,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+201035154,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1150460,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1150014,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+210149993,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1161614,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+9083752,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1150397,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1150286,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1152704,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+1151850,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1863.0,,,,
+3001596,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1862.0,,,,
+2323608,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1861.0,,,,
+201010182,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1861.0,,,,
+1150141,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+1151795,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+201035150,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+1151796,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+1156878,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+2323871,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+1160785,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1860.0,,,,
+2324418,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+1150283,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+2323793,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+201010171,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+2323219,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+201036212,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+1152541,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1850.0,,,,
+2323565,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1848.0,,,,
+1156138,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1848.0,,,,
+1153639,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1845.0,,,,
+1151788,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1161919,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1161918,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1150006,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1155702,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1156228,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1840.0,,,,
+1150007,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1835.0,,,,
+1158278,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1830.0,,,,
+1154966,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1825.0,,,,
+2323506,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1820.0,,,,
+1150179,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1820.0,,,,
+1150180,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1820.0,,,,
+2323463,Dach Bekleidung,DACH_BEKLEIDUNG,Flachdach gedämmt,Ziegel,False,False,,1820.0,,,,

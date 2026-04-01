@@ -1,0 +1,59 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,DACH_BEKLEIDUNG,HOLZ,STAHL
+210219330,Konstruktion Dach,KONSTRUKTION_DACH,Steildach Stahlkonstruktion,Schrägdach ungedämmt,False,False,,2019.0,Stahlblech,,
+210219967,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Holzkonstruktion,Flachdach Betonkonstruktion,False,False,,2018.0,Flachdach gedämmt,,
+210222524,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Betonkonstruktion",Flachdach Betonkonstruktion,False,False,,2018.0,Flachdach ungedämmt,,
+210215443,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Betonkonstruktion",Flachdach Betonkonstruktion,False,False,,2017.0,Flachdach ungedämmt,,
+210219744,Konstruktion Dach,KONSTRUKTION_DACH,Steildach Stahlkonstruktion,"Steildach, Holzkonstruktion",False,False,,2017.0,Stahlblech,,
+210207696,Konstruktion Dach,KONSTRUKTION_DACH,Steildach Stahlkonstruktion,"Steildach, Holzkonstruktion",False,False,,2016.0,Stahlblech,,
+210207697,Konstruktion Dach,KONSTRUKTION_DACH,Steildach Stahlkonstruktion,"Steildach, Holzkonstruktion",False,False,,2016.0,Stahlblech,,
+210216541,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Holzkonstruktion,Flachdach Betonkonstruktion,False,False,,2015.0,Flachdach gedämmt,NEIN,NEIN
+210207901,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Betonkonstruktion,Flachdach Holzkonstruktion,False,False,,2015.0,Flachdach gedämmt,JA,NEIN
+210205127,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Holzkonstruktion",Flachdach Holzkonstruktion,False,False,,2015.0,Flachdach gedämmt,JA,NEIN
+210196226,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Betonkonstruktion",Flachdach Betonkonstruktion,False,False,,2014.0,Flachdach gedämmt,JA,NEIN
+210189240,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Betonkonstruktion",Flachdach Betonkonstruktion,False,False,,2014.0,Flachdach gedämmt,JA,NEIN
+210197100,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Holzkonstruktion,Flachdach Betonkonstruktion,False,False,,2014.0,Flachdach gedämmt,JA,NEIN
+201035871,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Holzkonstruktion",Flachdach Betonkonstruktion,False,False,,2014.0,Flachdach gedämmt,JA,NEIN
+210202060,Konstruktion Dach,KONSTRUKTION_DACH,Steildach Stahlkonstruktion,Schrägdach ungedämmt,False,False,,2013.0,Stahlblech,NEIN,NEIN
+210195884,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach ungedämmt,Flachdach gedämmt,False,False,,2012.0,Flachdach gedämmt,,NEIN
+210196496,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach ungedämmt,Flachdach gedämmt,False,False,,2012.0,Flachdach gedämmt,,NEIN
+201041576,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Flachdach ungedämmt,False,False,,2010.0,Flachdach gedämmt,,NEIN
+201034299,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Flachdach ungedämmt,False,False,,2010.0,Flachdach gedämmt,,NEIN
+201032259,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Flachdach ungedämmt,False,False,,2008.0,Flachdach gedämmt,,NEIN
+201033611,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Flachdach gedämmt,False,False,,2008.0,Flachdach gedämmt,JA,NEIN
+201022387,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Flachdach ungedämmt,False,False,,2008.0,Flachdach gedämmt,,NEIN
+201022417,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Flachdach ungedämmt,False,False,,2008.0,Flachdach gedämmt,,NEIN
+9083693,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach ungedämmt,Flachdach gedämmt,False,False,,2000.0,Flachdach gedämmt,,NEIN
+201032981,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach ungedämmt,Flachdach gedämmt,False,False,,1998.0,Flachdach gedämmt,,NEIN
+2321898,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+210146005,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+210145963,Konstruktion Dach,KONSTRUKTION_DACH,"Leichtbau, ungedämmt",Flachdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,JA
+3000579,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+3001564,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+3168979,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+3001563,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+3168977,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+3168978,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach gedämmt,Schrägdach gedämmt,False,False,,1994.0,Flachdach gedämmt,,NEIN
+201033613,Konstruktion Dach,KONSTRUKTION_DACH,Stahldach ungedämmt,Flachdach gedämmt,False,False,,1993.0,Flachdach gedämmt,,JA
+9083761,Konstruktion Dach,KONSTRUKTION_DACH,"Steildach, Holzkonstruktion",Schrägdach ungedämmt,False,False,,1993.0,Ziegel,,NEIN
+2326994,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Flachdach gedämmt,False,False,,1993.0,Flachdach gedämmt,,NEIN
+2326385,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Flachdach gedämmt,False,False,,1991.0,Flachdach gedämmt,NEIN,JA
+2326386,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach ungedämmt,Flachdach gedämmt,False,False,,1991.0,Flachdach gedämmt,NEIN,JA
+2325887,Konstruktion Dach,KONSTRUKTION_DACH,Leichtbau metall ungedämmt,Flachdach gedämmt,False,False,,1987.0,Flachdach gedämmt,,JA
+2326642,Konstruktion Dach,KONSTRUKTION_DACH,Leichtbau metall ungedämmt,Flachdach gedämmt,False,False,,1987.0,Flachdach gedämmt,,JA
+2326373,Konstruktion Dach,KONSTRUKTION_DACH,Leichtbau metall ungedämmt,Flachdach gedämmt,False,False,,1985.0,Flachdach gedämmt,,JA
+201031885,Konstruktion Dach,KONSTRUKTION_DACH,Leichtbau metall ungedämmt,Flachdach gedämmt,False,False,,1985.0,Flachdach gedämmt,,JA
+2326377,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach ungedämmt,Flachdach gedämmt,False,False,,1983.0,Flachdach gedämmt,,JA
+2326634,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach ungedämmt,Flachdach gedämmt,False,False,,1981.0,Flachdach gedämmt,,JA
+2324416,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Schrägdach ungedämmt,False,False,,1980.0,Ziegel,,
+201036056,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Schrägdach ungedämmt,False,False,,1980.0,Ziegel,,
+2321650,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Stahlkonstruktion,Schrägdach ungedämmt,False,False,,1980.0,Stahlblech,,
+201035624,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Stahlkonstruktion,Flachdach gedämmt,False,False,,1975.0,Flachdach gedämmt,,
+1155202,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Stahlkonstruktion,Flachdach gedämmt,False,False,,1974.0,Flachdach gedämmt,,
+2325782,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Schrägdach ungedämmt,False,False,,1973.0,Ziegel,,
+2325783,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,Schrägdach ungedämmt,False,False,,1971.0,Ziegel,,
+1161886,Konstruktion Dach,KONSTRUKTION_DACH,Flachdach Betonkonstruktion,Flachdach gedämmt,False,False,,1992.0,Flachdach gedämmt,,
+201031331,Konstruktion Dach,KONSTRUKTION_DACH,Leichtbau metall ungedämmt,Flachdach gedämmt,False,False,,1959.0,Flachdach gedämmt,,JA
+1160475,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach ungedämmt,"Steildach, Holzkonstruktion",False,False,,2020.0,Ziegel,,
+1161320,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,"Steildach, Holzkonstruktion",False,False,,2020.0,Ziegel,,
+1161319,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,"Steildach, Holzkonstruktion",False,False,,2020.0,Ziegel,,
+1161321,Konstruktion Dach,KONSTRUKTION_DACH,Schrägdach gedämmt,"Steildach, Holzkonstruktion",False,False,,2020.0,Ziegel,,

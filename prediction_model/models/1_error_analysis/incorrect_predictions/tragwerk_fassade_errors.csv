@@ -1,0 +1,30 @@
+EGID,model_name,target_col,ground_truth,prediction,correct,missing_target_value,error,BAUJAHR,HOLZ,STAHL,STAHLBLECH,BETON,HAUPTNUTZUNG,FASSADE_BEKLEIDUNG,KONSTRUKTION_DACH
+192015554,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massiv Holz,False,False,,2023.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,,
+192004034,Tragwerk Fassade,TRAGWERK_FASSADE,Massivbau,Massiv Holz,False,False,,2023.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,,
+191957004,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massiv Beton,False,False,,2022.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,,
+210222773,Tragwerk Fassade,TRAGWERK_FASSADE,Massivbau,Massiv Beton,False,False,,2021.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,,
+210212335,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,2019.0,,,,,Industrie und Gewerbe,Putz,Flachdach Betonkonstruktion
+210198428,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Holz,Massivbau,False,False,,2013.0,JA,NEIN,NEIN,JA,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Leichtbau Glasfasernplatte,Flachdach gedämmt
+210195574,Tragwerk Fassade,TRAGWERK_FASSADE,Leichtbau,Massivbau,False,False,,2012.0,,NEIN,NEIN,NEIN,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Leichtbau andere Leichtmaterialien,Flachdach gedämmt
+210196496,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,2012.0,,NEIN,NEIN,NEIN,Industrie und Gewerbe,Massiv Beton mit hinterlüftung,Flachdach ungedämmt
+201041576,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massivbau,False,False,,2010.0,,NEIN,NEIN,JA,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+2321901,Tragwerk Fassade,TRAGWERK_FASSADE,Punktuell Stahl,Massiv Backstein,False,False,,1990.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Massiv Backstein mit hinterlüftung,Schrägdach ungedämmt
+201031183,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Punktuell Holz,False,False,,1989.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,"Leichtbau Holzplatten, mit Unterkonstruktion",Schrägdach ungedämmt
+201034056,Tragwerk Fassade,TRAGWERK_FASSADE,Punktuell Beton mit Backsteinwänden,Massiv Backstein,False,False,,1986.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Massiv Backstein mit hinterlüftung,Schrägdach ungedämmt
+2325778,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massivbau,False,False,,1984.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+2327046,Tragwerk Fassade,TRAGWERK_FASSADE,Massivbau,Massiv Beton,False,False,,1981.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Leichtbau Glasfasernplatte,Flachdach gedämmt
+1161927,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1977.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+201036118,Tragwerk Fassade,TRAGWERK_FASSADE,Punktuell Holz,Massivbau,False,False,,1975.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+201033102,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1975.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+201040925,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1975.0,,,,,Wohngebäude,Putz,Flachdach gedämmt
+201035650,Tragwerk Fassade,TRAGWERK_FASSADE,Massivbau,Massiv Beton,False,False,,1974.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+1158137,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1971.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+1161886,Tragwerk Fassade,TRAGWERK_FASSADE,Punktuell Beton mit Backsteinwänden,Massivbau,False,False,,1992.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Massiv Beton mit hinterlüftung,Flachdach Betonkonstruktion
+2321929,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1967.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+1162660,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,1965.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Massiv Beton mit hinterlüftung,Flachdach gedämmt
+2323641,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Beton,Massivbau,False,False,,2008.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Flachdach gedämmt
+1161260,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massivbau,False,False,,1960.0,,,,,Wohngebäude,Putz,Schrägdach ungedämmt
+201035434,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massivbau,False,False,,1958.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Putz,Schrägdach ungedämmt
+190042339,Tragwerk Fassade,TRAGWERK_FASSADE,Punktuell Beton mit Backsteinwänden,Massiv Backstein,False,False,,1950.0,,,,,Industrie und Gewerbe,Massiv Backstein mit hinterlüftung,Flachdach ungedämmt
+1151120,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massivbau,False,False,,1949.0,,,,,Wohngebäude,Putz,Schrägdach ungedämmt
+2327005,Tragwerk Fassade,TRAGWERK_FASSADE,Massiv Backstein,Massiv Holz,False,False,,1948.0,,,,,Verwaltungsgebäude und Gebäude mit öffentlichem Charakter,Leichtbau Stahlblech,Schrägdach ungedämmt
