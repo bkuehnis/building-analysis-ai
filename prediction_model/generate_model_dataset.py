@@ -241,6 +241,8 @@ def main() -> None:
         engine="openpyxl",
     )
 
+    # Limit to first 400 rows
+    df = df.head(400)
 
     # Clean columns and values
     df.columns = [str(c).strip() for c in df.columns]
@@ -299,8 +301,6 @@ def main() -> None:
     if df_model["Konstruktion Dach"].str.contains("FlachdachStahlkonstruktion", case=False, na=False).any():
         df_model["Konstruktion Dach"].replace("FlachdachStahlkonstruktion", "Flachdach Stahlkonstruktion", inplace=True)
 
-    
-
     # Coerce years
     if "BAUJAHR" in df_model.columns:
         df_model["BAUJAHR"] = coerce_year(df_model["BAUJAHR"])
@@ -319,9 +319,37 @@ def main() -> None:
     if "EGID" in df_model.columns:
         df_model= df_model.drop_duplicates(subset=["EGID"], keep="first")
 
-    # Rename columns to match collected building data
-    df_model= df_model.rename(columns=COLUMN_RENAME)
-        
+    # Rename columns
+    df_model = df_model.rename(columns=COLUMN_RENAME)
+
+    # 👉 Nur erste 400 Zeilen verwenden
+    df_subset = df_model.iloc[:400]
+
+    # Kategorien filtern (auf Subset!)
+    hoch = df_subset[df_subset["SCHADSTOFFEN"] == "HOHE_CHANCE"]
+    niedrig = df_subset[df_subset["SCHADSTOFFEN"] == "NIEDRIGE_CHANCE"]
+    nein = df_subset[df_subset["SCHADSTOFFEN"] == "NEIN"]
+
+    # Sampling
+    test_sample_df = pd.concat([
+        hoch.sample(n=2, random_state=42),
+        niedrig.sample(n=1, random_state=42),
+        nein.sample(n=2, random_state=42),
+    ])
+
+
+    # Excel speichern
+    test_sample_df.to_excel(
+        PROJECT_ROOT / "prediction_model/data/test_sample.xlsx",
+        index=False
+    )
+
+    # Optional weiterhin als Liste nutzen
+    test_rows = test_sample_df.to_dict(orient="records")
+
+    # Aus Haupt-DF entfernen
+    df_model = df_model.drop(test_sample_df.index)
+    
     # Write output
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     df_model.to_excel(OUTPUT_PATH, index=False)

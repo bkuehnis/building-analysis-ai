@@ -4,6 +4,7 @@ Combined Prediction Service for integrating CatBoost and RandomForest models.
 to run in terminal with input data:
 python -c "import pandas as pd; from prediction_model.services.combined_prediction_service import CombinedFoldEnsemble; model = CombinedFoldEnsemble(model_dir='prediction_model/models/schadstoff/saved_models'); X_new = pd.DataFrame([{'BAUJAHR': 1990, 'TRAGWERK_FASSADE': 'Mauerwerk', 'FASSADE_DAEMMUNG': 'Keine', 'FASSADE_BEKLEIDUNG': 'Keine', 'KONSTRUKTION_DACH': 'Satteldach', 'DACH_BEKLEIDUNG': 'Ziegel', 'PHOTOVOLTAIK': 'Nein', 'FENSTER': 'ab_1990'}]); result = model.predict(X_new); print(result)" 
 -> also add prediction_model. in front of service
+and for MyApp remove "prediction_model." from the import statement
 """
 from pathlib import Path
 import joblib
@@ -29,12 +30,14 @@ CATEGORICAL_COLUMNS_FASSADEN_BEKLEIDUNG = [
 
 FEATURE_COLUMNS_DACH_BEKLEIDUNG = [
     "BAUJAHR",
+    "KONSTRUKTION_DACH",
     "HOLZ",
     "STAHL",
     "STAHLBLECH",
     "BETON",
 ]
 CATEGORICAL_COLUMNS_DACH_BEKLEIDUNG = [
+    "KONSTRUKTION_DACH",
     "HOLZ",
     "STAHL",
     "STAHLBLECH",
@@ -43,14 +46,16 @@ CATEGORICAL_COLUMNS_DACH_BEKLEIDUNG = [
 
 FEATURE_COLUMNS_KONSTRUKTION_DACH = [
     "BAUJAHR",
-    "DACH_BEKLEIDUNG",
     "HOLZ",
     "STAHL",
+    "STAHLBLECH",
+    "BETON",
 ]
 CATEGORICAL_COLUMNS_KONSTRUKTION_DACH = [
-    "DACH_BEKLEIDUNG",
     "HOLZ",
     "STAHL",
+    "STAHLBLECH",
+    "BETON",
 ]
 
 FEATURE_COLUMNS_TRAGWERK_FASSADE = [

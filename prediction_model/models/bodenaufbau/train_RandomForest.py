@@ -65,7 +65,7 @@ joblib.dump(feature_columns, feature_columns_path)
 # Training configuration
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW:"
+DESCRIPTION = "NEW: changed test samples"
 
 # =========================
 # K-Fold Cross-Validation for RandomForest

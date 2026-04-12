@@ -35,9 +35,10 @@ TARGET = "KONSTRUKTION_DACH"
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "DACH_BEKLEIDUNG",
     "HOLZ",
     "STAHL",
+    "STAHLBLECH",
+    "BETON",
 ]
 
 
@@ -80,7 +81,7 @@ print(y.value_counts())
 # =========================
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: restructured model"
+DESCRIPTION = "NEW: changed test samples"
 
 # =========================
 # K-Fold Cross-Validation for CatBoost

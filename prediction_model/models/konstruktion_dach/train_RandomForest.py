@@ -39,9 +39,10 @@ TARGET = "KONSTRUKTION_DACH"
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
-    "DACH_BEKLEIDUNG",
     "HOLZ",
     "STAHL",
+    "STAHLBLECH",
+    "BETON",
 ]
 
 values_to_remove = [
@@ -75,7 +76,7 @@ joblib.dump(feature_columns, feature_columns_path)
 # Training configuration
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: added more values to remove and switched to 5 folds"
+DESCRIPTION = "NEW: changed test samples"
 
 # =========================
 # K-Fold Cross-Validation for RandomForest

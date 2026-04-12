@@ -62,7 +62,7 @@ joblib.dump(feature_columns, feature_columns_path)
 # Training configuration
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: folds reduced to 5, because std with 6 folds was very high"
+DESCRIPTION = "NEW: changed test samples"
 
 # =========================
 # K-Fold Cross-Validation for RandomForest

@@ -72,7 +72,7 @@ print(y.value_counts())
 # =========================
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: restructured model"
+DESCRIPTION = "NEW: changed test samples"
 
 # =========================
 # K-Fold Cross-Validation for CatBoost

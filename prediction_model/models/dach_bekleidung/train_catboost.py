@@ -35,6 +35,7 @@ TARGET = "DACH_BEKLEIDUNG"
 # drop all except required columns + target
 REQUIRED_COLUMNS = [
     "BAUJAHR",
+    "KONSTRUKTION_DACH",
     "HOLZ",
     "STAHL",
     "STAHLBLECH",
@@ -53,8 +54,6 @@ y = df[TARGET]
 # rows to be removed based on appearance <=5 in target column
 values_to_remove = [
     "Holzschindel",
-    "Flachdach gedämmt",
-    "Flachdach ungedämmt",
 ]
 
 for value in values_to_remove:
@@ -79,7 +78,7 @@ print(y.value_counts())
 # =========================
 N_SPLITS = 5
 SEED = 5
-DESCRIPTION = "NEW: removed values with flachdach ungedämmt, flachdach gedämmt"
+DESCRIPTION = "NEW: readded flachdach gedämmt and flachdach ungedämmt to target column, because they are represented often in groundtruth"
 
 # =========================
 # K-Fold Cross-Validation for CatBoost
