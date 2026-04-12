@@ -29,7 +29,7 @@ def load_combined_model(model_dir):
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / ".env")
 
-DATA_PATH = PROJECT_ROOT / os.getenv("OUTPUT_DATASET_PATH")
+DATA_PATH = PROJECT_ROOT / os.getenv("TEST_DATASET")
 df = pd.read_excel(DATA_PATH)
 
 model_configs = [
@@ -50,8 +50,8 @@ for model_dir, model_name, target_col in model_configs:
     print(f"Running model: {model_name}")
     combined_model = load_combined_model(model_dir)
 
-    # --> ground truth ist von zeile 10 bis 751
-    for _, row in df.iloc[10:751].iterrows():
+    # --> ground truth test examples: 5
+    for _, row in df.iterrows():
         X_new = pd.DataFrame([row])
         missing_target_value = pd.isna(row[target_col])
 

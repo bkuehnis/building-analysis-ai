@@ -56,8 +56,8 @@ def main():
                             with st.container(horizontal=True):
                                 model_configs = [
                                     ("prediction_model/models/fassade_bekleidung/saved_models", "Fassade Bekleidung"),
-                                    ("prediction_model/models/dach_bekleidung/saved_models", "Dach Bekleidung"),
                                     ("prediction_model/models/konstruktion_dach/saved_models", "Konstruktion Dach"),
+                                    ("prediction_model/models/dach_bekleidung/saved_models", "Dach Bekleidung"),
                                     ("prediction_model/models/tragwerk_fassade/saved_models", "Tragwerk Fassade"),
                                     ("prediction_model/models/fassade_daemmung/saved_models", "Fassaden Dämmung"),
                                     ("prediction_model/models/fenster/saved_models", "Fenster"),
