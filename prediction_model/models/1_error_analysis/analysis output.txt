@@ -69,6 +69,7 @@ Name: correct, dtype: float64
 
 ----------------------------------------------------------------------
 # 5 new samples and new values for dach_bekleidung
+
 # correct predicitons in %
 model_name
 Bodenaufbau           1.0
@@ -99,3 +100,6 @@ Name: correct, dtype: float64
 6  Konstruktion Decke                    1
 7         Schadstoffe                    0
 8    Tragwerk Fassade                    1
+
+# first 4 models throw most error (see confusion matrix in file: doc_prediction_models_new.xlsx) 
+        -> training input has to be fixed. Either more input in model_dataset or improve model features.
