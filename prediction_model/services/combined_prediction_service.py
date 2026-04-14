@@ -11,8 +11,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from prediction_model.services.cb_prediction_service import CatBoostFoldEnsemble
-from prediction_model.services.rf_prediction_service import RandomForestFoldEnsemble
+from services.cb_prediction_service import CatBoostFoldEnsemble
+from services.rf_prediction_service import RandomForestFoldEnsemble
 
 FEATURE_COLUMNS_FASSADEN_BEKLEIDUNG = [
     "BAUJAHR",

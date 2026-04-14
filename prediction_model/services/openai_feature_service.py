@@ -29,6 +29,7 @@ class OpenAIFeatureService:
                 "Extrahiere Gebäude-Features aus den folgenden Bildern.\n"
                 "Nutze alle Perspektiven gemeinsam.\n"
                 "Luftansicht: Beziehe dich nur auf das markierte Gebäude, nutze das hilfe das zoomed Bild.\n"
+                "Beziehe dich nur auf das Gebäude, welches in allen Bildern zu sehen ist, andere Gebäude oder Gebäude teile ignorieren.\n"
                 "Du antwortest ausschliesslich auf Deutsch und im vorgegebenen JSON-Schema, z.B. 'Dachform: Satteldach', 'Dachmaterial: Ziegel', 'Fenster: 4', 'PV-Anlage: Ja, 20m²'.\n"
             )
         }]
