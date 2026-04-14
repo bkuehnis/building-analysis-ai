@@ -222,16 +222,6 @@ prediction_model/data/collected_building_data.xlsx
 prediction_model/output/**
 catboost_info/**
 
-prediction_model/models/bodenaufbau/saved_models/**
-prediction_model/models/dach_bekleidung/saved_models/**
-prediction_model/models/fassade_bekleidung/saved_models/**
-prediction_model/models/fassade_daemmung/saved_models/**
-prediction_model/models/fenster/saved_models/**
-prediction_model/models/konstruktion_dach/saved_models/**
-prediction_model/models/konstruktion_decke/saved_models/**
-prediction_model/models/schadstoff/saved_models/**
-prediction_model/models/tragwerk_fassade/saved_models/**
-
 
 
 
