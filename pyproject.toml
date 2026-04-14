@@ -192,7 +192,9 @@ dependencies = [
   "websockets==15.0.1",
   "widgetsnbextension==4.0.15",
   "wrapt==1.17.3",
-  "zipp==3.23.0"
+  "zipp==3.23.0",
+  "streamlit>=1.56.0",
+  "catboost>=1.2.10",
 ]
 
 [build-system]

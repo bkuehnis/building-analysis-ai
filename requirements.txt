@@ -168,6 +168,7 @@ soupsieve==2.8
 sse-starlette==3.0.4
 stack-data==0.6.3
 starlette==0.50.0
+streamlit==1.56.0
 streetview==0.0.16
 terminado==0.18.1
 tinycss2==1.4.0
