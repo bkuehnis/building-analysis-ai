@@ -129,6 +129,11 @@ uv venv --python 3.14
 source .venv/bin/activate
 uv sync
 ```
+### 6. add missing modules
+```bash
+uv add streamlit
+uv add catboost
+```
 
 ### 6. Configure Environment Variables
 
