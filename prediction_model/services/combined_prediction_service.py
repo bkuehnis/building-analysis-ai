@@ -292,8 +292,8 @@ class CombinedFoldEnsemble:
 
         predictions = self.classes_[class_indices]
         confidences = mean_probas.max(axis=1)
-        model_name = self.model_dir.parent.name 
-
+        np.round(confidences, 2, out=confidences)
+        model_name = self.model_dir.parent.name
 
         print("CombinedFoldEnsemble prediction:")
         print(f"Predictions: {predictions}")
