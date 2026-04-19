@@ -11,6 +11,8 @@ to run:
 streamlit run prediction_model/MyApp.py
 """
 import streamlit as st
+import streamlit.components.v1 as components
+import os
 from services.combined_prediction_service import CombinedFoldEnsemble
 from collect_building_data import collect_building_data
 from services.openai_analysis_service import OpenAIAnalysisService
@@ -26,6 +28,24 @@ def load_combined_model(model_dir):
     combined_model = CombinedFoldEnsemble(model_dir=model_dir)
     return combined_model
 
+def show_streetview_embed(lat: float, lon: float):
+    api_key = os.getenv("API_KEY_GOOGLE_MAPS")
+
+    if not api_key:
+        st.error("API_KEY_GOOGLE_MAPS fehlt.")
+        return
+
+    url = (
+        "https://www.google.com/maps/embed/v1/streetview"
+        f"?key={api_key}"
+        f"&location={lat},{lon}"
+        f"&radius=23"
+        f"&source=outdoor"
+        f"&fov=90"
+    )
+
+    components.iframe(url, height=500, scrolling=False)
+
 st.set_page_config(page_title="Gebäudemerkmale Erkennen", page_icon="🏠", layout="wide")
 col1, col2 = st.columns([1, 3])
 col3, col4 = st.columns([1, 3])
@@ -36,22 +56,72 @@ def main():
             st.write("Hier können Sie die Merkmale eines Gebäudes vorhersagen.")
             st.write("Bitte geben Sie die Adresse ein:")
 
+            if "locked" not in st.session_state:
+                st.session_state["locked"] = False
+
+            if "address" not in st.session_state:
+                st.session_state["address"] = ""
+
             address = st.text_input(
                 "Adresse des Gebäudes",
-                "",
+                value=st.session_state["address"],
+                disabled=st.session_state["locked"],
                 help="Geben Sie die vollständige Adresse des Gebäudes ein, z.B. 'Musterstrasse 1, 1234 Musterstadt'."
             )
-            
-            if st.button("Einschätzung starten"):
-                if not address:
-                    st.error("Bitte geben Sie eine Adresse ein, um die Einschätzung zu starten.")
-                    return
-                
 
-                try:
-                    with st.spinner("Daten werden extrahiert und Einschätzung wird durchgeführt..."):
-                        with col2:
+            st.session_state["address"] = address
+
+            col_start, col_reset = st.columns(2)
+
+            with col_start:
+                if st.button("Einschätzung starten", disabled=st.session_state["locked"]):
+                    if not address:
+                        st.error("Bitte geben Sie eine Adresse ein, um die Einschätzung zu starten.")
+                    else:
+                        with st.spinner("Daten werden gesammelt..."):
                             df = collect_building_data(address)
+                            
+
+                        if df is None or df.empty:
+                            st.error("Es konnten keine Gebäudedaten gefunden werden.")
+                        else:
+                            st.session_state["input_data"] = df
+                            st.session_state["locked"] = True
+
+                            if "lat" in df.columns and "lon" in df.columns:
+                                st.session_state["lat"] = df["lat"].iloc[0]
+                                st.session_state["lon"] = df["lon"].iloc[0]
+
+                            st.rerun()
+
+            with col_reset:
+                if st.button("Neue Adresse eingeben 🔄"):
+                    for key in [
+                        "locked",
+                        "address",
+                        "input_data",
+                        "prediction_result",
+                        "llm_result",
+                        "llm_result_table",
+                        "comparison_result",
+                        "lat",
+                        "lon",
+                    ]:
+                        st.session_state.pop(key, None)
+                    st.rerun()
+
+            if st.session_state["locked"]:
+                with col2:
+                    st.table(st.session_state["input_data"])
+
+                df = st.session_state.get("input_data")
+                if df is None or df.empty:
+                    st.error("Keine Eingabedaten vorhanden.")
+                    return
+                try:
+                    with st.spinner("Einschätzung wird durchgeführt..."):
+                        with col2:
+                           
                             
 
                             with st.container(horizontal=True):
@@ -89,6 +159,7 @@ def main():
                             
                             st.session_state["prediction_result"] = results_list
                             st.session_state["input_data"] = df
+                            st.session_state["results_df"] = results_df
 
                             # Für AdditionalPredictionOpenAI als dict aufbereiten
                             results_dict = {
@@ -98,8 +169,8 @@ def main():
                                 }
                                 for item in results_list
                             }
-                            EGID = df["EGID"].iloc[0]
-
+                            df = st.session_state.get("input_data")
+                            EGID = df["EGID"].iloc[0] 
                             openai_predictor = AdditionalPredictionOpenAI(model="gpt-4o-mini")
                             llm_result = openai_predictor.analyze(
                                 df=df,
@@ -153,19 +224,26 @@ def main():
         with col3:
             input_data = st.session_state.get("input_data")
             prediction_result = st.session_state.get("prediction_result")
-                                       
+            lat = st.session_state.get("lat")
+            lon = st.session_state.get("lon")     
             
             if input_data is None or prediction_result is None:
                 return
+            if lat is None or lon is None:
+                return
+           
 
+            st.subheader("Interaktive Street View Ansicht")
+            show_streetview_embed(lat, lon)
+
+            EGID = input_data["EGID"].iloc[0]
             image_found = False
-            for i in range(1, 3):
-                image_path = Path(f"prediction_model/output/images/{EGID}/streetview_{i}_{EGID}.jpeg")
-                if image_path.exists():
-                    image_found = True
-                    st.image(str(image_path), caption="Extrahiertes Street View Bild", width=400)
-                else:
-                    st.warning("Kein Street View Bild gefunden für die angegebene Adresse.")
+            image_path = Path(f"prediction_model/output/images/{EGID}/marked/zoomed_{EGID}.jpeg")
+            if image_path.exists():
+                image_found = True
+                st.image(str(image_path), caption="Extrahiertes Flugbild", width=400)
+            else:
+                st.warning("Kein Flugbild gefunden für die angegebene Adresse.")
 
         with col4:
             with st.spinner("Analyse der Einschätzung..."):

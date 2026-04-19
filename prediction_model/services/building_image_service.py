@@ -114,7 +114,7 @@ class ImageService:
 
         r = max(5, min(w, h) // 90)
 
-        draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline="red", width=2)
+        draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline="red", width=3)
         draw.line((cx - 2*r, cy, cx + 2*r, cy), fill="red", width=1)
         draw.line((cx, cy - 2*r, cx, cy + 2*r), fill="red", width=1)
 

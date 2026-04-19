@@ -162,6 +162,7 @@ def collect_building_data(address: str):
             f"?size=640x640"
             f"&location={lat},{lon}"
             f"&radius=23"
+            f"&pitch=30"
             f"&source=outdoor"
             f"&fov=90"
             f"&key={google_api_key}",
@@ -181,7 +182,8 @@ def collect_building_data(address: str):
             "https://maps.googleapis.com/maps/api/streetview"
             f"?size=640x640"
             f"&location={lat},{lon}"
-            f"&radius=10"
+            f"&radius=23"
+            f"&pitch=30"
             f"&source=outdoor"
             f"&fov=60"
             f"&key={google_api_key}",
@@ -286,11 +288,11 @@ def collect_building_data(address: str):
 
     base_cols = [
         "EGID", "GSW_STATUS", "STRASSE", "HAUSNR", "HAUSNRZUSATZ",
-        "PLZ", "ORT", "BAUJAHR"
+        "PLZ", "ORT", "BAUJAHR", "lat", "lon"
     ]
     feature_cols = list(flat.keys())
 
-    drop_cols = {"ADDRESS", "lat", "lon", "x", "y", "feature_id"}
+    drop_cols = {"ADDRESS", "x", "y", "feature_id"}
 
     # wenn spalten fehlen hinzufügen
     REQUIRED_COLS = [
