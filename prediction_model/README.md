@@ -147,6 +147,12 @@ API_KEY_GOOGLE_MAPS=your_google_maps_key
 OPENAI_API_KEY=your_openai_api_key
 ```
 
+### 7. Configure allowed Websites for Google API Key
+
+- go to Google Cloud -> API KEYS -> Credibility
+- add websites that allow the use of the API KEY
+- is used in MyApp.py for map integration
+
 ## Running Predictions
 
 **first activate:** source .venve/bin/activate
