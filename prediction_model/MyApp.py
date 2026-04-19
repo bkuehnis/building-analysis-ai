@@ -41,18 +41,19 @@ def show_streetview_embed(lat: float, lon: float):
         f"&location={lat},{lon}"
         f"&radius=23"
         f"&source=outdoor"
-        f"&fov=90"
+        f"&fov=100"
     )
 
     components.iframe(url, height=500, scrolling=False)
 
 st.set_page_config(page_title="Gebäudemerkmale Erkennen", page_icon="🏠", layout="wide")
-col1, col2 = st.columns([1, 3])
-col3, col4 = st.columns([1, 3])
+col1, col2, col3 = st.columns([0.35, 1.5 ,1])
+col4, col5 = st.columns([1, 3])
+col6, col7 = st.columns([1.5, 2])
 def main():
     with st.container():
         with col1:
-            st.title("Gebäudemerkmale Erkennen")
+            st.title("Gebäude- merkmale Erkennen")
             st.write("Hier können Sie die Merkmale eines Gebäudes vorhersagen.")
             st.write("Bitte geben Sie die Adresse ein:")
 
@@ -62,10 +63,11 @@ def main():
             if "address" not in st.session_state:
                 st.session_state["address"] = ""
 
-            address = st.text_input(
+            address = st.text_area(
                 "Adresse des Gebäudes",
                 value=st.session_state["address"],
                 disabled=st.session_state["locked"],
+                height=100,
                 help="Geben Sie die vollständige Adresse des Gebäudes ein, z.B. 'Musterstrasse 1, 1234 Musterstadt'."
             )
 
@@ -78,8 +80,12 @@ def main():
                     if not address:
                         st.error("Bitte geben Sie eine Adresse ein, um die Einschätzung zu starten.")
                     else:
-                        with st.spinner("Daten werden gesammelt..."):
-                            df = collect_building_data(address)
+                        try:
+                            with st.spinner("Daten werden gesammelt..."):
+                                df = collect_building_data(address)
+                        except Exception:
+                            st.error("Adresse konnte nicht gefunden werden.")
+                            return
                             
 
                         if df is None or df.empty:
@@ -111,16 +117,30 @@ def main():
                     st.rerun()
 
             if st.session_state["locked"]:
+                st.info("Adresse gefunden: " + "\n" + st.session_state["address"])
                 with col2:
-                    st.table(st.session_state["input_data"])
+                    st.subheader("Offizielle Gebäudedaten des Bundes")
+                    st.table(st.session_state["input_data"].iloc[:, 0:10])
+
+                    st.subheader("Mittels KI-Bildanalyse erkannte Merkmale:")
+
+                    df_img = st.session_state["input_data"].iloc[:, 10:].copy()
+                    df_img = df_img.replace(["None", ""], np.nan)
+                    df_img = df_img.dropna(axis=1, how="all")
+
+                    chunk_size = 8
+
+                    for start in range(0, len(df_img.columns), chunk_size):
+                        chunk_df = df_img.iloc[:, start:start + chunk_size]
+                        st.table(chunk_df)
 
                 df = st.session_state.get("input_data")
                 if df is None or df.empty:
                     st.error("Keine Eingabedaten vorhanden.")
                     return
                 try:
-                    with st.spinner("Einschätzung wird durchgeführt..."):
-                        with col2:
+                    with col3:
+                        with st.spinner("Einschätzung wird durchgeführt..."):
                            
                             
 
@@ -211,9 +231,10 @@ def main():
                                 suffixes=("_modell", "_openai")
                             )
 
-                            st.table(comparison_df)
+                            st.dataframe(comparison_df, hide_index=True)
                             st.session_state["llm_result"] = llm_result
                             st.session_state["llm_result_table"] = rows
+                            st.session_state["comparison_result"] = comparison_df
                             
 
 
@@ -221,38 +242,99 @@ def main():
                     st.error(f"Fehler: {e}")
 
     with st.container(horizontal=True):
-        with col3:
+        with col4:
             input_data = st.session_state.get("input_data")
             prediction_result = st.session_state.get("prediction_result")
-            lat = st.session_state.get("lat")
-            lon = st.session_state.get("lon")     
             
             if input_data is None or prediction_result is None:
                 return
-            if lat is None or lon is None:
-                return
-           
-
-            st.subheader("Interaktive Street View Ansicht")
-            show_streetview_embed(lat, lon)
 
             EGID = input_data["EGID"].iloc[0]
-            image_found = False
-            image_path = Path(f"prediction_model/output/images/{EGID}/marked/zoomed_{EGID}.jpeg")
-            if image_path.exists():
-                image_found = True
-                st.image(str(image_path), caption="Extrahiertes Flugbild", width=400)
-            else:
-                st.warning("Kein Flugbild gefunden für die angegebene Adresse.")
+            image_path_google = Path(f"prediction_model/output/images/{EGID}/streetview_2_{EGID}.jpeg")
 
-        with col4:
+            if image_path_google.exists() or image_path_google.exists():
+
+                if image_path_google.exists():
+                    st.image(str(image_path_google), caption="Google Street View Bild", width='content')
+                else:
+                    st.warning("Kein Street View Bild")
+
+            else:
+                st.warning("Keine Bilder gefunden für die angegebene Adresse.")                    
+            with col5:
+                lat = st.session_state.get("lat")
+                lon = st.session_state.get("lon") 
+
+                if lat is None or lon is None:
+                    return
+
+                
+                st.subheader("Interaktive Street View Ansicht")
+                show_streetview_embed(lat, lon)
+
+    with st.container(horizontal=True):
+        with col6:
+
+            col_start, col_end = st.columns([1, 1])
+            with col_start:
+                EGID = st.session_state["input_data"]["EGID"].iloc[0]
+                image_path_swissimage = Path(f"prediction_model/output/images/{EGID}/swissimage_zoomed_{EGID}_0.jpeg")
+                impage_path_cadstral = Path(f"prediction_model/output/images/{EGID}/cadastral_{EGID}_0.png")       
+            
+                if image_path_swissimage.exists():
+                    st.image(str(image_path_swissimage), caption="Extrahiertes Flugbild", width='content')
+                else:
+                    st.warning("Kein Luftbild")
+
+            with col_end:
+                if impage_path_cadstral.exists():
+                    st.image(str(impage_path_cadstral), caption="Katasterplan Ausschnitt", width='content')
+                else:
+                    st.warning("Kein Katasterplan Bild")
+
+
+        with col7:
             with st.spinner("Analyse der Einschätzung..."):
                 analysis_service = OpenAIAnalysisService(api_key=None)
                 predictions = [item["Einschätzung"] for item in st.session_state["prediction_result"]]
                 analysis = analysis_service.analyze(st.session_state["input_data"], predictions)
 
                 st.subheader("Einschätzung")
-                st.write(analysis["summary"])
+                comparison_df = st.session_state.get("comparison_result")
+                summary = analysis.get("summary", "")
+                if summary:
+                    st.markdown(f"**Zusammenfassung:** {summary}")
+
+                st.markdown("**Begründung:**")
+                reasoning = analysis.get("reasoning", [])
+                if reasoning:
+                    for reason in reasoning:
+                        if isinstance(reason, dict):
+                            attribute = reason.get("attribute", "-")
+                            assessment = reason.get("assessment", "-")
+                            reason_text = reason.get("reason", "-")
+                            st.markdown(
+                                f"- **{attribute}**: {assessment}  \n  _Begründung:_ {reason_text}"
+                            )
+                        else:
+                            st.markdown(f"- {reason}")
+                else:
+                    st.markdown("Keine Begründung verfügbar.")
+
+                st.markdown("**Unsicherheiten:**")
+                uncertainty = analysis.get("uncertainty", [])
+                if uncertainty:
+                    for item in uncertainty:
+                        if isinstance(item, dict):
+                            attribute = item.get("attribute", "-")
+                            reason_text = item.get("reason", "-")
+                            st.markdown(f"- **{attribute}**: {reason_text}")
+                        else:
+                            st.markdown(f"- {item}")
+                else:
+                    st.markdown("Keine Unsicherheiten angegeben.")
+
+
 
 if __name__ == "__main__":
     main()

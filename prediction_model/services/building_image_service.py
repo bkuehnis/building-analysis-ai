@@ -13,9 +13,31 @@ class ImageService:
     # 1️⃣ Download Image
     # ---------------------------------------------------------
     @staticmethod
-    def download_image(url: str, name: str, outdir: str = "output/images") -> str:
+    def download_image(
+        url: str,
+        name: str,
+        outdir: str = "output/images",
+        resolution_multiplier: int = 1,
+    ) -> str:
 
         os.makedirs(outdir, exist_ok=True)
+
+        if resolution_multiplier > 1:
+            parts = urllib.parse.urlsplit(url)
+            query = urllib.parse.parse_qs(parts.query)
+
+            width = query.get("WIDTH", [None])[0]
+            height = query.get("HEIGHT", [None])[0]
+
+            if width is not None and str(width).isdigit():
+                query["WIDTH"] = [str(int(width) * resolution_multiplier)]
+            if height is not None and str(height).isdigit():
+                query["HEIGHT"] = [str(int(height) * resolution_multiplier)]
+
+            new_query = urllib.parse.urlencode(query, doseq=True)
+            url = urllib.parse.urlunsplit(
+                (parts.scheme, parts.netloc, parts.path, new_query, parts.fragment)
+            )
 
         r = requests.get(url, timeout=30)
         r.raise_for_status()

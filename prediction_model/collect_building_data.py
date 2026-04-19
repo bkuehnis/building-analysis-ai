@@ -160,19 +160,22 @@ def collect_building_data(address: str):
         street_path = image_service.download_image(
             "https://maps.googleapis.com/maps/api/streetview"
             f"?size=640x640"
+            f"&scale=2"
             f"&location={lat},{lon}"
             f"&radius=23"
-            f"&pitch=30"
+            f"&pitch=25"
             f"&source=outdoor"
-            f"&fov=90"
+            f"&fov=110"
             f"&key={google_api_key}",
             name=f"streetview_{i+1}_{result['EGID']}",
             outdir=f"prediction_model/output/images/{result['EGID']}",
         )
-        lat -= 0.00005  # leicht versetzen, damit Google unterschiedliche Bilder liefert
-        lon -= 0.00005
+        lat -= 0.00003  # leicht versetzen, damit Google unterschiedliche Bilder liefert
+        lon -= 0.00003
 
     i = 0
+    lat= result["lat"]
+    lon = result["lon"]
     lat += 0.00005  # leicht versetzen, damit Google unterschiedliche Bilder liefert
     lon += 0.00005
     for i in range (i, 3):
@@ -181,19 +184,20 @@ def collect_building_data(address: str):
         street_path_zoomed = image_service.download_image(
             "https://maps.googleapis.com/maps/api/streetview"
             f"?size=640x640"
+            f"&scale=2"
             f"&location={lat},{lon}"
             f"&radius=23"
             f"&pitch=30"
             f"&source=outdoor"
-            f"&fov=60"
+            f"&fov=70"
             f"&key={google_api_key}",
             name=f"streetview_zoomed_{i+1}_{result['EGID']}",
             outdir=f"prediction_model/output/images/{result['EGID']}",
         )
-        lat -= 0.00005  # leicht versetzen, damit Google unterschiedliche Bilder liefert
-        lon -= 0.00005
-    
-    
+        lat -= 0.00003  # leicht versetzen, damit Google unterschiedliche Bilder liefert
+        lon -= 0.00003
+
+
     e95, n95 = image_service.ensure_lv95_xy(x, y)
 
     print(f"LV95 coordinates for WMS: E={e95}, N={n95}")

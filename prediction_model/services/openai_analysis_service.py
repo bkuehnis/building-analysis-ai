@@ -20,36 +20,59 @@ class OpenAIAnalysisService:
         self.model = model
 
 
-    def analyze(self, df: pd.DataFrame, predictions: dict) -> dict:
-        record = df.iloc[0].to_dict()
-
+    def analyze(self, comparison_df: pd.DataFrame, predictions: dict) -> dict:
+        if comparison_df.empty:
+            raise ValueError("comparison_df is missing imputable data for analysis.")
+       
         prompt = f"""
-    Du bist ein Experte für Gebäudebewertung.
+        Du bist ein Experte für die Einschätzung von Gebäudemerkmalen.
 
-    Analysiere die folgenden Gebäudedaten und Modellvorhersagen in minimalistischer Form.
+        Analysiere die folgenden Gebäudedaten und Modellvorhersagen.
 
-    Wichtig:
-    - Begründe deine Einschätzung nur mit den gegebenen Daten
-    - Weise auf Unsicherheiten hin
-    - Keine absoluten Aussagen
-    - Keine Halluzinationen
+        Regeln:
+        - Begründe jede Aussage ausschließlich mit den gegebenen Daten und Vorhersagen.
+        - Nutze die Confidence-Werte explizit zur Einordnung der Zuverlässigkeit.
+        - Formuliere vorsichtig und vermeide absolute Aussagen.
+        - Wenn Daten oder Vorhersagen unsicher, unvollständig oder widersprüchlich sind, benenne dies ausdrücklich.
+        - Erfinde keine zusätzlichen Merkmale, Zustände oder Empfehlungen.
+        - Gib keine Informationen wieder, die nicht aus den Eingabedaten ableitbar sind.
 
-    Gebäudedaten:
-    {json.dumps(record, ensure_ascii=False, default=str, indent=2)}
+        Ziel:
+        - Fasse die wichtigsten Merkmale des Gebäudes kurz zusammen.
+        - Erkläre, welche Vorhersagen plausibel erscheinen und warum.
+        - Erkläre, welche Vorhersagen unsicher sind und warum.
 
-    Vorhersagen:
-    {json.dumps(predictions, ensure_ascii=False, default=str, indent=2)}
+        Gebäudedaten:
+        {json.dumps(comparison_df.to_dict, ensure_ascii=False, default=str, indent=2)}
 
-    Gib die Antwort als JSON zurück mit:
-    - summary (kurze Zusammenfassung)
-    - reasoning (Liste von Gründen)
-    - uncertainty (Unsicherheiten)
-    - recommendation (Empfehlung)
-    """
+        Vorhersagen:
+        {json.dumps(predictions, ensure_ascii=False, default=str, indent=2)}
+
+        Gib ausschließlich gültiges JSON zurück, ohne zusätzlichen Text. Konfidenz nennst du "Sicherheit"
+
+        Format:
+        {{
+        "summary": "...",
+        "reasoning": [
+            {{
+            "attribute": "...",
+            "assessment": "...",
+            "reason": "..."
+            }}
+        ],
+        "uncertainty": [
+            {{
+            "attribute": "...",
+            "reason": "..."
+            }}
+        ]
+        }}
+        """
 
         response = self.client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"}
         )
 
         text = response.choices[0].message.content
