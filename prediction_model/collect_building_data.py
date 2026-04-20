@@ -292,7 +292,7 @@ def collect_building_data(address: str):
 
     base_cols = [
         "EGID", "GSW_STATUS", "STRASSE", "HAUSNR", "HAUSNRZUSATZ",
-        "PLZ", "ORT", "BAUJAHR", "lat", "lon"
+        "PLZ", "ORT", "BAUJAHR", "HAUPTNUTZUNG", "NUTZUNG", "lat", "lon"
     ]
     feature_cols = list(flat.keys())
 

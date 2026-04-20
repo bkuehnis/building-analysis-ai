@@ -9,6 +9,11 @@ pip install:
 
 to run:
 streamlit run prediction_model/MyApp.py
+
+new:
+pip install folium
+pip install streamlit_folium
+
 """
 import streamlit as st
 import streamlit.components.v1 as components
@@ -21,6 +26,9 @@ import pandas as pd
 import numpy as np
 import joblib
 from pathlib import Path
+import folium
+from streamlit_folium import st_folium
+
 
 @st.cache_resource
 def load_combined_model(model_dir):
@@ -46,8 +54,26 @@ def show_streetview_embed(lat: float, lon: float):
 
     components.iframe(url, height=500, scrolling=False)
 
+
+def show_satellite_embed(lat: float, lon: float):
+    api_key = os.getenv("API_KEY_GOOGLE_MAPS")
+
+    if not api_key:
+        st.error("API_KEY_GOOGLE_MAPS fehlt.")
+        return
+
+    url = (
+        "https://www.google.com/maps/embed/v1/place"
+        f"?key={api_key}"
+        f"&q={lat},{lon}"
+        f"&zoom=20"
+        f"&maptype=satellite"
+    )
+
+    components.iframe(url, height=500, scrolling=False)
+
 st.set_page_config(page_title="Gebäudemerkmale Erkennen", page_icon="🏠", layout="wide")
-col1, col2, col3 = st.columns([0.35, 1.5 ,1])
+col1, col2, col3 = st.columns([0.35, 1.25 ,1.25])
 col4, col5 = st.columns([1, 3])
 col6, col7 = st.columns([1.5, 2])
 def main():
@@ -112,6 +138,9 @@ def main():
                         "comparison_result",
                         "lat",
                         "lon",
+                        "results_df",
+                        "analysis_result",
+                        "comparison_result"
                     ]:
                         st.session_state.pop(key, None)
                     st.rerun()
@@ -120,19 +149,39 @@ def main():
                 st.info("Adresse gefunden: " + "\n" + st.session_state["address"])
                 with col2:
                     st.subheader("Offizielle Gebäudedaten des Bundes")
-                    st.table(st.session_state["input_data"].iloc[:, 0:10])
+                    st.table(st.session_state["input_data"].iloc[:, 0:10].reset_index(drop=True))
 
-                    st.subheader("Mittels KI-Bildanalyse erkannte Merkmale:")
+                    st.subheader("Erkannte Merkmale durch KI und zugehörige Sicherheit")
 
-                    df_img = st.session_state["input_data"].iloc[:, 10:].copy()
+                    # lat und lon nicht anzeigen, daher start 12
+                    df_img = st.session_state["input_data"].iloc[:, 12:].copy()
                     df_img = df_img.replace(["None", ""], np.nan)
                     df_img = df_img.dropna(axis=1, how="all")
 
-                    chunk_size = 8
+                    cols = st.columns(2)
 
-                    for start in range(0, len(df_img.columns), chunk_size):
-                        chunk_df = df_img.iloc[:, start:start + chunk_size]
-                        st.table(chunk_df)
+                    i = 0
+                    for col in df_img.columns:
+                        if col.endswith("_confidence"):
+                            continue
+
+                        value = df_img.iloc[0][col]
+                        if pd.isna(value):
+                            continue
+
+                        confidence_col = f"{col}_confidence"
+                        confidence = df_img[confidence_col].iloc[0] if confidence_col in df_img.columns else None
+
+                        label = col.replace("_", " ").title()
+
+                        text = f"**{label}:** {value}"
+                        if confidence is not None:
+                            text += f" ({round(confidence * 100)}%)"
+
+                        with cols[i % 2]:
+                            st.markdown(text)
+
+                        i += 1
 
                 df = st.session_state.get("input_data")
                 if df is None or df.empty:
@@ -140,11 +189,12 @@ def main():
                     return
                 try:
                     with col3:
-                        with st.spinner("Einschätzung wird durchgeführt..."):
-                           
-                            
+                        df = st.session_state.get("input_data")
+                        if df is None or df.empty:
+                            return
 
-                            with st.container(horizontal=True):
+                        if "comparison_result" not in st.session_state:
+                            with st.spinner("Einschätzung wird durchgeführt..."):
                                 model_configs = [
                                     ("prediction_model/models/fassade_bekleidung/saved_models", "Fassade Bekleidung"),
                                     ("prediction_model/models/konstruktion_dach/saved_models", "Konstruktion Dach"),
@@ -153,13 +203,11 @@ def main():
                                     ("prediction_model/models/fassade_daemmung/saved_models", "Fassaden Dämmung"),
                                     ("prediction_model/models/fenster/saved_models", "Fenster"),
                                     ("prediction_model/models/bodenaufbau/saved_models", "Bodenaufbau"),
-                                    ("prediction_model/models/konstruktion_decke/saved_models", "Konstruktion Dach"),
-                                    ("prediction_model/models/schadstoff/saved_models", "Schadstoffe")
+                                    ("prediction_model/models/konstruktion_decke/saved_models", "Konstruktion Decke"),
+                                    ("prediction_model/models/schadstoff/saved_models", "Schadstoffe"),
                                 ]
-                                
+
                                 results_list = []
-                                st.subheader("Einschätzungsergebnisse")
-                                
                                 for model_dir, label in model_configs:
                                     model = load_combined_model(model_dir=model_dir)
                                     result = model.predict(df)
@@ -170,72 +218,71 @@ def main():
                                     })
                                     model_col = str(result["model_name"]).upper()
                                     df[model_col] = result["prediction"]
-                                    
-                                    # Save updated dataframe to Excel file
-                                    output_file = "prediction_model/data/collected_building_data.xlsx"
-                                    df.to_excel(output_file, index=False)
 
-                            results_df = pd.DataFrame(results_list)
-                            
-                            st.session_state["prediction_result"] = results_list
-                            st.session_state["input_data"] = df
-                            st.session_state["results_df"] = results_df
+                                df.to_excel("prediction_model/data/collected_building_data.xlsx", index=False)
 
-                            # Für AdditionalPredictionOpenAI als dict aufbereiten
-                            results_dict = {
-                                item["Attribut"]: {
-                                    "prediction": item["Einschätzung"],
-                                    "confidence": item["Sicherheit"],
+                                results_df = pd.DataFrame(results_list)
+                                st.session_state["prediction_result"] = results_list
+                                st.session_state["input_data"] = df
+                                st.session_state["results_df"] = results_df
+
+                                results_dict = {
+                                    item["Attribut"]: {
+                                        "prediction": item["Einschätzung"],
+                                        "confidence": item["Sicherheit"],
+                                    }
+                                    for item in results_list
                                 }
-                                for item in results_list
-                            }
-                            df = st.session_state.get("input_data")
-                            EGID = df["EGID"].iloc[0] 
-                            openai_predictor = AdditionalPredictionOpenAI(model="gpt-4o-mini")
-                            llm_result = openai_predictor.analyze(
-                                df=df,
-                                predictions=results_dict,
-                                egid=EGID,
-                                image_dir="prediction_model/output/images",
+
+                                EGID = df["EGID"].iloc[0]
+                                openai_predictor = AdditionalPredictionOpenAI(model="gpt-4o-mini")
+                                llm_result = openai_predictor.analyze(
+                                    df=df,
+                                    predictions=results_dict,
+                                    egid=EGID,
+                                    image_dir="prediction_model/output/images",
                                 )
 
+                                rows = []
+                                for key, value in llm_result.items():
+                                    if key.endswith("_sicherheit") or key == "begruendung":
+                                        continue
 
-                            rows = []
+                                    sicherheit_key = f"{key}_sicherheit"
+                                    sicherheit = llm_result.get(sicherheit_key)
 
-                            for key, value in llm_result.items():
-                                if key.endswith("_sicherheit") or key == "begruendung":
-                                    continue
+                                    rows.append({
+                                        "Attribut": key,
+                                        "Einschätzung": value,
+                                        "Sicherheit": f"{round(sicherheit)} %" if sicherheit is not None else None
+                                    })
 
-                                sicherheit_key = f"{key}_sicherheit"
-                                sicherheit = llm_result.get(sicherheit_key)
+                                llm_df = pd.DataFrame(rows)
 
-                                rows.append({
-                                    "Attribut": key,
-                                    "Einschätzung": value,
-                                    "Sicherheit": f"{round(sicherheit)} % " if sicherheit is not None else None                                })
-                            
-                            llm_df = pd.DataFrame(rows)
+                                def clean_value(val):
+                                    if isinstance(val, (list, tuple, np.ndarray)):
+                                        return val[0]
+                                    return val
 
-                            def clean_value(val):
-                                if isinstance(val, (list, tuple, np.ndarray)):
-                                    return val[0]
-                                return val
-                            results_df["Einschätzung"] = results_df["Einschätzung"].apply(clean_value)
-                            results_df["Sicherheit"] = results_df["Sicherheit"].apply(clean_value) 
-                            results_df["Sicherheit"] = (results_df["Sicherheit"] * 100).round(0).astype(int).astype(str) + " %"
-                                                       
-                            comparison_df = results_df.merge(
-                                llm_df,
-                                on="Attribut",
-                                how="outer",
-                                suffixes=("_modell", "_openai")
-                            )
+                                results_df["Einschätzung"] = results_df["Einschätzung"].apply(clean_value)
+                                results_df["Sicherheit"] = results_df["Sicherheit"].apply(clean_value)
+                                results_df["Sicherheit"] = (results_df["Sicherheit"] * 100).round(0).astype(int).astype(str) + " %"
 
-                            st.dataframe(comparison_df, hide_index=True)
-                            st.session_state["llm_result"] = llm_result
-                            st.session_state["llm_result_table"] = rows
-                            st.session_state["comparison_result"] = comparison_df
-                            
+                                comparison_df = results_df.merge(
+                                    llm_df,
+                                    on="Attribut",
+                                    how="outer",
+                                    suffixes=("_modell", "_openai")
+                                )
+
+                                st.session_state["llm_result"] = llm_result
+                                st.session_state["llm_result_table"] = rows
+                                st.session_state["comparison_result"] = comparison_df
+
+                        st.subheader("Einschätzungsergebnisse")
+                        comparison_df = st.session_state.get("comparison_result")
+                        if comparison_df is not None:
+                            st.dataframe(comparison_df, hide_index=True)                            
 
 
                 except Exception as e:
@@ -252,10 +299,11 @@ def main():
             EGID = input_data["EGID"].iloc[0]
             image_path_google = Path(f"prediction_model/output/images/{EGID}/streetview_2_{EGID}.jpeg")
 
-            if image_path_google.exists() or image_path_google.exists():
+            if image_path_google.exists():
 
                 if image_path_google.exists():
-                    st.image(str(image_path_google), caption="Google Street View Bild", width='content')
+                    st.write("Beachte: Das Street View Bild zeigt möglicherweise nicht das gesuchte Objekt, sondern könnte ein benachbartes Gebäude darstellen.")
+                    st.image(str(image_path_google), caption="Gefundenes Google Street View Bild", width='content')
                 else:
                     st.warning("Kein Street View Bild")
 
@@ -270,35 +318,52 @@ def main():
 
                 
                 st.subheader("Interaktive Street View Ansicht")
+                st.write("Bitte beachten Sie das Referenzbild auf der linken Seite, um das Gebäude zu identifizieren. Es könnte sein, dass das Street View Bild ein benachbartes Gebäude zeigt. Zur Prüfung kann die Adressanzeige auf der Karte genutzt werden.")
                 show_streetview_embed(lat, lon)
 
     with st.container(horizontal=True):
         with col6:
+            lat = st.session_state.get("lat")
+            lon = st.session_state.get("lon")
+            input_data = st.session_state.get("input_data")
 
-            col_start, col_end = st.columns([1, 1])
-            with col_start:
-                EGID = st.session_state["input_data"]["EGID"].iloc[0]
-                image_path_swissimage = Path(f"prediction_model/output/images/{EGID}/swissimage_zoomed_{EGID}_0.jpeg")
-                impage_path_cadstral = Path(f"prediction_model/output/images/{EGID}/cadastral_{EGID}_0.png")       
-            
-                if image_path_swissimage.exists():
-                    st.image(str(image_path_swissimage), caption="Extrahiertes Flugbild", width='content')
-                else:
-                    st.warning("Kein Luftbild")
+            if input_data is None or input_data.empty:
+                st.info("Keine Gebäudedaten verfügbar.")
+            elif lat is None or lon is None:
+                st.info("Keine Koordinaten für die Satellitenansicht verfügbar.")
+            else:
+                EGID = input_data["EGID"].iloc[0]
+                image_path_cadastral = Path(
+                    f"prediction_model/output/images/{EGID}/cadastral_{EGID}_0.png"
+                )
 
-            with col_end:
-                if impage_path_cadstral.exists():
-                    st.image(str(impage_path_cadstral), caption="Katasterplan Ausschnitt", width='content')
-                else:
-                    st.warning("Kein Katasterplan Bild")
+                col_start, col_end = st.columns([1, 1])
+
+                with col_start:
+                    st.subheader("Interaktive Satellitenansicht")
+                    show_satellite_embed(lat, lon)
+
+                with col_end:
+                    st.subheader("Katasterplan Ausschnitt")
+                    if image_path_cadastral.exists():
+                        st.image(
+                            str(image_path_cadastral),
+                            width="content"
+                        )
+                    else:
+                        st.warning("Kein Katasterplan Bild")
 
 
         with col7:
             with st.spinner("Analyse der Einschätzung..."):
-                analysis_service = OpenAIAnalysisService(api_key=None)
-                predictions = [item["Einschätzung"] for item in st.session_state["prediction_result"]]
-                analysis = analysis_service.analyze(st.session_state["input_data"], predictions)
+                if "analysis_result" not in st.session_state:
+                    analysis_service = OpenAIAnalysisService(api_key=None)
+                    predictions = [item["Einschätzung"] for item in st.session_state["prediction_result"]]
+                    st.session_state["analysis_result"] = analysis_service.analyze(
+                        st.session_state["input_data"], predictions
+                    )
 
+                analysis = st.session_state["analysis_result"]
                 st.subheader("Einschätzung")
                 comparison_df = st.session_state.get("comparison_result")
                 summary = analysis.get("summary", "")
