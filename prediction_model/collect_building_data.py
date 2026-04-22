@@ -39,16 +39,18 @@ def flatten_extraction(features: BuildingImageExtraction) -> dict:
         out_key = normalize_key(key)
 
         if isinstance(val, dict):
-            value_str = val.get("value_str")
-            value_num = val.get("value_num")
+            value = val.get("value")
+            if value is None:
+                # Rueckwaerts-kompatibel fuer alte Runs.
+                value = val.get("value_enum") or val.get("value_str") or val.get("value_num")
             confidence = val.get("confidence")
-            unit = val.get("unit")
+            accuracy_pct = val.get("accuracy_pct")
 
-            flat[out_key] = value_num if value_num is not None else value_str
+            flat[out_key] = value
             flat[f"{out_key}_confidence"] = confidence
-
-            if unit is not None:
-                flat[f"{out_key}_unit"] = unit
+            if accuracy_pct is None and confidence is not None:
+                accuracy_pct = round(confidence * 100.0, 1)
+            flat[f"{out_key}_accuracy_pct"] = accuracy_pct
         else:
             flat[out_key] = val
 

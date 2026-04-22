@@ -1,30 +1,151 @@
-from pydantic import BaseModel, Field
-from typing import Optional, Literal
+from typing import Generic, Literal, Optional, TypeVar
 
-YesNoUnk = Literal["JA", "NEIN", "NA"]
+from pydantic import BaseModel, Field, computed_field, model_validator
 
-class FieldEstimate(BaseModel):
-    value_str: Optional[str] = None
-    value_enum: Optional[YesNoUnk] = None
+T = TypeVar("T", bound=str)
+
+YesNoUnklar = Literal["JA", "NEIN", "UNKLAR", "UNBEKANNT"]
+
+SchadstoffLiteral = Literal[
+    "JA",
+    "NEIN",
+    "HOHE CHANCE",
+    "NIEDRIG CHANCE",
+    "H.W. ASBEST, PCB, PAK",
+    "H. W. HOLZSCHUTZMITTEL",
+    "UNBEKANNT",
+]
+
+TragwerkFassadeLiteral = Literal[
+    "MASSIV HOLZ",
+    "PUNKTUELL HOLZ",
+    "MASSIV GEDAEMMT HOLZ",
+    "PUNKTUELL STAHL",
+    "MASSIV BACKSTEIN",
+    "MASSIV BETON",
+    "PUNKTUELL BETON MIT BACKSTEINWAENDE",
+    "PUNKTUELL BETON MIT HOLZFASSADE",
+    "DAMMBETON",
+    "MASSIVBAU",
+    "LEICHTBAU",
+    "UNBEKANNT",
+]
+
+FassadeDaemmungLiteral = Literal[
+    "KEIN",
+    "XPS ODER GEKLEBTE LEICHTE DAEMMUNG",
+    "MINERALDAEMMUNG ODER LEICHTE DAEMMUNG",
+    "UNBEKANNT",
+]
+
+FassadeBekleidungLiteral = Literal[
+    "LEICHTBAU HOLZPLATTEN, MIT UNTERKONSTRUKTION",
+    "LEICHTBAU HOLZSCHINDEL, MIT UNTERKONSTRUKTION",
+    "MASSIV BETON MIT HINTERLUEFTUNG",
+    "MASSIV BACKSTEIN MIT HINTERLUEFTUNG",
+    "MASSIV BETON PREFAB MIT HINTERLUEFTUNG",
+    "LEICHTBAU STAHLBLECH",
+    "LEICHTBAU GLASFASERNPLATTE",
+    "LEICHTBAU STEIN",
+    "LEICHTBAU ANDERE LEICHTMATERIALIEN",
+    "PUTZ",
+    "DAEMMBETON",
+    "UNBEKANNT",
+]
+
+KonstruktionDeckeLiteral = Literal[
+    "LEICHTBAU HOLZ MIT HOLZDECKE",
+    "LEICHTBAU STAHL MIT HOLLRIPDECKEN",
+    "LEICHTBAU STAHL MIT HOLZDECKE",
+    "KEINE",
+    "BETON KONVENTIONELL",
+    "BACKSTEINPLATTENDECKE",
+    "UNBEKANNT",
+]
+
+BodenaufbauLiteral = Literal[
+    "KONVENTIONELLER MIT BH",
+    "KONVENTIONELLER OHNE BH",
+    "UNBEKANNT",
+]
+
+KonstruktionDachLiteral = Literal[
+    "STEILDACH, HOLZKONSTRUKTION",
+    "STEILDACH, BETONKONSTRUKTION",
+    "STEILDACH, BACKSTEINPLATTENDECKE",
+    "STEILDACH, STAHLKONSTRUKTION",
+    "SCHEDDACH HOLZ",
+    "SCHEDDACH STAHL",
+    "SCHEDDACH BETON",
+    "SCHEDDACH BACKSTEINPLATTENDECKE",
+    "FLACHDACH HOLZKONSTRUKTION",
+    "FLACHDACH STAHLKONSTRUKTION",
+    "FLACHDACH BETONKONSTRUKTION",
+    "UNBEKANNT",
+]
+
+DachBekleidungLiteral = Literal[
+    "HOLZSCHINDEL",
+    "ZIEGEL",
+    "STAHLBLECH",
+    "FLACHDACH UNGEDAEMMT",
+    "FLACHDACH GEDAEMMT",
+    "FLACHDACH GRUEN GEDAEMMT",
+    "UNBEKANNT",
+]
+
+PhotovoltaikLiteral = Literal["JA", "NEIN", "UNKLAR", "UNBEKANNT"]
+FensterLiteral = Literal["AB 1990", "BEVOR 1990", "KEIN", "UNKLAR", "UNBEKANNT"]
+
+
+class FieldEstimate(BaseModel, Generic[T]):
+    value: Optional[T] = None
     confidence: float = Field(ge=0.0, le=1.0)
+    accuracy_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
     evidence: Optional[str] = None
 
+    @model_validator(mode="after")
+    def fill_accuracy_pct(self) -> "FieldEstimate[T]":
+        if self.accuracy_pct is None:
+            self.accuracy_pct = round(self.confidence * 100.0, 1)
+        return self
+
+
 class BuildingImageExtraction(BaseModel):
-    # Grobe visuelle Gebäudeattribute
-    fassade_bekleidung: FieldEstimate
-    fenster: FieldEstimate
-    dach_bekleidung: FieldEstimate
-    photovoltaik: FieldEstimate
+    # Schritt 3
+    schadstoff: FieldEstimate[SchadstoffLiteral]
+    tragwerk_fassade: FieldEstimate[TragwerkFassadeLiteral]
+    fassade_daemmung: FieldEstimate[FassadeDaemmungLiteral]
+    fassade_bekleidung: FieldEstimate[FassadeBekleidungLiteral]
+    konstruktion_decke: FieldEstimate[KonstruktionDeckeLiteral]
+    bodenaufbau: FieldEstimate[BodenaufbauLiteral]
+    konstruktion_dach: FieldEstimate[KonstruktionDachLiteral]
+    dach_bekleidung: FieldEstimate[DachBekleidungLiteral]
+    photovoltaik: FieldEstimate[PhotovoltaikLiteral]
+    fenster: FieldEstimate[FensterLiteral]
 
+    # Feature extraction schritt 
     # Sichtbare Materialien
-    holz: FieldEstimate
-    beton: FieldEstimate
-    stahl: FieldEstimate
-    stahlblech: FieldEstimate
-    eternit: FieldEstimate
-    steinplatten: FieldEstimate
-    dachziegel: FieldEstimate
+    holz: FieldEstimate[YesNoUnklar]
+    beton: FieldEstimate[YesNoUnklar]
+    stahl: FieldEstimate[YesNoUnklar]
+    stahlblech: FieldEstimate[YesNoUnklar]
+    eternit: FieldEstimate[YesNoUnklar]
+    steinplatten: FieldEstimate[YesNoUnklar]
+    dachziegel: FieldEstimate[YesNoUnklar]
 
-    # optional für andere auffälligkeiten
-    speziell: FieldEstimate
-    extra: FieldEstimate
+    # optional fuer andere Auffaelligkeiten
+    speziell: FieldEstimate[YesNoUnklar]
+    extra: FieldEstimate[YesNoUnklar]
+
+    @computed_field(return_type=float)
+    @property
+    def overall_accuracy_pct(self) -> float:
+        confidences = [
+            value.confidence
+            for value in self.__dict__.values()
+            if isinstance(value, FieldEstimate)
+        ]
+        if not confidences:
+            return 0.0
+        return round(sum(confidences) / len(confidences) * 100.0, 1)

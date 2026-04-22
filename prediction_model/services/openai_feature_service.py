@@ -30,7 +30,7 @@ class OpenAIFeatureService:
                 "Nutze alle Perspektiven gemeinsam.\n"
                 "Luftansicht: Beziehe dich nur auf das markierte Gebäude, nutze das hilfe das zoomed Bild.\n"
                 "Beziehe dich nur auf das Gebäude, welches in allen Bildern zu sehen ist, andere Gebäude oder Gebäude teile ignorieren.\n"
-                "Du antwortest ausschliesslich auf Deutsch und im vorgegebenen JSON-Schema, z.B. 'Dachform: Satteldach', 'Dachmaterial: Ziegel', 'Fenster: 4', 'PV-Anlage: Ja, 20m²'.\n"
+                "Antworte ausschliesslich im vorgegebenen JSON-Schema. Kein Freitext ausserhalb des JSON.\n"
             )
         }]
 
@@ -43,22 +43,23 @@ class OpenAIFeatureService:
                 {
                     "role": "system",
                     "content": (
-                    "Du extrahierst visuelle Gebäudemerkmale aus Bildern.\n"
-                    "- Wenn etwas nicht eindeutig sichtbar ist: value_str='UNBEKANNT' oder value_num=None und confidence <= 0.3.\n"
-                    "- Nutze nur Merkmale, die visuell plausibel erkennbar sind.\n"
-                    "- Fenster: nur erkennen, ob vor 1990 oder ab 1990; sonst UNBEKANNT.\n"
-                    "- Fensteranzahl nur schätzen, wenn klar sichtbar; sonst UNBEKANNT.\n"
-                    "- Photovoltaik: JA/NEIN/UNBEKANNT. Wenn JA und erkennbar, PV-Fläche schätzen, sonst UNBEKANNT.\n"
-                    "- Photovoltaik zählt nicht als Dachbekleidung.\n"
-                    "- Fassade_Bekleidung und Dach_Bekleidung sollen die sichtbaren Hauptmaterialien beschreiben.\n"
-                    "- WICHTIG: Materialfelder müssen konsistent mit FASSADE_BEKLEIDUNG und DACH_BEKLEIDUNG sein.\n"
-                    "- Wenn in FASSADE_BEKLEIDUNG Holz vorkommt, setze HOLZ auf JA.\n"
-                    "- Wenn in FASSADE_BEKLEIDUNG Beton vorkommt, setze BETON auf JA.\n"
-                    "- Wenn in DACH_BEKLEIDUNG Dachziegel vorkommen, setze DACHZIEGEL auf JA.\n"
-                    "- Wenn in DACH_BEKLEIDUNG Stahlblech vorkommt, setze STAHLBLECH auf JA.\n"
-                    "- Wenn ein Material klar nicht sichtbar ist, setze es auf NEIN.\n"
-                    "- Wenn unklar, setze es auf UNBEKANNT.\n"
-                    "- Fassade Dämmung: nur vorsichtig anhand sichtbarer Hinweise schätzen (z. B. Fenstertiefe), sonst UNBEKANNT.\n"
+                    """
+                    Du extrahierst visuelle Gebäudemerkmale aus Bildern.
+
+                        Regeln je Feldobjekt:
+                        - value: exakt ein erlaubter Literal-Wert.
+                        - confidence: 0.0-1.0.
+                        - accuracy_pct = confidence * 100 (auf 1 Nachkommastelle).
+                        - evidence: kurze deutsche Begründung basierend auf sichtbaren Hinweisen.
+
+                        Bei unklarer Sichtbarkeit:
+                        - confidence <= 0.3
+                        - passenden Unknown-Wert verwenden.
+
+                        Konsistenzregeln:
+                        - Photovoltaik ist keine Dachbekleidung.
+                        - Materialfelder müssen zu Fassaden- und Dachbekleidung passen.
+                        - Keine erfundenen Informationen."""
                 ),
                 },
                 {"role": "user", "content": content},
