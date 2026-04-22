@@ -1,214 +1,182 @@
-# DFF Architecture
+# Building Attribute Prediction System
 
-A modular project for generating PDF documents from building addresses and extracting structured data from Werk-material building datasets.
+## 📌 Project Overview
 
-**Features:**
-- Generate PDFs with Street View images, maps, and building data from Swiss government APIs
-- Download and organize building data from https://werk-material.crb.ch/
-- Extract structured fields from building datasheets using OpenAI
-- MCP server for accessing building data
-- Reusable data pipelines for future ML projects
+This project aims to develop a prototype system that predicts building characteristics using:
+
+Tabular data (e.g., construction year, registry data)
+Image data (e.g., facade / street view images)
+
+The system combines machine learning models with AI-based image analysis to infer building attributes such as:
+
+Facade type
+Roof type
+Windows
+Hazardous materials (Schadstoff)
+
+## Features
+
+- Data extraction from Excel and GeoAdmin
+- Integration with Swiss geodata (GeoAdmin)
+- Image retrieval via Google Street View API
+- AI-based image feature extraction (OpenAI)
+- Machine Learning models (CatBoost, Random Forest)
+- Combined prediction pipeline
+- Confidence-based predictions
 
 ## Project Structure
-
 ```
-dff_architectur/
-├── data/                              # All data (input/output)
-│   ├── raw/                           # External data sources
-│   │   └── 251118 Textbeschreibung... # Source Excel files
-│   ├── werk/                          # Downloaded werk-material data
-│   │   ├── {building_id}/
-│   │   │   ├── datasheet.json
-│   │   │   ├── datasheet.html
-│   │   │   ├── metadata.json
-│   │   │   └── images/
+building-analysis-ai/
+│
+├── prediction_model/              # Project Base
+│   ├── data/                      # Model datasets
+│   │   ├── collected_building_data.xlsx
+│   │   └── model_dataset.xlsx
+│   │
+│   ├── models/                    # Trained models per attribute
+|   |   ├── 1_error_analysis/             
+│   │   ├── fassade_bekleidung/
+│   │   ├── dach_bekleidung/
+│   │   ├── fenster/
+│   │   ├── schadstoff/
 │   │   └── ...
-│   └── external/                      # Reference data
-│
-├── src/                               # Source code
-│   ├── core/                          # Shared utilities
-│   │   ├── __init__.py
-│   │   └── config.py                  # Centralized configuration
 │   │
-│   ├── pipelines/                     # Reusable data pipelines
-│   │   ├── werk/
-│   │   │   ├── __init__.py
-│   │   │   ├── download.py            # Download from werk-material.crb.ch
-│   │   │   ├── parser.py              # Parse HTML to JSON
-│   │   │   └── extractor.py           # Extract fields with OpenAI
-│   │   └── buildings/
-│   │       └── ...
-│   │
-│   ├── services/                      # External API clients
-│   │   ├── geocoding_service.py
-│   │   ├── streetview_service.py
-│   │   ├── map_service.py
-│   │   ├── zh_map_service.py
-│   │   └── building_data_service.py
-│   │
-│   ├── generators/                    # Output generators
-│   │   └── pdf_generator.py           # PDF generation
-│   │
-│   ├── models/                        # Data models (future ML)
-│   │   └── __init__.py
-│   │
-│   └── utils/                         # Helpers
-│       └── config.py
-│
-├── scripts/                           # CLI entry points
-│   ├── download_werk.py               # Download building data
-│   ├── extract_fields.py              # Extract with OpenAI
-│   ├── compare_truth.py               # Compare to truth data
-│   ├── mcp_server.py                  # Start MCP server
-│   └── generate_pdfs.py               # Generate PDFs
-│
-├── notebooks/                         # Jupyter notebooks (analysis, exploration)
-│
-├── tests/                             # Unit tests
-│
-├── output/                            # Generated outputs
-│   ├── pdfs/
-│   ├── images/
-│   └── task4_openai/                  # OpenAI extraction results
-│
+|   ├── output/
+|   |   └── images/...
+|   |   
+|   ├── services/                      # Core logic & pipelines
+|   │   ├── building_image_service.py
+|   │   ├── cb_prediction_service.py
+|   │   ├── combined_prediction_service.py
+|   │   ├── geo_admin_service.py
+|   │   ├── openai_analysis_service.py
+|   │   ├── openai_feature_service.py
+|   │   ├── rf_prediction_service.py
+│   |
+|   ├── collect_building_data.py
+|   ├── generate_model_dataset.py
+|   ├── model_dataset_analysis.py
+|   ├── MyApp.py
+|   ├── ReadMe.md
+│   └──...
+|
 ├── pyproject.toml
 ├── requirements.txt
 ├── .env.example
-└── README.md
+└── README.md       # read me main branch
 ```
 
-## Setup Instructions (uv)
+## Data Sources
 
-1. **Clone the repository:**
-  ```bash
-  git clone <repository-url>
-  cd dff_architectur
-  ```
+- GeoAdmin (Swiss geodata)
+- Building registry data (EGID-based)
+- Street View images (Google API)
 
-2. **Create the uv environment and install dependencies:**
-  ```bash
-  uv venv --python 3.14
-  uv sync
-  ```
+## Project Setup
 
-3. **Configure environment variables:**
-  ```bash
-  cp .env.example .env
-  # Edit .env with your API keys:
-  # - API_KEY_GOOGLE_MAPS
-  # - OPENAI_API_KEY
-  ```
+## **⚠️ Important ⚠️**
 
-Notes:
-- Dependencies are now defined in pyproject.toml for uv.
-- requirements.txt is no longer the source of truth.
+This project requires:
 
-## Usage
+- Python 3.14
+- scikit-learn==1.6.1
 
-### Generate PDFs from Address List
+On Windows, this combination fails to build from source.
+
+➡️ Therefore, you must use WSL (Ubuntu).
+
+### 1. Install WSL (Ubuntu)
+
+**In PowerShell:**
+```
+wsl --install -d Ubuntu
+```
+
+Restart your computer if prompted.
+
+### 2. Setup Ubuntu
+
+**Open Ubuntu and run:**
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y build-essential git curl libnss3 libasound2t64
+```
+### 3. Install uv
 
 ```bash
-python scripts/generate_pdfs.py
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc
 ```
-- Reads addresses from Excel file (configured in script)
-- Fetches maps, Street View, and building data
-- Generates PDFs in `output/pdfs/`
-
-### Download Werk-Material Data
+Verify installation:
 
 ```bash
-# First time: authenticate and save session
-python scripts/download_werk.py --login
-
-# Download data
-python scripts/download_werk.py
+uv --version
 ```
-- Downloads datasheets, metadata, and images
-- Saves to `data/werk/{building_id}/`
-
-### Parse HTML Datasheets to JSON
+### 4. Clone Project inside WSL
 
 ```bash
-from src.pipelines.werk.parser import main
-main()
+git clone <repository-url>
+cd dff_architectur
 ```
-- Converts `datasheet.html` → `datasheet.json` for all buildings
 
-### Extract Structured Fields with OpenAI
+**OR** if you use VSC ➡️ connect to WSL and clone Git Repository
+
+### 5. Create Virtual Environment & Install Dependencies
 
 ```bash
-# Extract from single building
-python scripts/extract_fields.py --id 57403
-
-# Extract from all buildings
-python scripts/extract_fields.py --all
-
-# Dry-run (preview without API calls)
-python scripts/extract_fields.py --all --dry-run
+uv venv --python 3.14
+source .venv/bin/activate
+uv sync
 ```
-- Uses OpenAI gpt-4 vision to extract fields
-- Supports text-only, images-only, and combined modes
-- Outputs: `output/task4_openai/{id}_text.json`, `{id}_images.json`, etc.
+### 6. add missing modules
+```bash
+uv add streamlit
+uv add catboost
+```
 
-### Compare Extractions to Ground Truth
+### 6. Configure Environment Variables
 
 ```bash
-python scripts/compare_truth.py --dry-run
+cp .env.example .env
 ```
-- Compares AI extractions vs. Excel truth values
-- Calculates similarity scores
-- Outputs CSV: `output/task4_openai/comparison.csv`
+Edit .env:
 
-### Start MCP Server
-
-```bash
-python scripts/mcp_server.py [port]
-```
-- Starts FastMCP server (default port 8000)
-- Exposes building data via MCP protocol
-- Image server on port 8001
-
-## Architecture Notes
-
-### Separation of Concerns
-
-- **Pipelines** (`src/pipelines/`): Reusable data extraction/transformation logic
-  - Can be imported into future ML projects
-  - Stateless, composable functions
-- **Services** (`src/services/`): External API clients
-  - Thin wrappers around APIs
-  - Used by scripts for document generation
-- **Scripts** (`scripts/`): User-facing CLI entry points
-  - Import from pipelines or services
-  - Handle argument parsing and orchestration
-
-### Data Flow
-
-```
-Excel Data
-  ↓
-scripts/download_werk.py → data/werk/{id}/ (HTML, metadata, images)
-  ↓
-src/pipelines/werk/parser.py → datasheet.json
-  ↓
-src/pipelines/werk/extractor.py (OpenAI) → output/task4_openai/
-  ↓
-scripts/compare_truth.py → comparison.csv
+```env
+API_KEY_GOOGLE_MAPS=your_google_maps_key
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-### For Future ML Projects
+### 7. Configure allowed Websites for Google API Key
 
-1. **Reuse pipelines**: Import from `src.pipelines.werk` in ML training scripts
-2. **Add models**: Define Pydantic models in `src/models/`
-3. **Organize notebooks**: Use `notebooks/` for exploratory analysis
-4. **Add tests**: Unit tests in `tests/`
+- go to Google Cloud -> API KEYS -> Credibility
+- add websites that allow the use of the API KEY
+- is used in MyApp.py for map integration
 
-## Environment Variables
+## Running Predictions
 
-Required in `.env`:
+**first activate:** source .venve/bin/activate
+**run streamlit interface:** streamlit run prediction_model/MyApp.py
 
-```
-API_KEY_GOOGLE_MAPS=your-key
-OPENAI_API_KEY=your-key
-OPENAI_MODEL=gpt-4-turbo  # or gpt-5-nano for testing
-```
+**Predictions are handled via:** prediction_model/services/combined_prediction_service.py
+
+every python script has their own run command noted
+
+### Pipeline Overview
+Input: Address
+GeoAdmin → retrieve building data
+Google API → fetch images
+OpenAI → extract visual features
+ML models → predict attributes
+(comming soon) OpenAI → validate/correct predictions with own prediction
+
+## Development Resources
+
+**Git Repository branch: feature/ml-pipeline**
+https://github.com/itsJasminZWIN/building-analysis-ai.git
+
+**Kanbanboard for time and activity management**
+https://stubrainst.atlassian.net/jira/software/projects/PM/boards/2
+
+**rough goal table**
+![alt text](goalTimeTable.png)

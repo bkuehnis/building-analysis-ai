@@ -1,7 +1,7 @@
 [project]
-name = "dff-architectur"
+name = "building-analysis-ai"
 version = "0.1.0"
-description = "PDF generation and Werk-material data pipelines"
+description = "PA modular project for generating PDF documents from building addresses and extracting structured data from Werk-material building datasets."
 readme = "README.md"
 requires-python = ">=3.14"
 

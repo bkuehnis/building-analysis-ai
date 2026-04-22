@@ -1,1 +1,1 @@
-"""CLI entry points and executable scripts."""
+"""Project source package."""
