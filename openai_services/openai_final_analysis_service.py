@@ -39,8 +39,8 @@ class OpenAIAnalysisService:
 
         Ziel:
         - Fasse die wichtigsten Merkmale des Gebäudes kurz zusammen.
-        - Erkläre, welche Vorhersagen plausibel erscheinen und warum.
-        - Erkläre, welche Vorhersagen unsicher sind und warum.
+        - Erkläre, welche Vorhersagen plausibel erscheinen und warum (confidence > 80).
+        - Erkläre, welche Vorhersagen stark unsicher sind und warum (confidence <= 40).
 
         Gebäudedaten:
         {json.dumps(comparison_df.to_dict, ensure_ascii=False, default=str, indent=2)}

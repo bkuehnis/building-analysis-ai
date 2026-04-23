@@ -7,12 +7,14 @@ python -m scripts.collect_building_data --address "Guggenbühlstrasse 140a 8404 
 
 
 """
+
 from services.geo_admin_service import GeoAdminService
 from services.building_image_service import ImageService
 from openai_services.openai_feature_service import OpenAIFeatureService
 from services.cb_prediction_service import CatBoostFoldEnsemble
 from services.rf_prediction_service import RandomForestFoldEnsemble
 from openai_services.building_image_schema import BuildingImageExtraction
+from services.zh_map_service import ZhMapService
 
 import os
 import argparse
@@ -214,12 +216,11 @@ def collect_building_data(address: str):
 
     print(f"LV95 coordinates for WMS: E={e95}, N={n95}")
 
-
     # Orthofoto (50m) + Orthofoto (20m) + Katasterplan (50m)
     ortho_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo.swissimage", meters=50, width=1024, height=1024,image_format="image/jpeg")
     ortho_zoomed_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo.swissimage", meters=20, width=1024, height=1024,image_format="image/jpeg")
     plain_url = image_service.build_wms_url(e95, n95, layer="ch.swisstopo-vd.amtliche-vermessung", meters=50, width=1024, height=1024, image_format="image/png")
-
+    
     ortho_path = image_service.download_image(
         ortho_url,
         name=f"swissimage_{feature_id}",
@@ -260,8 +261,25 @@ def collect_building_data(address: str):
         plain_path,  # ✅ URL mit layer-Parameter
         out_path=f"{image_output_dir}/{result['EGID']}/marked/cadastral_{result['EGID']}.jpeg",  # ✅ .jpeg konsistent
     )
-    
-    
+
+    # Build zh map browser URL
+    zh_map_url = f"https://geo.zh.ch/maps?x={int(e95)}&y={int(n95)}&scale=900&basemap=areavbackgroundzh"
+
+    # z.B. ins Result schreiben
+    result["ZH_MAP_URL"] = zh_map_url
+
+    zh_service = ZhMapService()
+
+    map_path, ortho_path = zh_service.fetch_zh_map_screenshot(
+        x=e95,
+        y=n95,
+        address=result.get("ADDRESS", "building"),
+        output_dir=f"{image_output_dir}/{result['EGID']}"
+    )
+
+    print("ZH Map screenshot saved:", map_path)
+    print("ZH Ortho screenshot saved:", ortho_path)
+
     # ---------------------------------------------------------
     # DATAFRAME
     # ---------------------------------------------------------
@@ -304,7 +322,7 @@ def collect_building_data(address: str):
 
     base_cols = [
         "EGID", "GSW_STATUS", "STRASSE", "HAUSNR", "HAUSNRZUSATZ",
-        "PLZ", "ORT", "BAUJAHR", "HAUPTNUTZUNG", "NUTZUNG", "lat", "lon"
+        "PLZ", "ORT", "BAUJAHR", "HAUPTNUTZUNG", "NUTZUNG", "lat", "lon", "ZH_MAP_URL"
     ]
     feature_cols = list(flat.keys())
 
