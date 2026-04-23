@@ -1,4 +1,4 @@
-from typing import Generic, Literal, TypeVar
+from typing import Generic, List, Literal, TypeVar
 from pydantic import BaseModel, Field, computed_field
 
 T = TypeVar("T", bound=str)
@@ -109,19 +109,13 @@ class FieldEstimate(BaseModel, Generic[T]):
 
 
 class BuildingImageExtraction(BaseModel):
-    # Schritt 3
-    schadstoff: FieldEstimate[SchadstoffLiteral]
-    tragwerk_fassade: FieldEstimate[TragwerkFassadeLiteral]
-    fassade_daemmung: FieldEstimate[FassadeDaemmungLiteral]
+    # Schritt 1: Sichtbare Merkmale
     fassade_bekleidung: FieldEstimate[FassadeBekleidungLiteral]
-    konstruktion_decke: FieldEstimate[KonstruktionDeckeLiteral]
-    bodenaufbau: FieldEstimate[BodenaufbauLiteral]
     konstruktion_dach: FieldEstimate[KonstruktionDachLiteral]
     dach_bekleidung: FieldEstimate[DachBekleidungLiteral]
     photovoltaik: FieldEstimate[PhotovoltaikLiteral]
     fenster: FieldEstimate[FensterLiteral]
 
-    # Feature extraction schritt 
     # Sichtbare Materialien
     holz: FieldEstimate[YesNoUnklar]
     beton: FieldEstimate[YesNoUnklar]
@@ -146,3 +140,19 @@ class BuildingImageExtraction(BaseModel):
         if not confidences:
             return 0.0
         return round(sum(confidences) / len(confidences) * 100.0, 1)
+    
+class AnalysisReasoningItem(BaseModel):
+    attribute: str
+    assessment: str
+    reason: str
+
+
+class AnalysisUncertaintyItem(BaseModel):
+    attribute: str
+    reason: str
+
+
+class BuildingAnalysisResult(BaseModel):
+    summary: str
+    reasoning: List[AnalysisReasoningItem]
+    uncertainty: List[AnalysisUncertaintyItem]

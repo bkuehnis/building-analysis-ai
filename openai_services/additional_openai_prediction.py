@@ -9,34 +9,30 @@ import pandas as pd
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
+from .building_image_schema import (
+    FieldEstimate,
+    FassadeBekleidungLiteral,
+    FassadeDaemmungLiteral,
+    KonstruktionDachLiteral,
+    DachBekleidungLiteral,
+    TragwerkFassadeLiteral,
+    FensterLiteral,
+    BodenaufbauLiteral,
+    KonstruktionDeckeLiteral,
+    SchadstoffLiteral,
+)
+
 
 class BuildingAnalysis(BaseModel):
-    fassade_bekleidung: str
-    fassade_bekleidung_sicherheit: int = Field(ge=0, le=100)
-
-    fassade_daemmung: str
-    fassade_daemmung_sicherheit: int = Field(ge=0, le=100)
-
-    konstruktion_dach: str
-    konstruktion_dach_sicherheit: int = Field(ge=0, le=100)
-
-    dach_bekleidung: str
-    dach_bekleidung_sicherheit: int = Field(ge=0, le=100)
-
-    tragwerk_fassade: str
-    tragwerk_fassade_sicherheit: int = Field(ge=0, le=100)
-
-    fenster: str
-    fenster_sicherheit: int = Field(ge=0, le=100)
-
-    bodenaufbau: str
-    bodenaufbau_sicherheit: int = Field(ge=0, le=100)
-
-    konstruktion_decke: str
-    konstruktion_decke_sicherheit: int = Field(ge=0, le=100)
-
-    schadstoff: str
-    schadstoff_sicherheit: int = Field(ge=0, le=100)
+    fassade_bekleidung: FieldEstimate[FassadeBekleidungLiteral]
+    fassade_daemmung: FieldEstimate[FassadeDaemmungLiteral]
+    konstruktion_dach: FieldEstimate[KonstruktionDachLiteral]
+    dach_bekleidung: FieldEstimate[DachBekleidungLiteral]
+    tragwerk_fassade: FieldEstimate[TragwerkFassadeLiteral]
+    fenster: FieldEstimate[FensterLiteral]
+    bodenaufbau: FieldEstimate[BodenaufbauLiteral]
+    konstruktion_decke: FieldEstimate[KonstruktionDeckeLiteral]
+    schadstoff: FieldEstimate[SchadstoffLiteral]
 
     begruendung: Optional[str] = None
 
@@ -72,7 +68,7 @@ class AdditionalPredictionOpenAI:
         egid = str(egid)
         image_dir = Path(image_dir) / egid
 
-        image_paths = sorted(image_dir.glob(f"*.jpeg"))
+        image_paths = sorted(image_dir.glob("*.jpeg"))
 
         if not image_paths:
             raise FileNotFoundError(
@@ -87,11 +83,11 @@ class AdditionalPredictionOpenAI:
         predictions: dict,
         image_paths: Optional[list[str]] = None,
         egid: Optional[str | int] = None,
-        image_dir: str | Path = "prediction_model/output/images",
+        image_dir: str | Path = "buildings",
     ):
-
         print("Starting analysis with AdditionalPredictionOpenAI...")
         print("EGID:", egid)
+
         if df is None or df.empty:
             raise ValueError("Input DataFrame is empty")
 
@@ -108,6 +104,11 @@ class AdditionalPredictionOpenAI:
                 egid=egid,
                 image_dir=image_dir,
             )
+
+        image_paths = [str(p) for p in image_paths]
+
+        if not image_paths:
+            raise ValueError("No image paths provided for analysis")
 
         print("Loaded image paths:", image_paths)
         print("Number of images:", len(image_paths))
@@ -127,14 +128,16 @@ Gib eigene Einschätzung zu folgenden Attributen ab:
 - schadstoff (z.B. Asbest, PCB, Holzschutzmittel)
 
 Für jedes Attribut:
-- gib einen neuen Wert zurück.
-- gib eine Sicherheit von 0-100 zurück, wie sicher du dir mit deiner Einschätzung bist.
+- gib exakt einen erlaubten Wert zurück.
+- gib confidence als Zahl zwischen 0.0 und 1.0 zurück.
 
-Falls ein Attribut anhand der Bilder nicht zuverlässig erkennbar ist, gib trotzdem die beste Einschätzung ab und reduziere die Sicherheit entsprechend.
+Falls ein Attribut anhand der Bilder nicht zuverlässig erkennbar ist, verwende den passenden Unknown-/Unklar-Wert und reduziere die confidence entsprechend.
 
 Gebäudedaten:
 {json.dumps(record, ensure_ascii=False, default=str, indent=2)}
 
+Vorhersagen:
+{json.dumps(predictions, ensure_ascii=False, default=str, indent=2)}
 """.strip()
 
         content = [{"type": "input_text", "text": prompt}]
@@ -159,17 +162,40 @@ Gebäudedaten:
                 text_format=BuildingAnalysis,
             )
 
-            analysis = response.output_parsed
+            analysis = getattr(response, "output_parsed", None)
+
+            if analysis is None:
+                # SDK compatibility fallback
+                output = getattr(response, "output", None) or []
+                if output:
+                    content_items = getattr(output[0], "content", None) or []
+                    if content_items:
+                        analysis = getattr(content_items[0], "parsed", None)
 
             if analysis is None:
                 raise ValueError("OpenAI returned no parsed output")
 
-            return analysis.model_dump()
+            # Pydantic -> dict
+            raw = analysis.model_dump()
+
+            # In altes flaches Format umwandeln
+            flat = {}
+            for key, value in raw.items():
+                if key == "begruendung":
+                    flat[key] = value
+                    continue
+
+                if isinstance(value, dict):
+                    flat[key] = value.get("value")
+                    confidence = value.get("confidence")
+                    flat[f"{key}_sicherheit"] = round(confidence * 100) if confidence is not None else None
+                else:
+                    flat[key] = value
+
+            return flat
 
         except Exception as e:
-
             return {
-                    "error": str(e),
-                    "llm_predictions": None,
+                "error": str(e),
+                "llm_predictions": None,
             }
-            
