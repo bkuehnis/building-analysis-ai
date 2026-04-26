@@ -117,8 +117,10 @@ def main():
                                 try:
                                     df = collect_building_data(address)
                                     st.info("Adresse gefunden: " + "\n" + st.session_state["address"])
-                                except Exception:
-                                    st.error("Adresse konnte nicht gefunden werden.")
+                                except Exception as e:
+                                    st.error(f"Adresse konnte nicht gefunden werden: {str(e)}")
+                                    import traceback
+                                    st.write(traceback.format_exc())
                                     return
 
                                 if df is None or df.empty:
