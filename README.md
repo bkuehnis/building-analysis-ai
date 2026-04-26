@@ -117,7 +117,7 @@ uv --version
 
 ```bash
 git clone <repository-url>
-cd dff_architectur
+cd building-analysis-ai
 ```
 
 **OR** if you use VSC ➡️ connect to WSL and clone Git Repository

@@ -15,7 +15,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import os
 from services.combined_prediction_service import CombinedFoldEnsemble
-from scripts.collect_building_data import collect_building_data
+from main import collect_building_data
 from openai_services.openai_final_analysis_service import OpenAIAnalysisService
 from openai_services.additional_openai_prediction import AdditionalPredictionOpenAI
 import pandas as pd
