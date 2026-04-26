@@ -348,5 +348,6 @@ https://github.com/itsJasminZWIN/building-analysis-ai.git
 https://stubrainst.atlassian.net/jira/software/projects/PM/boards/2
 
 **rough goal table**
+
 ![alt text](goalTimeTable.png)
 
