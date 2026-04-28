@@ -197,8 +197,10 @@ cython_debug/
 # CatBoost info files
 catboost_info/**
 
+buildings/**
 
 
 
 
-
+.streamlit/secrets.toml
+.DS_Store
