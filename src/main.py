@@ -11,10 +11,7 @@ python -m scripts.collect_building_data --address "Guggenbühlstrasse 140a 8404 
 from services.geo_admin_service import GeoAdminService
 from services.building_image_service import ImageService
 from openai_services.openai_feature_service import OpenAIFeatureService
-from services.cb_prediction_service import CatBoostFoldEnsemble
-from services.rf_prediction_service import RandomForestFoldEnsemble
 from openai_services.building_image_schema import BuildingImageExtraction
-from services.zh_map_service import ZhMapService
 
 import os
 import argparse
@@ -267,18 +264,6 @@ def collect_building_data(address: str):
 
     # z.B. ins Result schreiben
     result["ZH_MAP_URL"] = zh_map_url
-
-    zh_service = ZhMapService()
-
-    map_path, ortho_path = zh_service.fetch_zh_map_screenshot(
-        x=e95,
-        y=n95,
-        address=result.get("ADDRESS", "building"),
-        output_dir=f"{image_output_dir}/{result['EGID']}"
-    )
-
-    print("ZH Map screenshot saved:", map_path)
-    print("ZH Ortho screenshot saved:", ortho_path)
 
     # ---------------------------------------------------------
     # DATAFRAME
